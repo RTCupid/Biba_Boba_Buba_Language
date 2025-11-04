@@ -2,31 +2,31 @@
 #define FRONTEND_INCLUDE_PARSER_HPP
 
 #include "node.hpp"
+#include "token.hpp"
 #include <vector>
+#include <memory>
 
 namespace language {
 
 class Parser {
-    std::vector<Token> tokens_;
-    size_t pc_ = 0;
+    std::size_t pc_ = 0;
+    std::unique_ptr<Node> root{nullptr};
 
 public:
-    Parser (const std::vector<Token> &tokens) : tokens_(tokens) {}
+    Parser () = default;
 
-    Node *parse();
+
+    bool parse(const std::vector<std::unique_ptr<Token>>& tokens_);
 
 private:
-    Node *get_operator() {
+    Node* get_operator() {
 
     }
 
 };
 
-inline Node *Parser::parse() {
-    auto node = new Statement_node;
-
-    node->left_ = get_operator();
-    node->right_ = new Statement_node;
+inline bool Parser::parse(const std::vector<std::unique_ptr<Token>> &tokens_) {
+    auto node = new Statement_node{get_operator(), new Statement_node};
 
     auto current_node = node->right_;
 
@@ -40,4 +40,4 @@ inline Node *Parser::parse() {
 
 } // namespace language
 
-#endif
+#endif // FRONTEND_INCLUDE_PARSER_HPP
