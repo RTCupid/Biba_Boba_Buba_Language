@@ -5,6 +5,7 @@
 #include "token.hpp"
 #include <memory>
 #include <vector>
+#include <stdexcept>
 
 namespace language {
 
@@ -54,13 +55,29 @@ inline bool Parser::parse(const std::vector<std::unique_ptr<Token>> &tokens) {
         throw std::runtime_error("Expected Statement_node");
     }
 
-    while (true) {
+    while (pc_ < tokens.size()) {
         current_node->set_left(get_operator(tokens));
         current_node->set_right(std::make_unique<Statement_node>());
-        auto current_node = current_node->right_.get();
+        current_node = static_cast<Statement_node*>(current_node->right_.get());
     }
 
     return true;
+}
+
+inline std::unique_ptr<Node> Parser::get_operator(const std::vector<std::unique_ptr<Token>> &tokens) {
+    if (tokens[pc_]->type_ == Type::type_variable) {
+        ++pc_;
+        if (tokens[pc_]->type_ == Type::type_binary_operator) {
+            auto* binary_op = dynamic_cast<Token_binary_operator*>(tokens[pc_].get());
+            if (!binary_op)
+                throw std::runtime_error("Expected binary operator token");
+
+            if (binary_op->binary_operator_ == Binary_operators::operator_assign) {
+                
+            }
+        }
+    }
+
 }
 
 } // namespace language

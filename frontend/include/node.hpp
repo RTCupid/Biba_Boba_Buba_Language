@@ -8,16 +8,18 @@ namespace language {
 
 class Node {};
 
-class Binary_operation_node : public Node, public Token_binary_operator {
+class Binary_operator_node : public Node, public Token_binary_operator {
     std::unique_ptr<Node> left_{nullptr};
     std::unique_ptr<Node> right_{nullptr};
 
-    Binary_operation_node(std::unique_ptr<Node> &&left, std::unique_ptr<Node> &&right)
+    Binary_operator_node(std::unique_ptr<Node> &&left, std::unique_ptr<Node> &&right)
         : left_(std::move(left)), right_(std::move(right)) {}
 };
 
-class Unary_operation_node : public Node, public Token_unary_operator {
-    std::unique_ptr<Node> left_{nullptr};
+class Unary_operator_node : public Node, public Token_unary_operator {
+    std::unique_ptr<Node> right_{nullptr};
+
+    Unary_operator_node(std::unique_ptr<Node> &&right) : right_(std::move(right)) {}
 };
 
 class Statement_node : public Node {

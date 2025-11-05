@@ -10,7 +10,8 @@ number_type nil = 0;
 enum class Type {
     type_zero,
     type_number,
-    type_operation,
+    type_binary_operator,
+    type_unary_operator,
     type_variable,
     number_of_types
 };
@@ -20,14 +21,17 @@ enum class Binary_operators {
     operator_add,
     operator_sub,
     operator_mul,
+    operator_input,
     operator_div,
     operator_pow,
+    operator_assign,
     number_of_operators
 };
 
 enum class Unary_operators {
     operator_zero,
     operator_unary_minus,
+    operator_print,
     number_of_operators
 };
 
