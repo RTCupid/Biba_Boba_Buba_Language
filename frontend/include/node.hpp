@@ -6,7 +6,10 @@
 
 namespace language {
 
-class Node {};
+class Node {
+public:
+    virtual ~Node() = default;
+};
 
 class Binary_operator_node : public Node, public Token_binary_operator {
     std::unique_ptr<Node> left_{nullptr};

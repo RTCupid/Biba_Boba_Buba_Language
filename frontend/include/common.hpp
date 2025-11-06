@@ -14,6 +14,7 @@ enum class Type {
     type_unary_operator,
     type_variable,
     type_identifier,
+    type_conditional_operator,
     number_of_types
 };
 
