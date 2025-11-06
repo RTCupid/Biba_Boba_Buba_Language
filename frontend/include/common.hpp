@@ -5,7 +5,7 @@ namespace language {
 
 using number_type = int;
 
-number_type nil = 0;
+inline constexpr number_type nil = 0;
 
 enum class Type {
     type_zero,
@@ -13,7 +13,17 @@ enum class Type {
     type_binary_operator,
     type_unary_operator,
     type_variable,
+    type_identifier,
     number_of_types
+};
+
+enum class Identifiers {
+    id_zero,
+    id_semicolon,
+    id_left_parenthesis,
+    id_right_parenthesis,
+    id_left_curly_bracket,
+    id_right_curly_bracket,
 };
 
 enum class Binary_operators {
