@@ -7,19 +7,27 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 find_package(FLEX REQUIRED)
+find_package(BISON REQUIRED)
 
-flex_target(scanner
-  lexer.l
-  ${CMAKE_CURRENT_BINARY_DIR}/lexer.cc
+FLEX_TARGET(Lexer
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/lexer.l
+    ${CMAKE_CURRENT_BINARY_DIR}/lexer.cpp
 )
 
-add_executable(${PROJECT_NAME}
-  src/main.cpp
-  ${FLEX_scanner_OUTPUTS}
+BISON_TARGET(Parser
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/parser.y
+    ${CMAKE_CURRENT_BINARY_DIR}/parser.cpp
+    DEFINES_FILE ${CMAKE_CURRENT_BINARY_DIR}/parser.hpp
 )
 
-target_include_directories(${PROJECT_NAME} PRIVATE include)
-target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_20)
-target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
-target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+add_executable(frontend
+    src/main.cpp
+    ${FLEX_Lexer_OUTPUTS}
+    ${BISON_Parser_OUTPUTS}
+)
+
+target_include_directories(frontend PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
+    ${CMAKE_CURRENT_BINARY_DIR}
+)
 
