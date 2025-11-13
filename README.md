@@ -14,35 +14,30 @@
 Below is a description of the grammar of the language in a format close to EBNF [2], which was updated before the addition of the new syntax of the language:
 
 ```
-Program     ::= StmtList EOF
-StmtList    ::= Statement ';' 
+Program        ::= StmtList EOF
 
-Statement   ::= SimpleStmt ';' | CompoundStmt
+StmtList       ::= /* empty */ | StmtList Statement
 
-SimpleStmt  ::= Assignment | Input | Print
-CompoundStmt::= IfStmt | WhileStmt | Block
+Statement      ::= AssignmentStmt ';' | InputStmt ';' | IfStmt | WhileStmt | PrintStmt ';' | BlockStmt
 
-Block       ::= '{' StmtList '}'
+BlockStmt      ::= '{' StmtList '}'
+AssignmentStmt ::= Var '=' Expression
+InputStmt      ::= Var '=' '?'
+IfStmt         ::= 'if'    '(' Expression ')' Statement [ 'else' Statement ]
+WhileStmt      ::= 'while' '(' Expression ')' Statement
+PrintStmt      ::= 'print' Expression
 
-IfStmt      ::= 'if'    '(' Expression ')' Statement [ 'else' Statement ]
-WhileStmt   ::= 'while' '(' Expression ')' Statement
+Expression     ::= Equality
+Equality       ::= Relational ( ( '==' | '!=' ) Relational )*
+Relational     ::= AddSub ( ( '<' | '>' | '<=' | '>=' ) AddSub )*
+AddSub         ::= MulDiv ( ( '+' | '-' ) MulDiv )*
+MulDiv         ::= Unary  ( ( '*' | '/' ) Unary )*
+Unary          ::= '-' Unary | Primary
+Primary        ::= '(' Expression ')' | Var | Number
 
-Assignment  ::= Var '=' Expression
-
-Input       ::= Var '=' '?'
-Print       ::= 'print' Expression
-
-Expression  ::= Equality
-Equality    ::= Rel ( ( '==' | '!=' ) Rel )*
-Rel         ::= AddSub ( ( '<' | '>' | '<=' | '>=' ) AddSub )*
-AddSub      ::= MulDiv ( ( '+' | '-' ) MulDiv )*
-MulDiv      ::= Unary  ( ( '*' | '/' ) Unary )*
-Unary       ::= '-' Unary | Primary
-Primary     ::= '(' Expression ')' | Var | Number
-
-Var         ::= [A-Za-z_][A-Za-z0-9_]*
-Number      ::= [0-9]+
-EOF         ::= __end_of_file__
+Var            ::= [A-Za-z_][A-Za-z0-9_]*
+Number         ::= [0-9]+
+EOF            ::= __end_of_file__
 ```
 
 ## 🛠 Tool Selection: Flex and Bison
