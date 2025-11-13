@@ -9,11 +9,13 @@
 
 %lex-param   { language::Lexer* scanner }
 %parse-param { language::Lexer* scanner }
+%parse-param { std::unique_ptr<language::Program> &root }
 
 %code requires {
   #include <string>
   namespace language { class Lexer; }
   #include "node.hpp" 
+  #include "dsl.hpp"
 }
 
 %code {
@@ -71,34 +73,76 @@
 
 %%
 
-program        : stmt_list TOK_EOF;
+program        : stmt_list TOK_EOF
+                {
+                  root = std::make_unique<language::Program>(std::move($1));
+                }
+               ;
 
 stmt_list      : /* empty */
+                {
+                  $$ = language::StmtList{};  
+                }
                | stmt_list statement
+                {
+                  $1.push_back(std::move($2));
+                  $$ = std::move($1);
+                }
                ;
 
 statement      : assignment_stmt TOK_SEMICOLON
+                 { $$ = std::move($1); }
                | input_stmt TOK_SEMICOLON
+                 { $$ = std::move($1); }
                | if_stmt
+                 { $$ = std::move($1); }
                | while_stmt
+                 { $$ = std::move($1); }
                | print_stmt TOK_SEMICOLON
+                 { $$ = std::move($1); }
                | block_stmt
+                 { $$ = std::move($1); }
                ;
 
-block_stmt     : TOK_LEFT_BRACE stmt_list TOK_RIGHT_BRACE ;
+block_stmt     : TOK_LEFT_BRACE stmt_list TOK_RIGHT_BRACE 
+                {
+                  $$ = std::make_unique<language::Block_stmt>(std::move($2));
+                }
+               ;
 
-assignment_stmt: TOK_ID TOK_ASSIGN expression ;
+assignment_stmt: TOK_ID TOK_ASSIGN expression 
+                {
+                  $$ = std::make_unique<language::Assignment_stmt>(std::move($1), std::move($3));
+                }
+                ;
 
 input_stmt     : TOK_ID TOK_ASSIGN TOK_INPUT
+                {
+                  $$ = std::make_unique<language::Input_stmt>(std::move($1));
+                }
                ;
 
 if_stmt        : TOK_IF TOK_LEFT_PAREN expression TOK_RIGHT_PAREN statement %prec PREC_IFX
+                {
+                  $$ = std::make_unique<language::If_stmt>(std::move($3), std::move($5));
+                }
                | TOK_IF TOK_LEFT_PAREN expression TOK_RIGHT_PAREN statement TOK_ELSE statement
+                {
+                  $$ = std::make_unique<language::If_stmt>(std::move($3), std::move($5), std::move($7));
+                }
                ;
 
-while_stmt     : TOK_WHILE TOK_LEFT_PAREN expression TOK_RIGHT_PAREN statement ;
+while_stmt     : TOK_WHILE TOK_LEFT_PAREN expression TOK_RIGHT_PAREN statement 
+                {
+                  $$ = std::make_unique<language::While_stmt>(std::move($3), std::move($5));
+                }
+               ;
 
-print_stmt     : TOK_PRINT expression ;
+print_stmt     : TOK_PRINT expression 
+                {
+                  $$ = std::make_unique<language::Print_stmt>(std::move($2));
+                }
+               ;
 
 expression     : equality ;
 

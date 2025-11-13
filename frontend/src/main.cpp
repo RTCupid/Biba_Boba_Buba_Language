@@ -3,6 +3,7 @@
 #include <fstream>
 #include <iostream>
 #include <memory>
+#include "node.hpp"
 
 int yyFlexLexer::yywrap() { return 1; }
 
@@ -19,7 +20,10 @@ int yyFlexLexer::yywrap() { return 1; }
 int main() {
     std::istream *in = &std::cin;
     language::Lexer scanner(in, &std::cout);
-    yy::parser parser(&scanner);
+
+    std::unique_ptr<language::Program> root;
+
+    yy::parser parser(&scanner, root);
 
     int result = parser.parse();
 
