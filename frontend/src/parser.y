@@ -124,13 +124,16 @@ block_stmt     : TOK_LEFT_BRACE stmt_list TOK_RIGHT_BRACE
 
 assignment_stmt: TOK_ID TOK_ASSIGN expression 
                 {
-                  $$ = std::make_unique<language::Assignment_stmt>(std::move($1), std::move($3));
+                  language::Variable_ptr var = std::make_unique<language::Variable>(std::move($1));
+                  $$ = std::make_unique<language::Assignment_stmt>(std::move(var), std::move($3));
                 }
                 ;
 
 input_stmt     : TOK_ID TOK_ASSIGN TOK_INPUT
                 {
-                  $$ = std::make_unique<language::Input_stmt>(std::move($1));
+                  language::Variable_ptr var = std::make_unique<language::Variable>(std::move($1));
+
+                  $$ = std::make_unique<language::Input_stmt>(std::move(var));
                 }
                ;
 

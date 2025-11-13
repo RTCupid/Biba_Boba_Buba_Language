@@ -55,7 +55,7 @@ enum class Binary_operators { Eq, Neq, Less, LessEq, Greater, GreaterEq, Add, Su
 
 enum class Unary_operators { Neg, Plus };
 
-class Statement : public Node {};
+class Statement  : public Node {};
 class Expression : public Node {};
 class LValueExpr : public Expression {};
 class RValueExpr : public Expression {};

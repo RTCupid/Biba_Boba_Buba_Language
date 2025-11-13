@@ -27,7 +27,7 @@ int main() {
 
     int result = parser.parse();
 
-    if (result == 0) {
+    if (result == 0 && root) {
         std::cout << "Parse OK\n";
     } else {
         std::cerr << "Parse failed\n";
