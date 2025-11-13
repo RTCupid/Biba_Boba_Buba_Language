@@ -10,10 +10,6 @@
 
   int yylineno;
 
-  // #undef YY_DECL
-  // #define YY_DECL int yylex(yy::parser::semantic_type* yylval, \
-  //                           yy::location* yylloc, \
-  //                           language::Lexer* scanner)
   using namespace language;
 %}
 

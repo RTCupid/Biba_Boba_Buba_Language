@@ -12,24 +12,59 @@
 
 %code requires {
   #include <string>
-  #include "tokens.hpp"
   namespace language { class Lexer; }
 }
 
 %code {
   #include "lexer.hpp"
   #include <iostream>
+  static int yylex(yy::parser::value_type*      /*yylval*/,
+                   yy::parser::location_type*   /*yylloc*/,
+                   language::Lexer*             scanner)
+  {
+      return scanner->yylex();
+  }
 }
 
-/* Tokens */
-%token TOK_IF "if" TOK_ELSE "else" TOK_WHILE "while" TOK_PRINT "print" TOK_INPUT "?"
-%token TOK_PLUS "+" TOK_MINUS "-" TOK_MUL "*" TOK_DIV "/"
-%token TOK_ASSIGN "="
-%token TOK_EQ "==" TOK_NEQ "!=" TOK_LESS "<" TOK_GREATER ">" TOK_LESS_OR_EQ "<=" TOK_GREATER_OR_EQ ">="
-%token TOK_LEFT_PAREN "(" TOK_RIGHT_PAREN ")" TOK_LEFT_BRACE "{" TOK_RIGHT_BRACE "}" TOK_SEMICOLON ";"
-%token <std::string> TOK_ID "identifier"
-%token <int> TOK_NUMBER "number"
-%token TOK_EOF 0    
+/* ________________________Tokens________________________ */
+/* --- Keywords --- */
+%token TOK_IF            "if"
+%token TOK_ELSE          "else"
+%token TOK_WHILE         "while"
+%token TOK_PRINT         "print"
+%token TOK_INPUT         "?"
+
+/* --- Arithmetic operators --- */
+%token TOK_PLUS          "+"
+%token TOK_MINUS         "-"
+%token TOK_MUL           "*"
+%token TOK_DIV           "/"
+
+/* --- Assignment --- */
+%token TOK_ASSIGN        "="
+
+/* --- Comparison operators --- */
+%token TOK_EQ            "=="
+%token TOK_NEQ           "!="
+%token TOK_LESS          "<"
+%token TOK_GREATER       ">"
+%token TOK_LESS_OR_EQ    "<="
+%token TOK_GREATER_OR_EQ ">="
+
+/* --- Parentheses and separators --- */
+%token TOK_LEFT_PAREN    "("
+%token TOK_RIGHT_PAREN   ")"
+%token TOK_LEFT_BRACE    "{"
+%token TOK_RIGHT_BRACE   "}"
+%token TOK_SEMICOLON     ";"
+
+/* --- Tokens with semantic values --- */
+%token <std::string> TOK_ID     "identifier"
+%token <int>         TOK_NUMBER "number"
+
+/* --- End of file --- */
+%token TOK_EOF 0
+/* ______________________________________________________ */
 
 %start program
 
