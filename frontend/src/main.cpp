@@ -1,8 +1,8 @@
-#include <memory>
-#include <fstream>
-#include <iostream>
 #include "lexer.hpp"
 #include "parser.hpp"
+#include <fstream>
+#include <iostream>
+#include <memory>
 
 int yyFlexLexer::yywrap() { return 1; }
 
@@ -17,7 +17,7 @@ int yyFlexLexer::yywrap() { return 1; }
 // }
 
 int main() {
-    std::istream* in = &std::cin;
+    std::istream *in = &std::cin;
     language::Lexer scanner(in, &std::cout);
     yy::parser parser(&scanner);
 

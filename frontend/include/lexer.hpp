@@ -1,18 +1,18 @@
 #ifndef FRONTEND_INCLUDE_LEXER_HPP
 #define FRONTEND_INCLUDE_LEXER_HPP
 
-#include <string>
-#include <iostream>
 #include "parser.hpp"
+#include <iostream>
+#include <string>
 
 #ifndef yyFlexLexer
-    #include <FlexLexer.h>
+#include <FlexLexer.h>
 #endif
 
 namespace language {
 
 class Lexer : public yyFlexLexer {
-public:
+  public:
     std::string current_lexem;
     std::string current_value;
 
@@ -64,7 +64,7 @@ public:
         return yy::parser::token::TOK_MUL;
     }
 
-    int process_div()  {
+    int process_div() {
         current_lexem = "binary operator";
         current_value = "/";
         return yy::parser::token::TOK_DIV;
@@ -73,22 +73,22 @@ public:
     int process_assign() {
         current_lexem = "binary operator";
         current_value = "=";
-        return yy::parser::token::TOK_ASSIGN; 
+        return yy::parser::token::TOK_ASSIGN;
     }
 
-    int process_eq()  {
+    int process_eq() {
         current_lexem = "comparing operator";
         current_value = "==";
         return yy::parser::token::TOK_EQ;
     }
 
-    int process_not_eq()  {
+    int process_not_eq() {
         current_lexem = "comparing operator";
         current_value = "!=";
         return yy::parser::token::TOK_NEQ;
     }
 
-    int process_less()  {
+    int process_less() {
         current_lexem = "comparing operator";
         current_value = "<";
         return yy::parser::token::TOK_LESS;
@@ -127,40 +127,40 @@ public:
     int process_left_brace() {
         current_lexem = "identifier";
         current_value = "{";
-        return yy::parser::token::TOK_LEFT_BRACE; 
+        return yy::parser::token::TOK_LEFT_BRACE;
     }
 
     int process_right_brace() {
         current_lexem = "identifier";
         current_value = "}";
-        return yy::parser::token::TOK_RIGHT_BRACE ; 
+        return yy::parser::token::TOK_RIGHT_BRACE;
     }
 
     int process_semicolon() {
         current_lexem = "identifier";
         current_value = ";";
-        return  yy::parser::token::TOK_SEMICOLON; 
+        return yy::parser::token::TOK_SEMICOLON;
     }
 
     int process_id() {
         current_lexem = "variable";
         current_value = yytext;
-        return yy::parser::token::TOK_ID; 
+        return yy::parser::token::TOK_ID;
     }
 
     int process_number() {
         current_lexem = "number";
         current_value = yytext;
-        return yy::parser::token::TOK_NUMBER; 
+        return yy::parser::token::TOK_NUMBER;
     }
 
-  using yyFlexLexer::yyFlexLexer;
+    using yyFlexLexer::yyFlexLexer;
 
-  int yylex() override;
+    int yylex() override;
 
-  void print_current() const {
-      std::cout << current_lexem << " <" << current_value << ">" << std::endl;
-  }
+    void print_current() const {
+        std::cout << current_lexem << " <" << current_value << ">" << std::endl;
+    }
 };
 
 } // namespace language

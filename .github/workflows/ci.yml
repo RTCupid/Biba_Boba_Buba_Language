@@ -10,7 +10,7 @@ jobs:
     - name: Check formatting
       run: |
         sudo apt-get install -y clang-format
-        find src include -name '*.cpp' -o -name '*.h' -o -name '*.hpp' | xargs clang-format -i
+        find frontend/src frontend/include -name '*.cpp' -o -name '*.h' -o -name '*.hpp' | xargs clang-format -i
         git diff --exit-code
 
   format-fix:
@@ -25,7 +25,7 @@ jobs:
     - name: Auto-format code
       run: |
         sudo apt-get install -y clang-format
-        find src include -name '*.cpp' -o -name '*.h' -o -name '*.hpp' | xargs clang-format -i
+        find frontend/src frontend/include -name '*.cpp' -o -name '*.h' -o -name '*.hpp' | xargs clang-format -i
     - name: Commit and push changes
       run: |
         git config --local user.email "action@github.com"
@@ -56,4 +56,4 @@ jobs:
       - name: Run tests
         run: |
           cd build
-          ctest --output-on-failure || echo "No tests found"
+          ctest --output-on-failure

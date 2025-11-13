@@ -4,10 +4,8 @@
 #include "node.hpp"
 
 class Simulator {
-public:
+  public:
     bool simulate_run_program() const;
-
 };
-
 
 #endif // FRONTEND_INCLUDE_SIMULATOR_HPP
