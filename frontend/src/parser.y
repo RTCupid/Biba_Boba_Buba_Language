@@ -15,7 +15,6 @@
   #include <string>
   namespace language { class Lexer; }
   #include "node.hpp" 
-  #include "dsl.hpp"
 }
 
 %code {
@@ -26,6 +25,14 @@
                    language::Lexer*             scanner)
   {
       return scanner->yylex();
+  }
+  inline language::Expression_ptr make_binary(
+      language::Binary_operators op,
+      language::Expression_ptr left,
+      language::Expression_ptr right)
+  {
+      return std::make_unique<language::Binary_operator>(
+          op, std::move(left), std::move(right));
   }
 }
 
@@ -68,6 +75,11 @@
 /* --- End of file --- */
 %token TOK_EOF 0
 /* ______________________________________________________ */
+
+%type <language::StmtList>             stmt_list
+%type <language::Statement_ptr>        statement
+%type <language::Statement_ptr>        assignment_stmt input_stmt if_stmt while_stmt print_stmt block_stmt
+%type <language::Expression_ptr>       expression equality relational add_sub mul_div unary primary
 
 %start program
 
@@ -144,37 +156,66 @@ print_stmt     : TOK_PRINT expression
                 }
                ;
 
-expression     : equality ;
+expression     : equality 
+                  { $$ = std::move($1); }
+               ;
 
 equality       : relational
+                  { $$ = std::move($1); }
                | equality TOK_EQ  relational
+                 { $$ = make_binary(language::Binary_operators::Eq,  std::move($1), std::move($3)); }
                | equality TOK_NEQ relational
+                 { $$ = make_binary(language::Binary_operators::Eq,  std::move($1), std::move($3)); }
                ;
 
 relational     : add_sub
+                 { $$ = std::move($1); }
                | relational TOK_LESS          add_sub
+                 { $$ = make_binary(language::Binary_operators::Less, std::move($1), std::move($3)); }
                | relational TOK_LESS_OR_EQ    add_sub
+                 { $$ = make_binary(language::Binary_operators::LessEq, std::move($1), std::move($3)); }
                | relational TOK_GREATER       add_sub
+                 { $$ = make_binary(language::Binary_operators::Greater, std::move($1), std::move($3)); }
                | relational TOK_GREATER_OR_EQ add_sub
+                 { $$ = make_binary(language::Binary_operators::GreaterEq, std::move($1), std::move($3)); }
                ;
 
 add_sub        : mul_div
+                 { $$ = std::move($1); }
                | add_sub TOK_PLUS  mul_div
+                 { $$ = make_binary(language::Binary_operators::Add, std::move($1), std::move($3)); }
                | add_sub TOK_MINUS mul_div
+                 { $$ = make_binary(language::Binary_operators::Sub, std::move($1), std::move($3)); }
                ;
 
 mul_div        : unary
+                 { $$ = std::move($1); }
                | mul_div TOK_MUL unary
+                 { $$ = make_binary(language::Binary_operators::Mul, std::move($1), std::move($3)); }
                | mul_div TOK_DIV unary
+                 { $$ = make_binary(language::Binary_operators::Div, std::move($1), std::move($3)); }
                ;
 
 unary          : TOK_MINUS unary
+                {
+                  $$ = std::make_unique<language::Unary_operator>(language::Unary_operators::Neg, std::move($2));
+                }
                | primary
+                { $$ = std::move($1); }
                ;
 
 primary        : TOK_NUMBER
+                {
+                  $$ = std::make_unique<language::Number>($1);
+                }
                | TOK_ID
+                 {
+                   $$ = std::make_unique<language::Variable>(std::move($1));
+                 }
                | TOK_LEFT_PAREN expression TOK_RIGHT_PAREN
+                {
+                  $$ = std::move($2);
+                }
                ;
 %%
 
