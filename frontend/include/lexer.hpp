@@ -13,10 +13,10 @@
 namespace language {
 
 class Lexer : public yyFlexLexer {
-  public:
+private:
     std::string current_lexem;
     std::string current_value;
-
+public:
     Lexer(std::istream *in, std::ostream *out) : yyFlexLexer(in, out) {}
 
     int process_if() {
@@ -156,8 +156,6 @@ class Lexer : public yyFlexLexer {
         current_value = yytext;
         return yy::parser::token::TOK_NUMBER;
     }
-
-    // using yyFlexLexer::yyFlexLexer;
 
     int yylex() override;
 

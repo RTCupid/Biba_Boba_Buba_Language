@@ -21,9 +21,10 @@
 %code {
   #include "lexer.hpp"
   #include <iostream>
-  static int yylex(yy::parser::semantic_type* yylval,
-                   yy::parser::location_type*   yylloc,
-                   language::Lexer*             scanner)
+
+  int yylex(yy::parser::semantic_type*   yylval,
+            yy::parser::location_type*   yylloc,
+            language::Lexer*             scanner)
   {
       auto tt = scanner->yylex();
 
@@ -35,6 +36,7 @@
 
       return tt;
   }
+
   inline language::Expression_ptr make_binary(
       language::Binary_operators op,
       language::Expression_ptr left,
@@ -233,5 +235,5 @@ primary        : TOK_NUMBER
 
 void yy::parser::error(const location& l, const std::string& m) {
     std::cerr << "Syntax error at line " << l.begin.line
-              << ", column " << l.begin.column << ": " << m << "\n";
+              << ", column " << l.begin.column << ": " << m << '\n';
 }

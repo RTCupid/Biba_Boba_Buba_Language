@@ -12,7 +12,7 @@ yy::parser::semantic_type *yylval = nullptr;
 int yyFlexLexer::yywrap() { return 1; }
 
 int main(int argc, char *argv[]) {
-    std::cout << "Run program\n";
+    //std::cout << "Run program\n";
     if (argc < 2) {
         std::cerr << "Usage: " << argv[0] << " <program_file>\n";
         return 1;
@@ -32,10 +32,9 @@ int main(int argc, char *argv[]) {
 
     int result = parser.parse();
 
-    if (result == 0 && root) {
-        std::cout << "Parse OK\n";
-    } else {
+    if (result != 0 || !root) {
         std::cerr << "Parse failed\n";
+        return 1;
     }
 
     language::Simulator simulator{};
