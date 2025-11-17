@@ -179,7 +179,7 @@ equality       : relational
                | equality TOK_EQ  relational
                  { $$ = make_binary(language::Binary_operators::Eq,  std::move($1), std::move($3)); }
                | equality TOK_NEQ relational
-                 { $$ = make_binary(language::Binary_operators::Eq,  std::move($1), std::move($3)); }
+                 { $$ = make_binary(language::Binary_operators::Neq,  std::move($1), std::move($3)); }
                ;
 
 relational     : add_sub

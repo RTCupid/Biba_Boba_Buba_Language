@@ -26,6 +26,7 @@ add_executable(frontend
     src/main.cpp
     src/expr_evaluator.cpp
     src/simulator.cpp
+    src/graph_dump.cpp
     ${FLEX_Lexer_OUTPUTS}
     ${BISON_Parser_OUTPUTS}
 )

@@ -63,12 +63,17 @@ void Simulator::visit(If_stmt &node) {
     // std::cout << "Run if\n";
 
     auto condition = evaluate_expression(node.get_condition());
+    // std::cout << "step 1\n";
+    // std::cout << "condition = " << condition << "\n";
 
     if (condition != 0) {
+        // std::cout << "step 2\n";
         node.then_branch().accept(*this);
     } else {
-        node.else_branch()->accept(*this);
+        // std::cout << "step 3\n";
+        node.else_branch().accept(*this);
     }
+    // std::cout << "step 10\n";
 };
 
 void Simulator::visit(While_stmt &node) {

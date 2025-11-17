@@ -46,5 +46,24 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
+    const std::string gv_file = "graph_dump/graph_dump.gv";   // FIXME delete hardcode of pathes
+    const std::string svg_file = "graph_dump/graph_dump.svg"; // FIXME delete hardcode of pathes
+    // dot graph_dump/graph_dump.gv -Tsvg -o graph_dump/graph_dump.svg
+
+    std::ofstream gv(gv_file);
+    if (!gv) { // FIXME it is fast implementation for debug
+        std::cerr << "unable to open gv file\n";
+        return 1;
+    }
+    root->graph_dump(gv, nullptr);
+
+    // const auto statements = root->get_stmts();
+
+    // Simulator simulator;
+
+    // for (const auto & stmt : statements) {
+    //     stmt->accept(simulator);
+    // }
+
     return result;
 }
