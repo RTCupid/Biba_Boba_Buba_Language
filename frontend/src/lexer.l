@@ -6,7 +6,6 @@
   #include <string>
   #include <iostream>
   #include <fstream>
-  // #include "parser.hpp"
   #include "lexer.hpp"
 
   int yylineno;
@@ -17,6 +16,8 @@
 WHITESPACE    [ \t\r\v]+
 ID            [a-zA-Z_][a-zA-Z0-9_]*
 NUMBER        [0-9]+
+NUMBER1       [1-9]+
+ZERO          0
 LINE_COMMENT  "//".*
 BLOCK_COMMENT "/*"([^*]|\*+[^*/])*\*+"/"
 NEWLINE  \n
@@ -55,7 +56,8 @@ NEWLINE  \n
 "}"             { return process_right_brace(); }
 ";"             { return process_semicolon(); }
 
-{NUMBER}        { return process_number();}
+{NUMBER1}{NUMBER}* { return process_number(); }
+{ZERO}          { return process_number(); }
 
 {ID}            { return process_id(); }
 
