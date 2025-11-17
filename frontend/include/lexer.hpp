@@ -13,10 +13,11 @@
 namespace language {
 
 class Lexer : public yyFlexLexer {
-private:
+  private:
     std::string current_lexem;
     std::string current_value;
-public:
+
+  public:
     Lexer(std::istream *in, std::ostream *out) : yyFlexLexer(in, out) {}
 
     int process_if() {
