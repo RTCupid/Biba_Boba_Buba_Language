@@ -33,11 +33,6 @@ void Program::graph_dump(std::ostream &gv, Node *parent) const {
 }
 
 void Block_stmt::graph_dump(std::ostream &gv, Node *parent) const {
-    // gv << "    node_" << this << "[shape=Mrecord; style=filled; fillcolor=lightgoldenrod1"
-    //    << "; color=\"#000000\"; " << "fontcolor=\"#000000\"; " << "label=\"{ Block_stmt"
-    //    << " | addr: " << this << " | parent: " << parent << "| size: " << stmts_.size() << " }\""
-    //    << "];\n";
-
     std::size_t size = stmts_.size();
 
     gv << "    node_" << this << "[shape=Mrecord; style=filled; fillcolor=lightgoldenrod1"

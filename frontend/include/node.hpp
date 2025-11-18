@@ -145,7 +145,7 @@ class If_stmt : public Statement {
     Expression &get_condition() { return *condition_; }
     Statement &then_branch() { return *then_branch_; }
     Statement &else_branch() { return *else_branch_; }
-    // const Statement *else_branch() const { return else_branch_.get(); }
+    bool contains_else_branch() const { return else_branch_.get(); }
 
     void accept(ASTVisitor &visitor) override { visitor.visit(*this); }
 
