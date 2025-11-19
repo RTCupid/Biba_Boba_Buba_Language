@@ -123,7 +123,7 @@ class Lexer : public yyFlexLexer {
     }
 
     int process_not() {
-        current_lexem = "unary operator"; 
+        current_lexem = "unary operator";
         current_value = "!";
         return yy::parser::token::TOK_NOT;
     }
