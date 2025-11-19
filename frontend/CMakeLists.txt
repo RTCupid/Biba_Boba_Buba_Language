@@ -31,17 +31,8 @@ add_executable(frontend
     ${BISON_Parser_OUTPUTS}
 )
 
-find_path(FLEX_INCLUDE_DIR NAMES FlexLexer.h
-  PATHS /usr/include /usr/local/include
-)
-
-if(NOT FLEX_INCLUDE_DIR)
-  message(FATAL_ERROR "FlexLexer.h not found. Install libfl-dev package.")
-endif()
-
 target_include_directories(frontend PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/include
     ${CMAKE_CURRENT_BINARY_DIR}
-    ${FLEX_INCLUDE_DIR}
 )
 
