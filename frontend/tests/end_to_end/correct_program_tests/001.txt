@@ -1,2 +1,3 @@
-val = 10 % 3;
-print val;
+val = 10;
+val_1 = !val;
+print val_1;

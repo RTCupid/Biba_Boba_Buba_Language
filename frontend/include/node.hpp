@@ -67,7 +67,7 @@ enum class Binary_operators {
     RemDiv
 };
 
-enum class Unary_operators { Neg, Plus };
+enum class Unary_operators { Neg, Plus, Not };
 
 class Statement : public Node {};
 class Expression : public Node {};

@@ -62,6 +62,9 @@
 %token TOK_DIV           "/"
 %token TOK_REM_DIV       "%"
 
+/* --- Logical operators --- */
+%token TOK_NOT           "!"
+
 /* --- Assignment --- */
 %token TOK_ASSIGN        "="
 
@@ -216,6 +219,16 @@ mul_div        : unary
 unary          : TOK_MINUS unary
                 {
                   $$ = std::make_unique<language::Unary_operator>(language::Unary_operators::Neg, std::move($2));
+                }
+               | TOK_PLUS unary
+                {
+                  $$ = std::make_unique<language::Unary_operator>(language::Unary_operators::Neg, std::move($2));
+                }
+               | TOK_NOT unary
+                {
+                  $$ = std::make_unique<language::Unary_operator>(
+                    language::Unary_operators::Not,
+                    std::move($2));
                 }
                | primary
                 { $$ = std::move($1); }

@@ -92,6 +92,10 @@ void ExpressionEvaluator::visit(Unary_operator &node) {
         result_ = value;
         break;
     }
+    case Unary_operators::Not: {
+        result_ = !value;
+        break;
+    }
     default:
         throw std::runtime_error("Unknown unary operator");
     }

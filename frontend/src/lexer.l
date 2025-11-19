@@ -36,6 +36,7 @@ NEWLINE  \n
 "print"         { return process_print(); }
 "?"             { return process_input(); }
 
+"!"             { return process_not(); }
 "=="            { return process_eq(); }
 "!="            { return process_not_eq(); }
 "<="            { return process_less_or_eq(); }
