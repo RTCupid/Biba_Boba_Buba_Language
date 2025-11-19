@@ -79,12 +79,15 @@ void ExpressionEvaluator::visit(Unary_operator &node) {
     ExpressionEvaluator eval{simulator_};
     node.get_operand().accept(eval);
     auto value = eval.result_;
-
     switch (node.get_operator()) {
-    case Unary_operators::Neg:
+    case Unary_operators::Neg: {
         result_ = -(value);
-    case Unary_operators::Plus:
+        break;
+    }
+    case Unary_operators::Plus: {
         result_ = value;
+        break;
+    }
     default:
         throw std::runtime_error("Unknown unary operator");
     }
