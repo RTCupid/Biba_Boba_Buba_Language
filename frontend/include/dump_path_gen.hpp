@@ -25,7 +25,7 @@ inline std::filesystem::path default_dump_dir() {
     return std::filesystem::temp_directory_path() / "dump";
 }
 
-inline Dump_paths make_dump_paths(std::string_view basename = "graph_dump",
+inline Dump_paths make_dump_paths(std::string_view basename = "dump",
                                   std::filesystem::path base = default_dump_dir()) {
     std::filesystem::create_directories(base);
     std::string s(basename);

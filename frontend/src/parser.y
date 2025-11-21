@@ -94,7 +94,7 @@
 %type <language::StmtList>             stmt_list
 %type <language::Statement_ptr>        statement
 %type <language::Statement_ptr>        assignment_stmt input_stmt if_stmt while_stmt print_stmt block_stmt
-%type <language::Expression_ptr>       expression equality relational add_sub mul_div unary primary
+%type <language::Expression_ptr>       expression equality relational add_sub mul_div unary primary assignment_expr
 
 %start program
 
@@ -217,13 +217,9 @@ mul_div        : unary
                ;
 
 unary          : TOK_MINUS unary
-                {
-                  $$ = std::make_unique<language::Unary_operator>(language::Unary_operators::Neg, std::move($2));
-                }
+                { $$ = std::make_unique<language::Unary_operator>(language::Unary_operators::Neg, std::move($2)); }
                | TOK_PLUS unary
-                {
-                  $$ = std::make_unique<language::Unary_operator>(language::Unary_operators::Neg, std::move($2));
-                }
+                { $$ = std::make_unique<language::Unary_operator>(language::Unary_operators::Neg, std::move($2)); }
                | TOK_NOT unary
                 {
                   $$ = std::make_unique<language::Unary_operator>(
@@ -235,16 +231,19 @@ unary          : TOK_MINUS unary
                ;
 
 primary        : TOK_NUMBER
-                {
-                  $$ = std::make_unique<language::Number>($1);
-                }
+                { $$ = std::make_unique<language::Number>($1); }
                | TOK_ID
-                 {
-                   $$ = std::make_unique<language::Variable>(std::move($1));
-                 }
+                 { $$ = std::make_unique<language::Variable>(std::move($1)); }
                | TOK_LEFT_PAREN expression TOK_RIGHT_PAREN
+                { $$ = std::move($2); }
+               | assignment_expr
+                { $$ = std::move($1); }
+               ;
+
+assignment_expr: TOK_LEFT_PAREN TOK_ID TOK_ASSIGN expression TOK_RIGHT_PAREN
                 {
-                  $$ = std::move($2);
+                  language::Variable_ptr var = std::make_unique<language::Variable>(std::move($2));
+                  $$ = std::make_unique<language::Assignment_expr>(std::move(var), std::move($4));
                 }
                ;
 %%

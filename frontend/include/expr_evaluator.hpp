@@ -24,6 +24,8 @@ class ExpressionEvaluator final : public ASTVisitor {
 
     void visit(Unary_operator &node) override;
 
+    void visit(Assignment_expr &node) override;
+
     void visit(Program &node) override;
     void visit(Block_stmt &node) override;
     void visit(Assignment_stmt &node) override;

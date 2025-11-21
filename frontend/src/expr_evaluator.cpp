@@ -20,6 +20,20 @@ void ExpressionEvaluator::visit(Variable &node) {
     }
 }
 
+void ExpressionEvaluator::visit(Assignment_expr &node) {
+    const auto &var_name = node.get_variable()->get_name();
+
+    ExpressionEvaluator result_eval{simulator_};
+    node.get_value().accept(result_eval);
+    result_ = result_eval.result_;
+
+    auto it = simulator_.nametable.find(var_name);
+    if (it != simulator_.nametable.end())
+        it->second = result_;
+    else
+        simulator_.nametable.emplace(var_name, result_);
+};
+
 void ExpressionEvaluator::visit(Binary_operator &node) {
     ExpressionEvaluator left_eval{simulator_};
     node.get_left().accept(left_eval);

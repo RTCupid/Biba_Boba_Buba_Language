@@ -17,6 +17,7 @@ class Program;
 class Statement;
 class Expression;
 class Assignment_stmt;
+class Assignment_expr;
 class Block_stmt;
 class If_stmt;
 class While_stmt;
@@ -36,6 +37,7 @@ class ASTVisitor {
     virtual void visit(Program &node) = 0;
     virtual void visit(Block_stmt &node) = 0;
     virtual void visit(Assignment_stmt &node) = 0;
+    virtual void visit(Assignment_expr &node) = 0;
     virtual void visit(Input_stmt &node) = 0;
     virtual void visit(If_stmt &node) = 0;
     virtual void visit(While_stmt &node) = 0;
@@ -114,6 +116,24 @@ class Assignment_stmt : public Statement {
 
   public:
     Assignment_stmt(Variable_ptr variable, Expression_ptr value)
+        : variable_(std::move(variable)), value_(std::move(value)) {}
+
+    const Variable_ptr &get_variable() const { return variable_; }
+    Expression &get_value() { return *value_; }
+    const Expression &get_value() const { return *value_; }
+
+    void accept(ASTVisitor &visitor) override { visitor.visit(*this); }
+
+    virtual void graph_dump(std::ostream &gv, Node *parent) const override;
+};
+
+class Assignment_expr : public Expression {
+  private:
+    Variable_ptr variable_;
+    Expression_ptr value_;
+
+  public:
+    Assignment_expr(Variable_ptr variable, Expression_ptr value)
         : variable_(std::move(variable)), value_(std::move(value)) {}
 
     const Variable_ptr &get_variable() const { return variable_; }

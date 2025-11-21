@@ -70,6 +70,22 @@ void Assignment_stmt::graph_dump(std::ostream &gv, Node *parent) const {
     }
 }
 
+void Assignment_expr::graph_dump(std::ostream &gv, Node *parent) const {
+    gv << "    node_" << this << "[shape=Mrecord; style=filled; fillcolor=plum"
+       << "; color=\"#000000\"; " << "fontcolor=\"#000000\"; " << "label=\"{ Assignment"
+       << " | addr: " << this << " | parent: " << parent << "| { left: " << variable_.get()
+       << " | right: " << value_.get() << " } }\"" << "];\n";
+
+    if (variable_) {
+        gv << "    node_" << this << " -> node_" << variable_.get() << ";\n";
+        variable_->graph_dump(gv, (Node *)this);
+    }
+    if (value_) {
+        gv << "    node_" << this << " -> node_" << value_.get() << ";\n";
+        value_->graph_dump(gv, (Node *)this);
+    }
+}
+
 void While_stmt::graph_dump(std::ostream &gv, Node *parent) const {
     gv << "    node_" << this << "[shape=Mrecord; style=filled; fillcolor=turquoise"
        << "; color=\"#000000\"; " << "fontcolor=\"#000000\"; " << "label=\"{ While"

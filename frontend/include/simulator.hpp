@@ -26,6 +26,7 @@ class Simulator final : public ASTVisitor {
 
     void visit(Print_stmt &node) override;
 
+    void visit(Assignment_expr &node) override;
     void visit(Binary_operator &node) override;
     void visit(Unary_operator &node) override;
     void visit(Number &node) override;
