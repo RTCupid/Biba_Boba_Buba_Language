@@ -8,22 +8,7 @@ using language::Lexer;
 
 int yyFlexLexer::yywrap() { return 1; }
 
-// get_line / get_column
-
-TEST(LexerTest, GetLineAndColumnReturnCurrentValues) {
-    std::istringstream in("");
-    std::ostringstream out;
-    Lexer lexer(&in, &out);
-
-    lexer.yylineno = 10;
-    lexer.yycolumn = 20;
-
-    EXPECT_EQ(lexer.get_line(), 10);
-    EXPECT_EQ(lexer.get_column(), 20);
-}
-
 // if
-
 TEST(LexerTest, ProcessIfSetsToken) {
     std::istringstream in("");
     std::ostringstream out;
@@ -34,7 +19,6 @@ TEST(LexerTest, ProcessIfSetsToken) {
 }
 
 // else
-
 TEST(LexerTest, ProcessElseSetsToken) {
     std::istringstream in("");
     std::ostringstream out;
@@ -45,7 +29,6 @@ TEST(LexerTest, ProcessElseSetsToken) {
 }
 
 // while
-
 TEST(LexerTest, ProcessWhileSetsToken) {
     std::istringstream in("");
     std::ostringstream out;
@@ -56,7 +39,6 @@ TEST(LexerTest, ProcessWhileSetsToken) {
 }
 
 // print
-
 TEST(LexerTest, ProcessPrintSetsToken) {
     std::istringstream in("");
     std::ostringstream out;
@@ -67,7 +49,6 @@ TEST(LexerTest, ProcessPrintSetsToken) {
 }
 
 // input
-
 TEST(LexerTest, ProcessInputSetsToken) {
     std::istringstream in("");
     std::ostringstream out;
@@ -78,7 +59,6 @@ TEST(LexerTest, ProcessInputSetsToken) {
 }
 
 // +
-
 TEST(LexerTest, ProcessPlusSetsToken) {
     std::istringstream in("");
     std::ostringstream out;
@@ -89,7 +69,6 @@ TEST(LexerTest, ProcessPlusSetsToken) {
 }
 
 // -
-
 TEST(LexerTest, ProcessMinusSetsToken) {
     std::istringstream in("");
     std::ostringstream out;
@@ -100,7 +79,6 @@ TEST(LexerTest, ProcessMinusSetsToken) {
 }
 
 // *
-
 TEST(LexerTest, ProcessMulSetsToken) {
     std::istringstream in("");
     std::ostringstream out;
@@ -111,7 +89,6 @@ TEST(LexerTest, ProcessMulSetsToken) {
 }
 
 // % 
-
 TEST(LexerTest, ProcessRemDivSetsToken) {
     std::istringstream in("");
     std::ostringstream out;
@@ -122,7 +99,6 @@ TEST(LexerTest, ProcessRemDivSetsToken) {
 }
 
 // /
-
 TEST(LexerTest, ProcessDivSetsToken) {
     std::istringstream in("");
     std::ostringstream out;
@@ -133,7 +109,6 @@ TEST(LexerTest, ProcessDivSetsToken) {
 }
 
 // =
-
 TEST(LexerTest, ProcessAssignSetsToken) {
     std::istringstream in("");
     std::ostringstream out;
@@ -144,7 +119,6 @@ TEST(LexerTest, ProcessAssignSetsToken) {
 }
 
 // ==
-
 TEST(LexerTest, ProcessEqSetsToken) {
     std::istringstream in("");
     std::ostringstream out;
@@ -155,7 +129,6 @@ TEST(LexerTest, ProcessEqSetsToken) {
 }
 
 // !=
-
 TEST(LexerTest, ProcessNotEqSetsToken) {
     std::istringstream in("");
     std::ostringstream out;
@@ -166,7 +139,6 @@ TEST(LexerTest, ProcessNotEqSetsToken) {
 }
 
 // <
-
 TEST(LexerTest, ProcessLessSetsToken) {
     std::istringstream in("");
     std::ostringstream out;
@@ -177,7 +149,6 @@ TEST(LexerTest, ProcessLessSetsToken) {
 }
 
 // >
-
 TEST(LexerTest, ProcessGreaterSetsToken) {
     std::istringstream in("");
     std::ostringstream out;
@@ -188,7 +159,6 @@ TEST(LexerTest, ProcessGreaterSetsToken) {
 }
 
 // <=
-
 TEST(LexerTest, ProcessLessOrEqSetsToken) {
     std::istringstream in("");
     std::ostringstream out;
@@ -199,7 +169,6 @@ TEST(LexerTest, ProcessLessOrEqSetsToken) {
 }
 
 // >=
-
 TEST(LexerTest, ProcessGreaterOrEqSetsToken) {
     std::istringstream in("");
     std::ostringstream out;
@@ -210,7 +179,6 @@ TEST(LexerTest, ProcessGreaterOrEqSetsToken) {
 }
 
 // !
-
 TEST(LexerTest, ProcessNotSetsToken) {
     std::istringstream in("");
     std::ostringstream out;
@@ -221,7 +189,6 @@ TEST(LexerTest, ProcessNotSetsToken) {
 }
 
 // (
-
 TEST(LexerTest, ProcessLeftParenSetsToken) {
     std::istringstream in("");
     std::ostringstream out;
@@ -232,7 +199,6 @@ TEST(LexerTest, ProcessLeftParenSetsToken) {
 }
 
 // )
-
 TEST(LexerTest, ProcessRightParenSetsToken) {
     std::istringstream in("");
     std::ostringstream out;
@@ -243,7 +209,6 @@ TEST(LexerTest, ProcessRightParenSetsToken) {
 }
 
 // {
-
 TEST(LexerTest, ProcessLeftBraceSetsToken) {
     std::istringstream in("");
     std::ostringstream out;
@@ -254,7 +219,6 @@ TEST(LexerTest, ProcessLeftBraceSetsToken) {
 }
 
 // }
-
 TEST(LexerTest, ProcessRightBraceSetsToken) {
     std::istringstream in("");
     std::ostringstream out;
@@ -265,7 +229,6 @@ TEST(LexerTest, ProcessRightBraceSetsToken) {
 }
 
 // ;
-
 TEST(LexerTest, ProcessSemicolonSetsToken) {
     std::istringstream in("");
     std::ostringstream out;

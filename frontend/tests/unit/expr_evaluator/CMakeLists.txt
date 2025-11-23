@@ -3,14 +3,13 @@ find_package(GTest REQUIRED)
 include(GoogleTest)
 
 set(SRC_LIST
-    src/process.cpp
-    src/get_line_and_column.cpp
+    src/expr_evaluator.cpp
     ${FLEX_Lexer_OUTPUTS}
 )
 
-add_executable(lexer ${SRC_LIST})
+add_executable(expr_evaluator ${SRC_LIST})
 
-target_link_libraries(lexer
+target_link_libraries(expr_evaluator
     PRIVATE 
         frontend::headers
         GTest::gtest
@@ -19,6 +18,6 @@ target_link_libraries(lexer
         ${FLEX_LIBRARIES}
 )
 
-gtest_discover_tests(lexer
+gtest_discover_tests(expr_evaluator
     PROPERTIES LABELS "unit"
 )  
