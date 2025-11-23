@@ -8,8 +8,6 @@
   #include <fstream>
   #include "lexer.hpp"
 
-  int yylineno;
-
   using namespace language;
 %}
 
@@ -24,44 +22,44 @@ NEWLINE  \n
 
 %%
 
-{WHITESPACE}    { /* skip blanks and tabs */ }
-{NEWLINE}       { ++yylineno; }
+{WHITESPACE}    { yycolumn += yyleng; }
+{NEWLINE}       { ++yylineno; yycolumn = 1; }
 
-{LINE_COMMENT}  { /* skip */ }
+{LINE_COMMENT}  { yycolumn += yyleng; }
 {BLOCK_COMMENT} { /* skip */ }
 
-"if"            { return process_if();   }
-"else"          { return process_else(); }
-"while"         { return process_while(); }
-"print"         { return process_print(); }
-"?"             { return process_input(); }
+"if"            { yycolumn += yyleng; return process_if();   }
+"else"          { yycolumn += yyleng; return process_else(); }
+"while"         { yycolumn += yyleng; return process_while(); }
+"print"         { yycolumn += yyleng; return process_print(); }
+"?"             { yycolumn += yyleng; return process_input(); }
 
-"!"             { return process_not(); }
-"=="            { return process_eq(); }
-"!="            { return process_not_eq(); }
-"<="            { return process_less_or_eq(); }
-">="            { return process_greater_or_eq(); }
-"="             { return process_assign(); }
+"!"             { yycolumn += yyleng; return process_not(); }
+"=="            { yycolumn += yyleng; return process_eq(); }
+"!="            { yycolumn += yyleng; return process_not_eq(); }
+"<="            { yycolumn += yyleng; return process_less_or_eq(); }
+">="            { yycolumn += yyleng; return process_greater_or_eq(); }
+"="             { yycolumn += yyleng; return process_assign(); }
 
-"+"             { return process_plus(); }
-"-"             { return process_minus(); }
-"*"             { return process_mul(); }
-"/"             { return process_div(); }
-"%"             { return process_rem_div(); }
+"+"             { yycolumn += yyleng; return process_plus(); }
+"-"             { yycolumn += yyleng; return process_minus(); }
+"*"             { yycolumn += yyleng; return process_mul(); }
+"/"             { yycolumn += yyleng; return process_div(); }
+"%"             { yycolumn += yyleng; return process_rem_div(); }
 
-"<"             { return process_less(); }
-">"             { return process_greater(); }
+"<"             { yycolumn += yyleng; return process_less(); }
+">"             { yycolumn += yyleng; return process_greater(); }
 
-"("             { return process_left_paren(); }
-")"             { return process_right_paren(); }
-"{"             { return process_left_brace(); }
-"}"             { return process_right_brace(); }
-";"             { return process_semicolon(); }
+"("             { yycolumn += yyleng; return process_left_paren(); }
+")"             { yycolumn += yyleng; return process_right_paren(); }
+"{"             { yycolumn += yyleng; return process_left_brace(); }
+"}"             { yycolumn += yyleng; return process_right_brace(); }
+";"             { yycolumn += yyleng; return process_semicolon(); }
 
-{NUMBER1}{NUMBER}* { return process_number(); }
-{ZERO}          { return process_number(); }
+{NUMBER1}{NUMBER}* { yycolumn += yyleng; return process_number(); }
+{ZERO}          { yycolumn += yyleng; return process_number(); }
 
-{ID}            { return process_id(); }
+{ID}            { yycolumn += yyleng; return process_id(); }
 
 .               {
                     std::cerr << "Unknown token: '" << yytext << "' at line " << yylineno << std::endl;;

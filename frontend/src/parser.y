@@ -26,7 +26,15 @@
             yy::parser::location_type*   yylloc,
             language::Lexer*             scanner)
   {
+      int line_before = scanner->get_line();
+      int column_before = scanner->get_column();
+      
       auto tt = scanner->yylex();
+
+      yylloc->begin.line = line_before;
+      yylloc->begin.column = column_before;
+      yylloc->end.line = scanner->get_line();
+      yylloc->end.column = scanner->get_column() - 1;
 
       if (tt == yy::parser::token::TOK_NUMBER)
         yylval->build<int>() = std::stoi(scanner->YYText());

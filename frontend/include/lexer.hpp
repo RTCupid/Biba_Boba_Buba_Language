@@ -18,7 +18,14 @@ class Lexer : public yyFlexLexer {
     std::string current_value;
 
   public:
+    int yylineno = 1;
+    int yycolumn = 1;
+
     Lexer(std::istream *in, std::ostream *out) : yyFlexLexer(in, out) {}
+
+    int get_line() const { return yylineno; }
+
+    int get_column() const { return yycolumn; }
 
     int process_if() {
         current_lexem = "conditional operator";
