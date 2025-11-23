@@ -8,6 +8,10 @@ set(SRC_LIST
     ${FLEX_Lexer_OUTPUTS}
 )
 
+set_source_files_properties(${FLEX_Lexer_OUTPUTS}
+    PROPERTIES GENERATED TRUE
+)
+
 add_executable(lexer ${SRC_LIST})
 
 target_link_libraries(lexer
