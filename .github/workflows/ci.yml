@@ -56,4 +56,4 @@ jobs:
       - name: Run tests
         run: |
           cd build
-          ctest -L unit --output-on-failure
+          ctest -L end_to_end --output-on-failure
