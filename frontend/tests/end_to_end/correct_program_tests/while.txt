@@ -1,0 +1,12 @@
+i = 10;
+res = 0;
+while (i > 0) {
+    if (i == 7) {
+        res = res + 100;
+    }
+    if (i == 4) {
+        i = 0; // "break"
+    }
+    res = res + i;
+    i = i - 1;
+}

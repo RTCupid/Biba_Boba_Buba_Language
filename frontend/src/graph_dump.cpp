@@ -72,7 +72,7 @@ void Assignment_stmt::graph_dump(std::ostream &gv, Node *parent) const {
 
 void Assignment_expr::graph_dump(std::ostream &gv, Node *parent) const {
     gv << "    node_" << this << "[shape=Mrecord; style=filled; fillcolor=plum"
-       << "; color=\"#000000\"; " << "fontcolor=\"#000000\"; " << "label=\"{ Assignment"
+       << "; color=\"#000000\"; " << "fontcolor=\"#000000\"; " << "label=\"{ Assignment expr"
        << " | addr: " << this << " | parent: " << parent << "| { left: " << variable_.get()
        << " | right: " << value_.get() << " } }\"" << "];\n";
 
