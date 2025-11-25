@@ -97,7 +97,7 @@ class Program : public Node {
 };
 
 class Empty_stmt : public Statement {
-public:
+  public:
     void accept(ASTVisitor &visitor) override { visitor.visit(*this); }
 
     virtual void graph_dump(std::ostream &gv, Node *parent) const override;
