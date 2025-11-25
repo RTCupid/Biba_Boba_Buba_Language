@@ -1,9 +1,15 @@
 a = 1;
 b = a = 2;
 c = b = a = 3;
+f = -(e = 5);
+h = (g = 8);
 if (c == 3) {
     d = 999;
 } else {
     d = -1;
 }
 print d;
+print e;
+print f;
+print g;
+print h;
