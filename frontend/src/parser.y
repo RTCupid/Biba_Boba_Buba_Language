@@ -101,7 +101,7 @@
 
 %type <language::StmtList>             stmt_list
 %type <language::Statement_ptr>        statement
-%type <language::Statement_ptr>        assignment_stmt input_stmt if_stmt while_stmt print_stmt block_stmt
+%type <language::Statement_ptr>        assignment_stmt input_stmt if_stmt while_stmt print_stmt block_stmt empty_stmt
 %type <language::Expression_ptr>       expression equality relational add_sub mul_div unary primary assignment_expr
 
 %start program
@@ -137,7 +137,14 @@ statement      : assignment_stmt TOK_SEMICOLON
                  { $$ = std::move($1); }
                | block_stmt
                  { $$ = std::move($1); }
+               | empty_stmt
+                 { $$ = std::move($1); }
                ;
+
+empty_stmt     : TOK_SEMICOLON
+                {
+                  $$ = std::make_unique<language::Empty_stmt>();
+                }
 
 block_stmt     : TOK_LEFT_BRACE stmt_list TOK_RIGHT_BRACE
                 {
