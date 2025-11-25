@@ -54,6 +54,12 @@ void Block_stmt::graph_dump(std::ostream &gv, Node *parent) const {
     }
 }
 
+void Empty_stmt::graph_dump(std::ostream &gv, Node *parent) const {
+    gv << "    node_" << this << "[shape=Mrecord; style=filled; fillcolor=lavenderblush1"
+       << "; color=\"#000000\"; " << "fontcolor=\"#000000\"; " << "label=\"{ Empty"
+       << " | addr: " << this << " | parent: " << parent << "}\"" << "];\n";
+}
+
 void Assignment_stmt::graph_dump(std::ostream &gv, Node *parent) const {
     gv << "    node_" << this << "[shape=Mrecord; style=filled; fillcolor=plum"
        << "; color=\"#000000\"; " << "fontcolor=\"#000000\"; " << "label=\"{ Assignment"

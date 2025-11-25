@@ -19,6 +19,7 @@ class Expression;
 class Assignment_stmt;
 class Assignment_expr;
 class Block_stmt;
+class Empty_stmt;
 class If_stmt;
 class While_stmt;
 class Print_stmt;
@@ -36,6 +37,7 @@ class ASTVisitor {
 
     virtual void visit(Program &node) = 0;
     virtual void visit(Block_stmt &node) = 0;
+    virtual void visit(Empty_stmt &node) = 0;
     virtual void visit(Assignment_stmt &node) = 0;
     virtual void visit(Assignment_expr &node) = 0;
     virtual void visit(Input_stmt &node) = 0;
@@ -89,6 +91,13 @@ class Program : public Node {
     const StmtList &get_stmts() const { return stmts_; }
     StmtList &get_stmts() { return stmts_; }
 
+    void accept(ASTVisitor &visitor) override { visitor.visit(*this); }
+
+    virtual void graph_dump(std::ostream &gv, Node *parent) const override;
+};
+
+class Empty_stmt : public Statement {
+public:
     void accept(ASTVisitor &visitor) override { visitor.visit(*this); }
 
     virtual void graph_dump(std::ostream &gv, Node *parent) const override;
