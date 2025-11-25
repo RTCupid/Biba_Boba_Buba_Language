@@ -20,7 +20,7 @@ void Simulator::visit(Block_stmt &node) {
     for (const auto &stmt : statements) {
         stmt->accept(*this);
     }
-};
+}
 
 void Simulator::visit(Empty_stmt &node) {};
 
@@ -33,19 +33,7 @@ void Simulator::visit(Assignment_stmt &node) {
         it->second = value;
     else
         nametable.emplace(var_name, value);
-};
-
-void Simulator::visit(Input_stmt &node) {
-    const auto &var_name = node.get_variable()->get_name();
-    number_t value;
-    std::cin >> value;
-
-    auto it = nametable.find(var_name);
-    if (it != nametable.end())
-        it->second = value;
-    else
-        nametable.emplace(var_name, value);
-};
+}
 
 void Simulator::visit(If_stmt &node) {
     auto condition = evaluate_expression(node.get_condition());
@@ -58,25 +46,26 @@ void Simulator::visit(If_stmt &node) {
         if (contains_else_node)
             node.else_branch().accept(*this);
     }
-};
+}
 
 void Simulator::visit(While_stmt &node) {
     while (evaluate_expression(node.get_condition())) {
         node.get_body().accept(*this);
     }
-};
+}
 
 void Simulator::visit(Print_stmt &node) {
     auto value = evaluate_expression(node.get_value());
 
     std::cout << value << '\n';
-};
+}
 
 void Simulator::visit(Assignment_expr &node) {}
 void Simulator::visit(Binary_operator &node) {}
-void Simulator::visit(Unary_operator &node) {}
-void Simulator::visit(Number &node) {}
-void Simulator::visit(Variable &node) {}
+void Simulator::visit(Input           &node) {}
+void Simulator::visit(Unary_operator  &node) {}
+void Simulator::visit(Number          &node) {}
+void Simulator::visit(Variable        &node) {}
 
 number_t Simulator::evaluate_expression(Expression &expression) {
     ExpressionEvaluator evaluator(*this);

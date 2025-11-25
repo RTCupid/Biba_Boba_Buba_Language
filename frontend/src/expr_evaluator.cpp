@@ -115,11 +115,17 @@ void ExpressionEvaluator::visit(Unary_operator &node) {
     }
 }
 
+void ExpressionEvaluator::visit(Input &node) {
+    number_t value;
+    std::cin >> value;
+
+    result_ = value;
+}
+
 void ExpressionEvaluator::visit(Program &node) {}
 void ExpressionEvaluator::visit(Block_stmt &node) {}
 void ExpressionEvaluator::visit(Empty_stmt &node) {}
 void ExpressionEvaluator::visit(Assignment_stmt &node) {}
-void ExpressionEvaluator::visit(Input_stmt &node) {}
 void ExpressionEvaluator::visit(If_stmt &node) {}
 void ExpressionEvaluator::visit(While_stmt &node) {}
 void ExpressionEvaluator::visit(Print_stmt &node) {}

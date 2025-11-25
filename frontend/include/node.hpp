@@ -26,7 +26,7 @@ class Print_stmt;
 class Unary;
 class Number;
 class Variable;
-class Input_stmt;
+class Input;
 class Binary_operator;
 class Unary_operator;
 
@@ -40,7 +40,7 @@ class ASTVisitor {
     virtual void visit(Empty_stmt &node) = 0;
     virtual void visit(Assignment_stmt &node) = 0;
     virtual void visit(Assignment_expr &node) = 0;
-    virtual void visit(Input_stmt &node) = 0;
+    virtual void visit(Input &node) = 0;
     virtual void visit(If_stmt &node) = 0;
     virtual void visit(While_stmt &node) = 0;
     virtual void visit(Print_stmt &node) = 0;
@@ -193,15 +193,8 @@ class If_stmt : public Statement {
     virtual void graph_dump(std::ostream &gv, Node *parent) const override;
 };
 
-class Input_stmt : public Statement {
-  private:
-    Variable_ptr variable_;
-
+class Input : public Expression {
   public:
-    explicit Input_stmt(Variable_ptr variable) : variable_(std::move(variable)) {}
-
-    const Variable_ptr &get_variable() const { return variable_; }
-
     void accept(ASTVisitor &visitor) override { visitor.visit(*this); }
 
     virtual void graph_dump(std::ostream &gv, Node *parent) const override;

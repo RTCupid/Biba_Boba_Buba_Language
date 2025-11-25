@@ -129,16 +129,10 @@ void If_stmt::graph_dump(std::ostream &gv, Node *parent) const {
     }
 }
 
-void Input_stmt::graph_dump(std::ostream &gv, Node *parent) const {
+void Input::graph_dump(std::ostream &gv, Node *parent) const {
     gv << "    node_" << this << "[shape=Mrecord; style=filled; fillcolor=lavenderblush1"
        << "; color=\"#000000\"; " << "fontcolor=\"#000000\"; " << "label=\"{ Input"
-       << " | addr: " << this << " | parent: " << parent
-       << "| variable: " << variable_.get()->get_name() << "}\"" << "];\n";
-
-    if (variable_) {
-        gv << "    node_" << this << " -> node_" << variable_.get() << ";\n";
-        variable_->graph_dump(gv, (Node *)this);
-    }
+       << " | addr: " << this << " | parent: " << parent << "}\"" << "];\n";
 }
 
 void Binary_operator::graph_dump(std::ostream &gv, Node *parent) const {
