@@ -62,10 +62,10 @@ void Simulator::visit(Print_stmt &node) {
 
 void Simulator::visit(Assignment_expr &node) {}
 void Simulator::visit(Binary_operator &node) {}
-void Simulator::visit(Input           &node) {}
-void Simulator::visit(Unary_operator  &node) {}
-void Simulator::visit(Number          &node) {}
-void Simulator::visit(Variable        &node) {}
+void Simulator::visit(Input &node) {}
+void Simulator::visit(Unary_operator &node) {}
+void Simulator::visit(Number &node) {}
+void Simulator::visit(Variable &node) {}
 
 number_t Simulator::evaluate_expression(Expression &expression) {
     ExpressionEvaluator evaluator(*this);
