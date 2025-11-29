@@ -1,0 +1,29 @@
+// Test 1: Basic operations
+a = 12;
+b = 10;
+
+result_and = a & b;
+result_or = a | b;
+result_xor = a ^ b;
+
+// Test 2: Edge cases
+zero = 0;
+ones = 65535;
+
+test1 = ones & zero;
+test2 = zero | ones;
+test3 = ones ^ ones;
+
+// Test 3: Specific bit patterns
+x = 170;
+y = 85;
+
+test4 = x & y;
+test5 = x | y;
+test6 = x ^ y;
+
+// Test 4: Complex expressions
+test7 = (a & b) | (x ^ y);
+test8 = (ones & x) ^ (zero | y);
+test9 = a & b & x & y;
+test10 = a | b | x | y;

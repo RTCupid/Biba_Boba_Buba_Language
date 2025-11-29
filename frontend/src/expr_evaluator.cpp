@@ -88,6 +88,18 @@ void ExpressionEvaluator::visit(Binary_operator &node) {
         result_ = left_value % right_value;
         break;
     }
+    case Binary_operators::And: {
+        result_ = left_value & right_value;
+        break;
+    }
+    case Binary_operators::Xor: {
+        result_ = left_value ^ right_value;
+        break;
+    }
+    case Binary_operators::Or: {
+        result_ = left_value | right_value;
+        break;
+    }
     default:
         throw std::runtime_error("Unknown binary operator");
     }
