@@ -190,11 +190,11 @@ expression     : bitwise_op
 
 bitwise_op     : equality
                   { $$ = std::move($1); }
-               | equality TOK_AND equality
+               | bitwise_op TOK_AND equality
                   { $$ = make_binary(language::Binary_operators::And, std::move($1), std::move($3)); }
-               | equality TOK_XOR equality
+               | bitwise_op TOK_XOR equality
                   { $$ = make_binary(language::Binary_operators::Xor, std::move($1), std::move($3)); }
-               | equality TOK_OR  equality
+               | bitwise_op TOK_OR  equality
                   { $$ = make_binary(language::Binary_operators::Or, std::move($1), std::move($3)); }
                ;
 
