@@ -69,6 +69,9 @@
 %token TOK_MUL           "*"
 %token TOK_DIV           "/"
 %token TOK_REM_DIV       "%"
+%token TOK_AND           "&"
+%token TOK_XOR           "^"
+%token TOK_OR            "|"
 
 /* --- Logical operators --- */
 %token TOK_NOT           "!"
@@ -102,7 +105,7 @@
 %type <language::StmtList>             stmt_list
 %type <language::Statement_ptr>        statement
 %type <language::Statement_ptr>        assignment_stmt if_stmt while_stmt print_stmt block_stmt empty_stmt
-%type <language::Expression_ptr>       expression input equality relational add_sub mul_div unary primary assignment_expr
+%type <language::Expression_ptr>       expression input bitwise_op equality relational add_sub mul_div unary primary assignment_expr
 
 %start program
 
@@ -179,10 +182,20 @@ print_stmt     : TOK_PRINT expression
                 }
                ;
 
-expression     : equality
+expression     : bitwise_op
                   { $$ = std::move($1); }
                 | assignment_expr
                   { $$ = std::move($1); }
+               ;
+
+bitwise_op     : equality
+                  { $$ = std::move($1); }
+               | equality TOK_AND equality
+                  { $$ = make_binary(language::Binary_operators::And, std::move($1), std::move($3)); }
+               | equality TOK_XOR equality
+                  { $$ = make_binary(language::Binary_operators::Xor, std::move($1), std::move($3)); }
+               | equality TOK_OR  equality
+                  { $$ = make_binary(language::Binary_operators::Or, std::move($1), std::move($3)); }
                ;
 
 equality       : relational

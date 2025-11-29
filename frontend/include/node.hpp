@@ -68,7 +68,10 @@ enum class Binary_operators {
     Sub,
     Mul,
     Div,
-    RemDiv
+    RemDiv,
+    And,
+    Xor,
+    Or,
 };
 
 enum class Unary_operators { Neg, Plus, Not };

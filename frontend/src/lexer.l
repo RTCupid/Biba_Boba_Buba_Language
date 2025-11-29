@@ -46,6 +46,9 @@ NEWLINE  \n
 "*"             { yycolumn += yyleng; return process_mul(); }
 "/"             { yycolumn += yyleng; return process_div(); }
 "%"             { yycolumn += yyleng; return process_rem_div(); }
+"&"             { yycolumn += yyleng; return process_and(); }
+"^"             { yycolumn += yyleng; return process_xor(); }
+"|"             { yycolumn += yyleng; return process_or(); }
 
 "<"             { yycolumn += yyleng; return process_less(); }
 ">"             { yycolumn += yyleng; return process_greater(); }
