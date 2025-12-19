@@ -46,11 +46,6 @@ add_executable(frontend
     ${BISON_Parser_OUTPUTS}
 )
 
-# target_link_libraries(frontend
-#     PRIVATE
-#         ${FLEX_LIBRARIES}
-# )
-
 target_include_directories(frontend PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/include
     ${CMAKE_CURRENT_BINARY_DIR}

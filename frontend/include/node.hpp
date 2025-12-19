@@ -1,7 +1,6 @@
 #ifndef FRONTEND_INCLUDE_AST_HPP
 #define FRONTEND_INCLUDE_AST_HPP
 
-#include <fstream>
 #include <memory>
 #include <string>
 #include <utility>
@@ -10,8 +9,8 @@
 namespace language {
 
 using number_t = int;
+using name_t = std::string;
 
-// Forward declarations
 class Node;
 class Program;
 class Statement;
@@ -30,7 +29,6 @@ class Input;
 class Binary_operator;
 class Unary_operator;
 
-// Visitor pattern for AST traversal
 class ASTVisitor {
   public:
     virtual ~ASTVisitor() = default;
@@ -183,7 +181,8 @@ class If_stmt : public Statement {
   public:
     If_stmt(Expression_ptr condition, Statement_ptr then_branch,
             Statement_ptr else_branch = nullptr)
-        : condition_(std::move(condition)), then_branch_(std::move(then_branch)),
+        : condition_(std::move(condition)),
+          then_branch_(std::move(then_branch)),
           else_branch_(std::move(else_branch)) {}
 
     Expression &get_condition() { return *condition_; }
@@ -225,7 +224,8 @@ class Binary_operator : public Expression {
     Expression_ptr right_;
 
   public:
-    Binary_operator(Binary_operators op, Expression_ptr left, Expression_ptr right)
+    Binary_operator(Binary_operators op, Expression_ptr left,
+                    Expression_ptr right)
         : op_(op), left_(std::move(left)), right_(std::move(right)) {}
 
     Binary_operators get_operator() const { return op_; }
@@ -273,13 +273,13 @@ class Number : public Expression {
 
 class Variable : public Expression {
   private:
-    std::string var_name_;
+    name_t var_name_;
 
   public:
-    explicit Variable(std::string var_name) : var_name_(std::move(var_name)) {}
+    explicit Variable(name_t var_name) : var_name_(std::move(var_name)) {}
 
-    std::string &get_name() { return var_name_; }
-    const std::string &get_name() const { return var_name_; }
+    name_t &get_name() { return var_name_; }
+    const name_t &get_name() const { return var_name_; }
 
     void accept(ASTVisitor &visitor) override { visitor.visit(*this); }
 
