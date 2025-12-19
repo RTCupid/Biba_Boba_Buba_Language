@@ -12,9 +12,7 @@ class AST_Factory {
         return std::make_unique<Program>(std::move(stmts));
     }
 
-    static Statement_ptr makeEmpty() {
-        return std::make_unique<Empty_stmt>();
-    }
+    static Statement_ptr makeEmpty() { return std::make_unique<Empty_stmt>(); }
 
     static Statement_ptr makeBlock(StmtList stmts = {}) {
         return std::make_unique<Block_stmt>(std::move(stmts));
