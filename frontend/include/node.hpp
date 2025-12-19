@@ -181,7 +181,8 @@ class If_stmt : public Statement {
   public:
     If_stmt(Expression_ptr condition, Statement_ptr then_branch,
             Statement_ptr else_branch = nullptr)
-        : condition_(std::move(condition)), then_branch_(std::move(then_branch)),
+        : condition_(std::move(condition)),
+          then_branch_(std::move(then_branch)),
           else_branch_(std::move(else_branch)) {}
 
     Expression &get_condition() { return *condition_; }
@@ -223,7 +224,8 @@ class Binary_operator : public Expression {
     Expression_ptr right_;
 
   public:
-    Binary_operator(Binary_operators op, Expression_ptr left, Expression_ptr right)
+    Binary_operator(Binary_operators op, Expression_ptr left,
+                    Expression_ptr right)
         : op_(op), left_(std::move(left)), right_(std::move(right)) {}
 
     Binary_operators get_operator() const { return op_; }
