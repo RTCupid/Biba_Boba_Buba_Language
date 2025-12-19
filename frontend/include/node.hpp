@@ -1,7 +1,6 @@
 #ifndef FRONTEND_INCLUDE_AST_HPP
 #define FRONTEND_INCLUDE_AST_HPP
 
-#include <fstream>
 #include <memory>
 #include <string>
 #include <utility>
@@ -10,8 +9,8 @@
 namespace language {
 
 using number_t = int;
+using name_t = std::string;
 
-// Forward declarations
 class Node;
 class Program;
 class Statement;
@@ -30,7 +29,6 @@ class Input;
 class Binary_operator;
 class Unary_operator;
 
-// Visitor pattern for AST traversal
 class ASTVisitor {
   public:
     virtual ~ASTVisitor() = default;
@@ -273,13 +271,13 @@ class Number : public Expression {
 
 class Variable : public Expression {
   private:
-    std::string var_name_;
+    name_t var_name_;
 
   public:
-    explicit Variable(std::string var_name) : var_name_(std::move(var_name)) {}
+    explicit Variable(name_t var_name) : var_name_(std::move(var_name)) {}
 
-    std::string &get_name() { return var_name_; }
-    const std::string &get_name() const { return var_name_; }
+    name_t &get_name() { return var_name_; }
+    const name_t &get_name() const { return var_name_; }
 
     void accept(ASTVisitor &visitor) override { visitor.visit(*this); }
 
