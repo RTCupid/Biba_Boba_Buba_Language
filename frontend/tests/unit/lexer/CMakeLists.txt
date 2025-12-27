@@ -23,7 +23,7 @@ target_link_libraries(lexer
         GTest::gtest
         GTest::gtest_main
         Threads::Threads
-        ${FLEX_LIBRARIES}
+        #${FLEX_LIBRARIES}
 )
 
 gtest_discover_tests(lexer
