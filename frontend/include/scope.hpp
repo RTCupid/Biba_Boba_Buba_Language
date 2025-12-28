@@ -2,29 +2,27 @@
 #define FRONTEND_INCLUDE_SCOPE_HPP
 
 #include "config.hpp"
-#include <vector>
 #include <unordered_map>
+#include <vector>
 
 namespace language {
 
 class Scope {
-private:
+  private:
     std::vector<nametable_t> scopes_;
-public:
-    void push(nametable_t nametable) {
-        scopes_.push_back(nametable);
-    }
 
-    void pop() {
-        scopes_.pop_back();
-    }
+  public:
+    void push(nametable_t nametable) { scopes_.push_back(nametable); }
+
+    void pop() { scopes_.pop_back(); }
 
     void add_variable(name_t &var_name, bool defined) {
         scopes_.back().emplace(var_name, defined);
     }
 
     bool find(name_t var_name) {
-        for (auto it = scopes_.rbegin(), last_it = scopes_.rend(); it != last_it; ++it) {
+        for (auto it = scopes_.rbegin(), last_it = scopes_.rend();
+             it != last_it; ++it) {
             auto var_iter = it->find(var_name);
             if (var_iter != it->end())
                 return true;
@@ -32,7 +30,6 @@ public:
 
         return false;
     }
-
 };
 
 } // namespace language

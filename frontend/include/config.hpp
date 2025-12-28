@@ -12,5 +12,4 @@ using nametable_t = std::unordered_map<language::name_t, bool /*defined*/>;
 
 } // namespace language
 
-
 #endif // FRONTEND_INCLUDE_CONFIG_HPP
