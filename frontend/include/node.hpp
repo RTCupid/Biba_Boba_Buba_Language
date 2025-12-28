@@ -1,15 +1,12 @@
 #ifndef FRONTEND_INCLUDE_AST_HPP
 #define FRONTEND_INCLUDE_AST_HPP
 
+#include "config.hpp"
 #include <memory>
-#include <string>
 #include <utility>
 #include <vector>
 
 namespace language {
-
-using number_t = int;
-using name_t = std::string;
 
 class Node;
 class Program;

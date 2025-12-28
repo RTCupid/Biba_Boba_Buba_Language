@@ -21,10 +21,13 @@
   using language::AST_Factory;
   using language::Binary_operators;
   using language::Unary_operators;
+  using language::nametable_t;
 }
 
 %code {
+  #include "config.hpp"
   #include "lexer.hpp"
+  #include "scope.hpp"
   #include <iostream>
 
   int yylex(yy::parser::semantic_type*   yylval,
@@ -49,6 +52,8 @@
 
       return tt;
   }
+
+  language::Scope scopes;
 }
 
 /* ________________________Tokens________________________ */
@@ -109,7 +114,9 @@
 
 program        : stmt_list TOK_EOF
                 {
+                  scopes.push(nametable_t{});
                   root = AST_Factory::makeProgram(std::move($1));
+                  scopes.pop();
                 }
                ;
 
@@ -145,15 +152,23 @@ empty_stmt     : TOK_SEMICOLON
 
 block_stmt     : TOK_LEFT_BRACE stmt_list TOK_RIGHT_BRACE
                 {
+                  scopes.push(nametable_t{});
                   $$ = AST_Factory::makeBlock(std::move($2));
+                  scopes.pop();
                 }
                ;
 
 assignment_stmt: TOK_ID TOK_ASSIGN expression
                 {
+                  auto variable = AST_Factory::makeVariable(std::move($1));
                   $$ = AST_Factory::makeAssignmentStmt(
-                    std::move(AST_Factory::makeVariable(std::move($1))),
+                    std::move(variable),
                     std::move($3));
+
+                  auto var_name = variable->get_name();
+
+                  if (!scopes.find(var_name))
+                    scopes.add_variable(var_name, true);
                 }
                 ;
 
