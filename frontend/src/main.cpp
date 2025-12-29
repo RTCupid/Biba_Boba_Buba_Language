@@ -50,7 +50,7 @@ int main(int argc, char *argv[]) {
     const auto paths = language::make_dump_paths();
     const std::string gv_file = paths.gv.string();
     const std::string svg_file = paths.svg.string();
-    //dot dump/dump.gv -Tsvg -o dump/dump.svg
+    // dot dump/dump.gv -Tsvg -o dump/dump.svg
 
     std::ofstream gv(gv_file);
     if (!gv) {
