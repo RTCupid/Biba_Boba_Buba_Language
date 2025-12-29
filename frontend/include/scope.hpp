@@ -3,20 +3,29 @@
 
 #include "config.hpp"
 #include <unordered_map>
+#include <cassert>
 #include <vector>
 
 namespace language {
 
+using nametable_t = std::unordered_map<language::name_t, bool /*defined*/>;
+
 class Scope {
   private:
     std::vector<nametable_t> scopes_;
+public:
+    Scope() {
+        push(nametable_t{}); // add global scope
+    }
 
-  public:
-    void push(nametable_t nametable) { scopes_.push_back(nametable); }
+    void push(nametable_t nametable) {
+        scopes_.push_back(nametable);
+    }
 
     void pop() { scopes_.pop_back(); }
 
     void add_variable(name_t &var_name, bool defined) {
+        assert(!scopes_.empty());
         scopes_.back().emplace(var_name, defined);
     }
 
