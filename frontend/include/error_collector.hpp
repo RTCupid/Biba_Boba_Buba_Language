@@ -6,15 +6,12 @@
 namespace language {
 
 class Error_collector {
-private:
+  private:
     struct Error_info {
-        location loc,
-        std::string msg,
+        location loc, std::string msg,
     };
-
 };
 
 } // namespace language
-
 
 #endif // FRONTEND_INCLUDE_ERROR_COLLECTOR_HPP

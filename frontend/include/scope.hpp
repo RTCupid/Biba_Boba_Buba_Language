@@ -2,8 +2,8 @@
 #define FRONTEND_INCLUDE_SCOPE_HPP
 
 #include "config.hpp"
-#include <unordered_map>
 #include <cassert>
+#include <unordered_map>
 #include <vector>
 
 namespace language {
@@ -13,14 +13,13 @@ using nametable_t = std::unordered_map<language::name_t, bool /*defined*/>;
 class Scope {
   private:
     std::vector<nametable_t> scopes_;
-public:
+
+  public:
     Scope() {
         push(nametable_t{}); // add global scope
     }
 
-    void push(nametable_t nametable) {
-        scopes_.push_back(nametable);
-    }
+    void push(nametable_t nametable) { scopes_.push_back(nametable); }
 
     void pop() { scopes_.pop_back(); }
 
