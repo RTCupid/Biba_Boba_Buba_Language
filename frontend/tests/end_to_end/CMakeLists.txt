@@ -23,7 +23,12 @@ add_test(
     COMMAND ${CMAKE_COMMAND} -E env VERBOSE=1 bash ${CMAKE_CURRENT_SOURCE_DIR}/test_input_in_expression/test_input_in_expression.sh
 )
 
-set_tests_properties(check_program_termination assign_in_expr bitwise_op input_in_condition input_in_expression PROPERTIES 
+add_test(
+    NAME fibonachi 
+    COMMAND ${CMAKE_COMMAND} -E env VERBOSE=1 bash ${CMAKE_CURRENT_SOURCE_DIR}/test_fibonachi/test_fibonachi.sh
+)
+
+set_tests_properties(check_program_termination assign_in_expr bitwise_op input_in_condition input_in_expression fibonachi PROPERTIES 
     WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
     LABELS "end_to_end"
 )
