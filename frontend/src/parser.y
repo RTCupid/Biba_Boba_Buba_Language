@@ -28,6 +28,7 @@
 %code {
   #include "config.hpp"
   #include "lexer.hpp"
+  #include "error_collector"
   #include <iostream>
 
   int yylex(yy::parser::semantic_type*   yylval,
@@ -53,8 +54,10 @@
       return tt;
   }
 
+  language::Error_collector error_collector;
+
   void yy::parser::error(const location& loc, const std::string& msg) {
-    error_collector_.add_error(loc, msg);
+    error_collector.add_error(loc, msg);
   }
 
   language::Scope scopes;
