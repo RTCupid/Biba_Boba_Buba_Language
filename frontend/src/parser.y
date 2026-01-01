@@ -54,8 +54,7 @@
   }
 
   void yy::parser::error(const location& loc, const std::string& msg) {
-    std::cerr << "Syntax error at line " << loc.begin.line
-              << ", column " << loc.begin.column << ": " << msg << '\n';
+    error_collector_.add_error(loc, msg);
   }
 
   language::Scope scopes;
