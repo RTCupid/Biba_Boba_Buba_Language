@@ -17,14 +17,18 @@
   namespace language { class Lexer; }
   #include "node.hpp"
   #include "ast_factory.hpp"
+  #include "scope.hpp"
 
   using language::AST_Factory;
   using language::Binary_operators;
   using language::Unary_operators;
+  using language::nametable_t;
 }
 
 %code {
+  #include "config.hpp"
   #include "lexer.hpp"
+  #include "error_collector"
   #include <iostream>
 
   int yylex(yy::parser::semantic_type*   yylval,
@@ -49,6 +53,14 @@
 
       return tt;
   }
+
+  language::Error_collector error_collector;
+
+  void yy::parser::error(const location& loc, const std::string& msg) {
+    error_collector.add_error(loc, msg);
+  }
+
+  language::Scope scopes;
 }
 
 /* ________________________Tokens________________________ */
@@ -101,7 +113,7 @@
 %type <language::StmtList>             stmt_list
 %type <language::Statement_ptr>        statement
 %type <language::Statement_ptr>        assignment_stmt if_stmt while_stmt print_stmt block_stmt empty_stmt
-%type <language::Expression_ptr>       expression input bitwise_op equality relational add_sub mul_div unary primary assignment_expr
+%type <language::Expression_ptr>       expression bitwise_op equality relational add_sub mul_div unary primary assignment_expr
 
 %start program
 
@@ -143,19 +155,31 @@ empty_stmt     : TOK_SEMICOLON
                   $$ = AST_Factory::makeEmpty();
                 }
 
-block_stmt     : TOK_LEFT_BRACE stmt_list TOK_RIGHT_BRACE
+block_stmt     : TOK_LEFT_BRACE
                 {
-                  $$ = AST_Factory::makeBlock(std::move($2));
+                  scopes.push(nametable_t{});
+                }
+                stmt_list
+                TOK_RIGHT_BRACE
+                {
+                  scopes.pop();
+                  $$ = AST_Factory::makeBlock(std::move($3));
                 }
                ;
 
 assignment_stmt: TOK_ID TOK_ASSIGN expression
                 {
+                  auto variable = AST_Factory::makeVariable(std::move($1));
+                  auto var_name = variable->get_name();
+
+                  if (!scopes.find(var_name))
+                    scopes.add_variable(var_name, true);
+
                   $$ = AST_Factory::makeAssignmentStmt(
-                    std::move(AST_Factory::makeVariable(std::move($1))),
+                    std::move(variable),
                     std::move($3));
                 }
-                ;
+               ;
 
 if_stmt        : TOK_IF TOK_LEFT_PAREN expression TOK_RIGHT_PAREN statement %prec PREC_IFX
                 {
@@ -246,17 +270,17 @@ unary          : TOK_MINUS unary
 primary        : TOK_NUMBER
                 { $$ = AST_Factory::makeNumber($1); }
                | TOK_ID
-                { $$ = AST_Factory::makeVariable(std::move($1)); }
+                {
+                  auto variable = AST_Factory::makeVariable(std::move($1));
+                  if (!scopes.find(variable->get_name()))
+                    yy::parser::error(@1, variable->get_name());
+
+                  $$ = std::move(variable);
+                }
                | TOK_LEFT_PAREN expression TOK_RIGHT_PAREN
                 { $$ = std::move($2); }
-               | input
-                { $$ = std::move($1); }
-               ;
-
-input          : TOK_INPUT
-                {
-                  $$ = AST_Factory::makeInput();
-                }
+               | TOK_INPUT
+                { $$ = AST_Factory::makeInput(); }
                ;
 
 assignment_expr: TOK_ID TOK_ASSIGN expression
@@ -267,8 +291,3 @@ assignment_expr: TOK_ID TOK_ASSIGN expression
                 }
                ;
 %%
-
-void yy::parser::error(const location& l, const std::string& m) {
-    std::cerr << "Syntax error at line " << l.begin.line
-              << ", column " << l.begin.column << ": " << m << '\n';
-}
