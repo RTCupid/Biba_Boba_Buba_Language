@@ -36,6 +36,7 @@ int main(int argc, char *argv[]) {
 
     if (parser.error_collector_.has_errors()) {
         std::cerr << "Parse failed\n";
+        parser.error_collector_.print_errors(std::cout);
         return 1;
     }
 
