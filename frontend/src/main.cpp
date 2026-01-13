@@ -34,10 +34,15 @@ int main(int argc, char *argv[]) {
 
     int result = parser.parse();
 
-    if (result != 0 || !root) {
+    if (parser.error_collector_.has_errors()) {
         std::cerr << "Parse failed\n";
         return 1;
     }
+
+    // if (result != 0 || !root) {
+    //     std::cerr << "Parse failed\n";
+    //     return 1;
+    // }
 
     language::Simulator simulator{};
 
