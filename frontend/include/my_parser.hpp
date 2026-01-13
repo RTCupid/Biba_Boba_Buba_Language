@@ -1,9 +1,9 @@
 #ifndef FRONTEND_INCLUDE_MY_PARSER_HPP
 #define FRONTEND_INCLUDE_MY_PARSER_HPP
 
-#include "parser.hpp"
 #include "error_collector.hpp"
 #include "lexer.hpp"
+#include "parser.hpp"
 #include <memory.h>
 
 namespace language {
@@ -11,22 +11,21 @@ namespace language {
 using nametable_t = std::unordered_map<language::name_t, bool /*defined*/>;
 
 class My_parser : public yy::parser {
-private:
-    Lexer* scanner_;
+  private:
+    Lexer *scanner_;
     Scope scopes_;
     std::unique_ptr<Program> root_;
-public:
+
+  public:
     Error_collector error_collector_;
 
-    My_parser(Lexer* scanner, std::unique_ptr<language::Program> &root) : yy::parser(scanner, root, this), scanner_(scanner), root_(std::move(root)) {}
+    My_parser(Lexer *scanner, std::unique_ptr<language::Program> &root)
+        : yy::parser(scanner, root, this), scanner_(scanner),
+          root_(std::move(root)) {}
 
-    void push_scope(nametable_t &nametable) {
-        scopes_.push(nametable);
-    }
+    void push_scope(nametable_t &nametable) { scopes_.push(nametable); }
 
-    void pop_scope() {
-        scopes_.pop();
-    }
+    void pop_scope() { scopes_.pop(); }
 
     bool find_in_scopes(std::string &var_name) const {
         return scopes_.find(var_name);
@@ -37,6 +36,6 @@ public:
     }
 };
 
-} //namespace language
+} // namespace language
 
 #endif // FRONTEND_INCLUDE_MY_PARSER_HPP
