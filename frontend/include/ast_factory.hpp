@@ -6,7 +6,7 @@
 
 namespace language {
 
-class AST_Factory {
+class AST_Factory final {
   public:
     static std::unique_ptr<Program> makeProgram(StmtList stmts) {
         return std::make_unique<Program>(std::move(stmts));

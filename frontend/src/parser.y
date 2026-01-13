@@ -51,22 +51,22 @@
 
   template<typename T>
   void push_scope(T* parser, nametable_t&& nametable) {
-    parser->push_scope(nametable);
+    parser->scopes.push(nametable);
   }
 
   template<typename T>
   void pop_scope(T* parser) {
-    parser->pop_scope();
+    parser->scopes.pop();
   }
 
   template<typename T>
   bool find_in_scopes(T* parser, std::string& var_name) {
-    return parser->find_in_scopes(var_name);
+    return parser->scopes.find(var_name);
   }
 
   template<typename T>
   void add_var_to_scope(T* parser, std::string& var_name, bool defined) {
-    parser->add_var_to_scope(var_name, defined);
+    parser->scopes.add_variable(var_name, defined);
   }
 
   int yylex(yy::parser::semantic_type* yylval,
@@ -93,7 +93,7 @@
 
   void yy::parser::error(const location& loc, const std::string& msg) {
     //std::cout << "error in line: " << loc.begin.line << " position: " << loc.begin.column << '\n';
-    my_parser->error_collector_.add_error(loc, msg);
+    my_parser->error_collector.add_error(loc, msg);
   }
 }
 
@@ -306,8 +306,9 @@ primary        : TOK_NUMBER
                | TOK_ID
                 {
                   auto variable = AST_Factory::makeVariable(std::move($1));
-                  if (!find_in_scopes(my_parser, variable->get_name()))
-                    yy::parser::error(@1, variable->get_name());
+                  if (!find_in_scopes(my_parser, variable->get_name())) {
+                    yy::parser::error(@1, "\'" + variable->get_name() + "\' was not declared in this scope\n");
+                  }
 
                   $$ = std::move(variable);
                 }
@@ -319,8 +320,14 @@ primary        : TOK_NUMBER
 
 assignment_expr: TOK_ID TOK_ASSIGN expression
                 {
+                  auto variable = AST_Factory::makeVariable(std::move($1));
+                  auto var_name = variable->get_name();
+
+                  if (!find_in_scopes(my_parser, var_name))
+                    add_var_to_scope(my_parser, var_name, true);
+
                   $$ = AST_Factory::makeAssignmentExpr(
-                    std::move(AST_Factory::makeVariable(std::move($1))),
+                    std::move(variable),
                     std::move($3));
                 }
                ;

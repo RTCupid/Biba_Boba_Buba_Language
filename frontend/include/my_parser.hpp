@@ -10,30 +10,18 @@ namespace language {
 
 using nametable_t = std::unordered_map<language::name_t, bool /*defined*/>;
 
-class My_parser : public yy::parser {
+class My_parser final : public yy::parser {
   private:
     Lexer *scanner_;
-    Scope scopes_;
     std::unique_ptr<Program> root_;
 
   public:
-    Error_collector error_collector_;
+    Error_collector error_collector;
+    Scope scopes;
 
-    My_parser(Lexer *scanner, std::unique_ptr<language::Program> &root)
+    My_parser(Lexer *scanner, std::unique_ptr<language::Program> &root, const std::string &program_file)
         : yy::parser(scanner, root, this), scanner_(scanner),
-          root_(std::move(root)) {}
-
-    void push_scope(nametable_t &nametable) { scopes_.push(nametable); }
-
-    void pop_scope() { scopes_.pop(); }
-
-    bool find_in_scopes(std::string &var_name) const {
-        return scopes_.find(var_name);
-    }
-
-    void add_var_to_scope(std::string &var_name, bool defined) {
-        scopes_.add_variable(var_name, defined);
-    }
+          root_(std::move(root)), error_collector(program_file) {}
 };
 
 } // namespace language

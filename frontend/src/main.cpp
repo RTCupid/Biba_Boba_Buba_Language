@@ -30,20 +30,20 @@ int main(int argc, char *argv[]) {
 
     std::unique_ptr<language::Program> root;
 
-    language::My_parser parser(&scanner, root);
+    language::My_parser parser(&scanner, root, argv[1]);
 
     int result = parser.parse();
 
-    if (parser.error_collector_.has_errors()) {
+    if (parser.error_collector.has_errors()) {
         std::cerr << "Parse failed\n";
-        parser.error_collector_.print_errors(std::cout);
+        parser.error_collector.print_errors(std::cout);
         return 1;
     }
 
-    // if (result != 0 || !root) {
-    //     std::cerr << "Parse failed\n";
-    //     return 1;
-    // }
+    if (result != 0) {
+        std::cerr << "unknown error\n";
+        return 1;
+    }
 
     language::Simulator simulator{};
 

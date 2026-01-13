@@ -10,7 +10,7 @@ namespace language {
 
 using nametable_t = std::unordered_map<language::name_t, bool /*defined*/>;
 
-class Scope {
+class Scope final {
   private:
     std::vector<nametable_t> scopes_;
 
