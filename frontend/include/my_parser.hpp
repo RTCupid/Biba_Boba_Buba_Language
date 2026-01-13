@@ -19,7 +19,8 @@ class My_parser final : public yy::parser {
     Error_collector error_collector;
     Scope scopes;
 
-    My_parser(Lexer *scanner, std::unique_ptr<language::Program> &root, const std::string &program_file)
+    My_parser(Lexer *scanner, std::unique_ptr<language::Program> &root,
+              const std::string &program_file)
         : yy::parser(scanner, root, this), scanner_(scanner),
           root_(std::move(root)), error_collector(program_file) {}
 };
