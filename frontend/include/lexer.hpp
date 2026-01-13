@@ -12,7 +12,7 @@
 
 namespace language {
 
-class Lexer : public yyFlexLexer {
+class Lexer final : public yyFlexLexer {
   private:
     std::string current_lexem;
     std::string current_value;

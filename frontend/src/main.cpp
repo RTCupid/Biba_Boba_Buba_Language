@@ -1,5 +1,6 @@
 #include "dump_path_gen.hpp"
 #include "lexer.hpp"
+#include "my_parser.hpp"
 #include "node.hpp"
 #include "parser.hpp"
 #include "simulator.hpp"
@@ -29,12 +30,18 @@ int main(int argc, char *argv[]) {
 
     std::unique_ptr<language::Program> root;
 
-    yy::parser parser(&scanner, root);
+    language::My_parser parser(&scanner, root, argv[1]);
 
     int result = parser.parse();
 
-    if (result != 0 || !root) {
+    if (parser.error_collector.has_errors()) {
         std::cerr << "Parse failed\n";
+        parser.error_collector.print_errors(std::cout);
+        return 1;
+    }
+
+    if (result != 0) {
+        std::cerr << "unknown error\n";
         return 1;
     }
 

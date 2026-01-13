@@ -3,6 +3,7 @@
 %locations
 %define parse.error detailed
 %define api.value.type variant
+%define api.parser.class {parser}
 
 %nonassoc PREC_IFX
 %nonassoc TOK_ELSE
@@ -10,57 +11,90 @@
 %lex-param   { language::Lexer* scanner }
 %parse-param { language::Lexer* scanner }
 %parse-param { std::unique_ptr<language::Program> &root }
+%parse-param { language::My_parser* my_parser }
 
 %code requires {
   #include <string>
   #include <iostream>
-  namespace language { class Lexer; }
   #include "node.hpp"
   #include "ast_factory.hpp"
   #include "scope.hpp"
+
+  namespace language { class Lexer; }
+  namespace language { class My_parser; }
 
   using language::AST_Factory;
   using language::Binary_operators;
   using language::Unary_operators;
   using language::nametable_t;
+
+  template<typename T>
+  void push_scope(T* parser, nametable_t&& nametable);
+
+  template<typename T>
+  void pop_scope(T* parser);
+
+  template<typename T>
+  bool find_in_scopes(T* parser, std::string& var_name);
+
+  template<typename T>
+  void add_var_to_scope(T* parser, std::string& var_name, bool defined);
 }
 
 %code {
   #include "config.hpp"
   #include "lexer.hpp"
-  #include "error_collector"
+  #include "error_collector.hpp"
+  #include "my_parser.hpp"
   #include <iostream>
+  #include <string>
 
-  int yylex(yy::parser::semantic_type*   yylval,
-            yy::parser::location_type*   yylloc,
-            language::Lexer*             scanner)
-  {
-      int line_before = scanner->get_line();
-      int column_before = scanner->get_column();
+  template<typename T>
+  void push_scope(T* parser, nametable_t&& nametable) {
+    parser->scopes.push(nametable);
+  }
 
-      auto tt = scanner->yylex();
+  template<typename T>
+  void pop_scope(T* parser) {
+    parser->scopes.pop();
+  }
 
-      yylloc->begin.line = line_before;
-      yylloc->begin.column = column_before;
-      yylloc->end.line = scanner->get_line();
-      yylloc->end.column = scanner->get_column() - 1;
+  template<typename T>
+  bool find_in_scopes(T* parser, std::string& var_name) {
+    return parser->scopes.find(var_name);
+  }
 
-      if (tt == yy::parser::token::TOK_NUMBER)
+  template<typename T>
+  void add_var_to_scope(T* parser, std::string& var_name, bool defined) {
+    parser->scopes.add_variable(var_name, defined);
+  }
+
+  int yylex(yy::parser::semantic_type* yylval,
+            yy::parser::location_type* yylloc,
+            language::Lexer*           scanner) {
+    int line_before = scanner->get_line();
+    int column_before = scanner->get_column();
+
+    auto tt = scanner->yylex();
+
+    yylloc->begin.line = line_before;
+    yylloc->begin.column = column_before;
+    yylloc->end.line = scanner->get_line();
+    yylloc->end.column = scanner->get_column() - 1;
+
+    if (tt == yy::parser::token::TOK_NUMBER)
         yylval->build<int>() = std::stoi(scanner->YYText());
 
-      if (tt == yy::parser::token::TOK_ID)
+    if (tt == yy::parser::token::TOK_ID)
         yylval->build<std::string>() = scanner->YYText();
 
-      return tt;
+    return tt;
   }
-
-  language::Error_collector error_collector;
 
   void yy::parser::error(const location& loc, const std::string& msg) {
-    error_collector.add_error(loc, msg);
+    //std::cout << "error in line: " << loc.begin.line << " position: " << loc.begin.column << '\n';
+    my_parser->error_collector.add_error(loc, msg);
   }
-
-  language::Scope scopes;
 }
 
 /* ________________________Tokens________________________ */
@@ -157,12 +191,12 @@ empty_stmt     : TOK_SEMICOLON
 
 block_stmt     : TOK_LEFT_BRACE
                 {
-                  scopes.push(nametable_t{});
+                  push_scope(my_parser, nametable_t{});
                 }
                 stmt_list
                 TOK_RIGHT_BRACE
                 {
-                  scopes.pop();
+                  pop_scope(my_parser);
                   $$ = AST_Factory::makeBlock(std::move($3));
                 }
                ;
@@ -172,8 +206,8 @@ assignment_stmt: TOK_ID TOK_ASSIGN expression
                   auto variable = AST_Factory::makeVariable(std::move($1));
                   auto var_name = variable->get_name();
 
-                  if (!scopes.find(var_name))
-                    scopes.add_variable(var_name, true);
+                  if (!find_in_scopes(my_parser, var_name))
+                    add_var_to_scope(my_parser, var_name, true);
 
                   $$ = AST_Factory::makeAssignmentStmt(
                     std::move(variable),
@@ -272,8 +306,9 @@ primary        : TOK_NUMBER
                | TOK_ID
                 {
                   auto variable = AST_Factory::makeVariable(std::move($1));
-                  if (!scopes.find(variable->get_name()))
-                    yy::parser::error(@1, variable->get_name());
+                  if (!find_in_scopes(my_parser, variable->get_name())) {
+                    yy::parser::error(@1, "\'" + variable->get_name() + "\' was not declared in this scope\n");
+                  }
 
                   $$ = std::move(variable);
                 }
@@ -285,8 +320,14 @@ primary        : TOK_NUMBER
 
 assignment_expr: TOK_ID TOK_ASSIGN expression
                 {
+                  auto variable = AST_Factory::makeVariable(std::move($1));
+                  auto var_name = variable->get_name();
+
+                  if (!find_in_scopes(my_parser, var_name))
+                    add_var_to_scope(my_parser, var_name, true);
+
                   $$ = AST_Factory::makeAssignmentExpr(
-                    std::move(AST_Factory::makeVariable(std::move($1))),
+                    std::move(variable),
                     std::move($3));
                 }
                ;

@@ -8,26 +8,33 @@
 
 namespace language {
 
-class Error_collector {
+class Error_collector final {
   private:
-    struct Error_info {
-        yy::location loc_;
-        std::string msg_;
+    const std::string program_file_;
 
-        Error_info(yy::location &loc, std::string &msg)
-            : loc_(loc), msg_(msg) {}
+    struct Error_info {
+        const std::string program_file_;
+        const yy::location loc_;
+        const std::string msg_;
+
+        Error_info(const std::string program_file, const yy::location &loc,
+                   const std::string &msg)
+            : program_file_(program_file), loc_(loc), msg_(msg) {}
 
         void print(std::ostream &os) const {
-            os << "Syntax error at line " << loc_.begin.line << ", column "
-               << loc_.begin.column << ": " << msg_ << '\n';
+            os << program_file_ << ':' << loc_.begin.line << ':'
+               << loc_.begin.column << ": error: " << msg_ << '\n';
         }
     };
 
     std::vector<Error_info> errors_;
 
   public:
-    void add_error(yy::location &loc, std::string &msg) {
-        errors_.push_back(Error_info{loc, msg});
+    Error_collector(const std::string &program_file)
+        : program_file_(program_file) {}
+
+    void add_error(const yy::location &loc, const std::string &msg) {
+        errors_.push_back(Error_info{program_file_, loc, msg});
     }
 
     bool has_errors() const { return !errors_.empty(); }

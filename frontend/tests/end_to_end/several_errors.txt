@@ -1,12 +1,16 @@
-a = ?;
+a = 2;
 while (a + 1 > 0) {
     print a;
     a = a - 1;
 }
 
 if (a <= 0) {
-    b = ?;
+    b = 1;
     print b;
 }
 
 print b * 2;
+
+s = (b = s);
+print s;
+
