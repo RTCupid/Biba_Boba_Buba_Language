@@ -11,10 +11,10 @@ namespace language {
 class Error_collector {
   private:
     struct Error_info {
-        yy::location loc_;
-        std::string msg_;
+        const yy::location loc_;
+        const std::string msg_;
 
-        Error_info(yy::location &loc, std::string &msg)
+        Error_info(const yy::location &loc, const std::string &msg)
             : loc_(loc), msg_(msg) {}
 
         void print(std::ostream &os) const {
@@ -26,7 +26,7 @@ class Error_collector {
     std::vector<Error_info> errors_;
 
   public:
-    void add_error(yy::location &loc, std::string &msg) {
+    void add_error(const yy::location &loc, const std::string &msg) {
         errors_.push_back(Error_info{loc, msg});
     }
 

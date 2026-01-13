@@ -3,6 +3,7 @@
 #include "node.hpp"
 #include "parser.hpp"
 #include "simulator.hpp"
+#include "my_parser.hpp"
 #include <fstream>
 #include <iostream>
 #include <memory>
@@ -29,7 +30,7 @@ int main(int argc, char *argv[]) {
 
     std::unique_ptr<language::Program> root;
 
-    yy::parser parser(&scanner, root);
+    language::My_parser parser(&scanner, root);
 
     int result = parser.parse();
 

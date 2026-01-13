@@ -28,7 +28,7 @@ class Scope {
         scopes_.back().emplace(var_name, defined);
     }
 
-    bool find(name_t var_name) {
+    bool find(name_t &var_name) const {
         for (auto it = scopes_.rbegin(), last_it = scopes_.rend();
              it != last_it; ++it) {
             auto var_iter = it->find(var_name);
