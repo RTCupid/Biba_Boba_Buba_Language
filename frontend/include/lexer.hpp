@@ -4,6 +4,7 @@
 #include "parser.hpp"
 #include <iostream>
 #include <ostream>
+#include <fstream>
 #include <string>
 
 #ifndef yyFlexLexer

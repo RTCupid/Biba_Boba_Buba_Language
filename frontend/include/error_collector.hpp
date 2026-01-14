@@ -16,6 +16,11 @@ class Error_collector final {
         const std::string program_file_;
         const yy::location loc_;
         const std::string msg_;
+        const std::string line_with_error_;
+
+        Error_info(const std::string program_file, const yy::location &loc,
+                   const std::string &msg, const std::string& line_with_error)
+            : program_file_(program_file), loc_(loc), msg_(msg), line_with_error_(line_with_error) {}
 
         Error_info(const std::string program_file, const yy::location &loc,
                    const std::string &msg)
@@ -23,7 +28,10 @@ class Error_collector final {
 
         void print(std::ostream &os) const {
             os << program_file_ << ':' << loc_.begin.line << ':'
-               << loc_.begin.column << ": error: " << msg_ << '\n';
+               << loc_.begin.column << ": error: " << msg_ << '\n' << '\t' << line_with_error_ << '\n' << '\t';
+            for (int i = 1; i < loc_.begin.column; ++i)
+                os << ' ';
+            os << "^\n";
         }
     };
 
@@ -32,6 +40,10 @@ class Error_collector final {
   public:
     Error_collector(const std::string &program_file)
         : program_file_(program_file) {}
+
+    void add_error(const yy::location &loc, const std::string &msg, const std::string& line_with_error) {
+        errors_.push_back(Error_info{program_file_, loc, msg, line_with_error});
+    }
 
     void add_error(const yy::location &loc, const std::string &msg) {
         errors_.push_back(Error_info{program_file_, loc, msg});

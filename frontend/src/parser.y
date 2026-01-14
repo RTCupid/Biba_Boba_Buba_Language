@@ -92,8 +92,7 @@
   }
 
   void yy::parser::error(const location& loc, const std::string& msg) {
-    //std::cout << "error in line: " << loc.begin.line << " position: " << loc.begin.column << '\n';
-    my_parser->error_collector.add_error(loc, msg);
+    my_parser->error_collector.add_error(loc, msg, my_parser->get_line_content(loc.begin.line));
   }
 }
 
@@ -307,7 +306,7 @@ primary        : TOK_NUMBER
                 {
                   auto variable = AST_Factory::makeVariable(std::move($1));
                   if (!find_in_scopes(my_parser, variable->get_name())) {
-                    yy::parser::error(@1, "\'" + variable->get_name() + "\' was not declared in this scope\n");
+                    error(@1, "\'" + variable->get_name() + "\' was not declared in this scope");
                   }
 
                   $$ = std::move(variable);
