@@ -2,6 +2,7 @@
 #define FRONTEND_INCLUDE_LEXER_HPP
 
 #include "parser.hpp"
+#include <fstream>
 #include <iostream>
 #include <ostream>
 #include <string>
@@ -26,6 +27,8 @@ class Lexer final : public yyFlexLexer {
     int get_line() const { return yylineno; }
 
     int get_column() const { return yycolumn; }
+
+    int get_yyleng() const { return yyleng; }
 
     int process_if() {
         current_lexem = "conditional operator";

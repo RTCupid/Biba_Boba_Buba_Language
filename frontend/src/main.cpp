@@ -14,7 +14,6 @@ yy::parser::semantic_type *yylval = nullptr;
 int yyFlexLexer::yywrap() { return 1; }
 
 int main(int argc, char *argv[]) {
-    // std::cout << "Run program\n";
     if (argc < 2) {
         std::cerr << "Usage: " << argv[0] << " <program_file>\n";
         return 1;
@@ -35,8 +34,9 @@ int main(int argc, char *argv[]) {
     int result = parser.parse();
 
     if (parser.error_collector.has_errors()) {
-        std::cerr << "Parse failed\n";
+        std::cout << "FAILED: ";
         parser.error_collector.print_errors(std::cout);
+        std::cerr << "parse failed\n";
         return 1;
     }
 
@@ -53,16 +53,4 @@ int main(int argc, char *argv[]) {
         std::cerr << "Runtime error: " << e.what() << "\n";
         return 1;
     }
-
-    const auto paths = language::make_dump_paths();
-    const std::string gv_file = paths.gv.string();
-    const std::string svg_file = paths.svg.string();
-    // dot dump/dump.gv -Tsvg -o dump/dump.svg
-
-    std::ofstream gv(gv_file);
-    if (!gv) {
-        std::cerr << "unable to open gv file\n";
-        return 1;
-    }
-    root->graph_dump(gv, nullptr);
 }

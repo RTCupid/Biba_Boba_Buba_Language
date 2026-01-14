@@ -73,14 +73,13 @@
             yy::parser::location_type* yylloc,
             language::Lexer*           scanner) {
     int line_before = scanner->get_line();
-    int column_before = scanner->get_column();
 
     auto tt = scanner->yylex();
 
     yylloc->begin.line = line_before;
-    yylloc->begin.column = column_before;
+    yylloc->begin.column = scanner->get_column() - scanner->get_yyleng();
     yylloc->end.line = scanner->get_line();
-    yylloc->end.column = scanner->get_column() - 1;
+    yylloc->end.column = scanner->get_column();
 
     if (tt == yy::parser::token::TOK_NUMBER)
         yylval->build<int>() = std::stoi(scanner->YYText());
@@ -92,8 +91,7 @@
   }
 
   void yy::parser::error(const location& loc, const std::string& msg) {
-    //std::cout << "error in line: " << loc.begin.line << " position: " << loc.begin.column << '\n';
-    my_parser->error_collector.add_error(loc, msg);
+    my_parser->error_collector.add_error(loc, msg, my_parser->get_line_content(loc.begin.line));
   }
 }
 
@@ -307,7 +305,7 @@ primary        : TOK_NUMBER
                 {
                   auto variable = AST_Factory::makeVariable(std::move($1));
                   if (!find_in_scopes(my_parser, variable->get_name())) {
-                    yy::parser::error(@1, "\'" + variable->get_name() + "\' was not declared in this scope\n");
+                    error(@1, "\'" + variable->get_name() + "\' was not declared in this scope");
                   }
 
                   $$ = std::move(variable);
