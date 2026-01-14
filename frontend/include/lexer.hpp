@@ -28,6 +28,8 @@ class Lexer final : public yyFlexLexer {
 
     int get_column() const { return yycolumn; }
 
+    int get_yyleng() const { return yyleng; }
+
     int process_if() {
         current_lexem = "conditional operator";
         current_value = "if";

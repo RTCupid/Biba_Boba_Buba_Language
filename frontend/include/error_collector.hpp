@@ -34,7 +34,11 @@ class Error_collector final {
                << '\t';
             for (int i = 1; i < loc_.begin.column; ++i)
                 os << ' ';
-            os << "^\n";
+
+            int length_error_token = loc_.end.column - loc_.begin.column;
+            for (int i = 0; i < length_error_token; ++i)
+                os << "^";
+            os << '\n';
         }
     };
 
