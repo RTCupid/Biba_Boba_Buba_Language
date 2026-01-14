@@ -24,13 +24,13 @@ class My_parser final : public yy::parser {
               const std::string &program_file)
         : yy::parser(scanner, root, this), scanner_(scanner),
           root_(std::move(root)), error_collector(program_file) {
-      read_source(program_file);
+        read_source(program_file);
     }
 
-    void read_source(const std::string& file_name) {
+    void read_source(const std::string &file_name) {
         std::ifstream input_file(file_name);
         std::string line;
-        while(std::getline(input_file, line))
+        while (std::getline(input_file, line))
             source_lines_.push_back(line);
     }
 

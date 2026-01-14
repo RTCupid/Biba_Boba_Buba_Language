@@ -2,9 +2,9 @@
 #define FRONTEND_INCLUDE_LEXER_HPP
 
 #include "parser.hpp"
+#include <fstream>
 #include <iostream>
 #include <ostream>
-#include <fstream>
 #include <string>
 
 #ifndef yyFlexLexer
