@@ -47,7 +47,11 @@ IfStmt         ::= 'if'    '(' Expression ')' Statement [ 'else' Statement ]
 WhileStmt      ::= 'while' '(' Expression ')' Statement
 PrintStmt      ::= 'print' Expression
 
-Expression     ::= Equality
+Expression     ::= Or
+
+Or             ::= And ( '||' And )*
+And            ::= Equality ( '&&' Equality )*
+
 Equality       ::= Relational ( ( '==' | '!=' ) Relational )*
 Relational     ::= AddSub ( ( '<' | '>' | '<=' | '>=' ) AddSub )*
 AddSub         ::= MulDiv ( ( '+' | '-' ) MulDiv )*
