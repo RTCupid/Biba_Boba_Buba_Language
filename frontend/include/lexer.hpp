@@ -108,6 +108,18 @@ class Lexer final : public yyFlexLexer {
         return yy::parser::token::TOK_OR;
     }
 
+    int process_log_or() {
+        current_lexem = "binary operator";
+        current_value = "||";
+        return yy::parser::token::TOK_LOG_OR;
+    }
+
+    int process_log_and() {
+        current_lexem = "binary operator";
+        current_value = "&&";
+        return yy::parser::token::TOK_LOG_AND;
+    }
+
     int process_assign() {
         current_lexem = "binary operator";
         current_value = "=";

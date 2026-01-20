@@ -115,6 +115,8 @@
 
 /* --- Logical operators --- */
 %token TOK_NOT           "!"
+%token TOK_LOG_OR        "||"
+%token TOK_LOG_AND       "&&"
 
 /* --- Assignment --- */
 %token TOK_ASSIGN        "="
@@ -235,11 +237,27 @@ print_stmt     : TOK_PRINT expression
                 }
                ;
 
-expression     : bitwise_op
+expression      : bitwise_op
                   { $$ = std::move($1); }
                 | assignment_expr
                   { $$ = std::move($1); }
                ;
+
+or
+              : and
+                  { $$ = std::move($1); }
+              | or TOK_LOG_OR and
+                  { $$ = AST_Factory::makeBinaryOp(Binary_operators::LogOr,
+                                                    std::move($1), std::move($3)); }
+              ;
+
+and
+              : equality
+                  { $$ = std::move($1); }
+              | and TOK_LOG_AND equality
+                  { $$ = AST_Factory::makeBinaryOp(Binary_operators::LogAnd,
+                                                    std::move($1), std::move($3)); }
+              ;
 
 bitwise_op     : equality
                   { $$ = std::move($1); }
