@@ -54,7 +54,7 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    // ____________GRAPH DUMP___________ // 
+    // ____________GRAPH DUMP___________ //
     // const auto paths = language::make_dump_paths();
     // const std::string gv_file = paths.gv.string();
     // const std::string svg_file = paths.svg.string();
