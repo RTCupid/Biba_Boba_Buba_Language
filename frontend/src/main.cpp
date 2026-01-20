@@ -53,4 +53,17 @@ int main(int argc, char *argv[]) {
         std::cerr << "Runtime error: " << e.what() << "\n";
         return 1;
     }
+
+    // ____________GRAPH DUMP___________ // 
+    // const auto paths = language::make_dump_paths();
+    // const std::string gv_file = paths.gv.string();
+    // const std::string svg_file = paths.svg.string();
+    // // dot dump/dump.gv -Tsvg -o dump/dump.svg
+
+    // std::ofstream gv(gv_file);
+    // if (!gv) {
+    //     std::cerr << "unable to open gv file\n";
+    //     return 1;
+    // }
+    // root->graph_dump(gv, nullptr);
 }
