@@ -33,7 +33,12 @@ add_test(
     COMMAND ${CMAKE_COMMAND} -E env VERBOSE=1 bash ${CMAKE_CURRENT_SOURCE_DIR}/test_tuple_assign/test_tuple_assign.sh
 )
 
-set_tests_properties(check_program_termination assign_in_expr bitwise_op input_in_condition input_in_expression fibonachi tuple_assign PROPERTIES 
+add_test(
+    NAME logical_operators 
+    COMMAND ${CMAKE_COMMAND} -E env VERBOSE=1 bash ${CMAKE_CURRENT_SOURCE_DIR}/test_logical_operators/test_logical_operators.sh
+)
+
+set_tests_properties(check_program_termination assign_in_expr bitwise_op input_in_condition input_in_expression fibonachi tuple_assign logical_operators PROPERTIES 
     WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
     LABELS "end_to_end"
 )

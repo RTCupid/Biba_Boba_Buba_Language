@@ -147,7 +147,8 @@
 %type <language::StmtList>             stmt_list
 %type <language::Statement_ptr>        statement
 %type <language::Statement_ptr>        assignment_stmt if_stmt while_stmt print_stmt block_stmt empty_stmt
-%type <language::Expression_ptr>       expression bitwise_op equality relational add_sub mul_div unary primary assignment_expr
+%type <language::Expression_ptr>       expression bitwise_op equality relational add_sub mul_div unary primary assignment_expr or and
+
 
 %start program
 
@@ -237,27 +238,24 @@ print_stmt     : TOK_PRINT expression
                 }
                ;
 
-expression      : bitwise_op
-                  { $$ = std::move($1); }
-                | assignment_expr
-                  { $$ = std::move($1); }
-               ;
+expression
+              : assignment_expr 
+                { 
+                  $$ = std::move($1); 
+                }
+              ;
 
 or
-              : and
-                  { $$ = std::move($1); }
+              : and { $$ = std::move($1); }
               | or TOK_LOG_OR and
-                  { $$ = AST_Factory::makeBinaryOp(Binary_operators::LogOr,
-                                                    std::move($1), std::move($3)); }
+                { $$ = AST_Factory::makeBinaryOp(Binary_operators::LogOr, std::move($1), std::move($3)); }
               ;
 
 and
-              : equality
-                  { $$ = std::move($1); }
-              | and TOK_LOG_AND equality
-                  { $$ = AST_Factory::makeBinaryOp(Binary_operators::LogAnd,
-                                                    std::move($1), std::move($3)); }
-              ;
+                : bitwise_op { $$ = std::move($1); }
+                | and TOK_LOG_AND bitwise_op
+                  { $$ = AST_Factory::makeBinaryOp(Binary_operators::LogAnd, std::move($1), std::move($3)); }
+                ;
 
 bitwise_op     : equality
                   { $$ = std::move($1); }
@@ -310,7 +308,7 @@ mul_div        : unary
 unary          : TOK_MINUS unary
                 { $$ = AST_Factory::makeUnaryOp(Unary_operators::Neg, std::move($2)); }
                | TOK_PLUS unary
-                { $$ = AST_Factory::makeUnaryOp(Unary_operators::Neg, std::move($2)); }
+                { $$ = AST_Factory::makeUnaryOp(Unary_operators::Plus, std::move($2)); }
                | TOK_NOT unary
                 { $$ = AST_Factory::makeUnaryOp(Unary_operators::Not, std::move($2)); }
                | primary
@@ -334,7 +332,9 @@ primary        : TOK_NUMBER
                 { $$ = AST_Factory::makeInput(); }
                ;
 
-assignment_expr: TOK_ID TOK_ASSIGN expression
+assignment_expr
+              : or { $$ = std::move($1); }
+              | TOK_ID TOK_ASSIGN assignment_expr  
                 {
                   auto variable = AST_Factory::makeVariable(std::move($1));
                   auto var_name = variable->get_name();
@@ -342,9 +342,7 @@ assignment_expr: TOK_ID TOK_ASSIGN expression
                   if (!find_in_scopes(my_parser, var_name))
                     add_var_to_scope(my_parser, var_name, true);
 
-                  $$ = AST_Factory::makeAssignmentExpr(
-                    std::move(variable),
-                    std::move($3));
+                  $$ = AST_Factory::makeAssignmentExpr(std::move(variable), std::move($3));
                 }
-               ;
+              ;
 %%
