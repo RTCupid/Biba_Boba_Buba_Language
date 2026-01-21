@@ -34,6 +34,9 @@ NEWLINE  \n
 "print"         { yycolumn += yyleng; return process_print(); }
 "?"             { yycolumn += yyleng; return process_input(); }
 
+"||"             { yycolumn += yyleng; return process_log_or(); }
+"&&"             { yycolumn += yyleng; return process_log_and(); }
+
 "!"             { yycolumn += yyleng; return process_not(); }
 "=="            { yycolumn += yyleng; return process_eq(); }
 "!="            { yycolumn += yyleng; return process_not_eq(); }

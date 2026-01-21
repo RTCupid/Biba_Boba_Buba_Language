@@ -193,6 +193,12 @@ void Binary_operator::graph_dump(std::ostream &gv, Node *parent) const {
     case Binary_operators::Or:
         op_str = "\\|";
         break;
+    case Binary_operators::LogAnd:
+        op_str = "\\&&";
+        break;
+    case Binary_operators::LogOr:
+        op_str = "\\|\\|";
+        break;
     }
 
     gv << "    node_" << this

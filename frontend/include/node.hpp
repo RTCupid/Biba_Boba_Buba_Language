@@ -67,6 +67,8 @@ enum class Binary_operators {
     And,
     Xor,
     Or,
+    LogOr,
+    LogAnd,
 };
 
 enum class Unary_operators { Neg, Plus, Not };
