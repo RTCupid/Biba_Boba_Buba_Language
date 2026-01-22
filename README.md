@@ -38,7 +38,7 @@ Additional:
 Clone the repository, then build and compile it with the following commands:
 
 ```bash
-git clone https://github.com/RTCupid/Super_Biba_Boba_Language.git
+git clone git@github.com:RTCupid/Biba_Boba_Buba_Language.git
 cd Super_Biba_Boba_Language
 cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
 cmake --build build
