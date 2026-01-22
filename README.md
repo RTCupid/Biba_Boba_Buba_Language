@@ -439,29 +439,42 @@ You will get the following tree representation:
 <summary>Project structure</summary>
 
 ```
-.
+├── build
 ├── CMakeLists.txt
-└──  frontend
-   ├── CMakeLists.txt
-   ├── include
-   │   ├── ast_factory.hpp
-   │   ├── config.hpp
-   │   ├── dump_path_gen.hpp
-   │   ├── error_collector.hpp
-   │   ├── expr_evaluator.hpp
-   │   ├── lexer.hpp
-   │   ├── my_parser.hpp
-   │   ├── node.hpp
-   │   ├── scope.hpp
-   │   └── simulator.hpp
-   ├── src
-   │   ├── expr_evaluator.cpp
-   │   ├── graph_dump.cpp
-   │   ├── lexer.l
-   │   ├── main.cpp
-   │   ├── parser.y
-   │   └── simulator.cpp
-   └── tests       
+├── contribution_guidelines.md
+├── frontend
+│   ├── CMakeLists.txt
+│   ├── include
+│   │   ├── ast_factory.hpp
+│   │   ├── config.hpp
+│   │   ├── driver.hpp
+│   │   ├── dump_path_gen.hpp
+│   │   ├── error_collector.hpp
+│   │   ├── expr_evaluator.hpp
+│   │   ├── lexer.hpp
+│   │   ├── my_parser.hpp
+│   │   ├── node.hpp
+│   │   ├── scope.hpp
+│   │   └── simulator.hpp
+│   ├── src
+│   │   ├── driver.cpp
+│   │   ├── expr_evaluator.cpp
+│   │   ├── graph_dump.cpp
+│   │   ├── lexer.l
+│   │   ├── main.cpp
+│   │   ├── parser.y
+│   │   └── simulator.cpp
+│   └── tests
+│       ├── CMakeLists.txt
+│       ├── end_to_end
+│           └── ...
+│       └── unit
+│           └── ...
+├── img
+│   └── ...
+├── LICENSE
+├── README.md
+└── README-R.md
 ```
 
 </details>
