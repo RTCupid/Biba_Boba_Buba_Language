@@ -31,7 +31,7 @@ void driver(int argc, char **&argv) {
     language::Simulator simulator{};
     root->accept(simulator);
 
-    #ifdef GRAPH_DUMP
+#ifdef GRAPH_DUMP
     // ____________GRAPH DUMP___________ //
     const auto paths = language::make_dump_paths();
     const std::string gv_file = paths.gv.string();
@@ -43,5 +43,5 @@ void driver(int argc, char **&argv) {
         throw std::runtime_error("unable to open gv file\n");
     }
     root->graph_dump(gv, nullptr);
-    #endif
+#endif
 }
