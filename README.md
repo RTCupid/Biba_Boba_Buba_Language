@@ -1,18 +1,41 @@
 <div align="center">
 
-# Implementation of the Biba-Boba-Buba Programming Language in C++
+# Implementation of the "Biba-Boba-Buba language" programming language in C++
   ![C++](https://img.shields.io/badge/C++-23-blue?style=for-the-badge&logo=cplusplus)
   ![CMake](https://img.shields.io/badge/CMake-3.20+-green?style=for-the-badge&logo=cmake)
   ![Testing](https://img.shields.io/badge/Google_Test-Framework-red?style=for-the-badge&logo=google)
 
 </div>
 
-- This project is an implementation of the `ParaCL` programming language from the C++ course by K.I. Vladimirov.
+- This project is an implementation of the `ParaCL` programming language from the C++ course by K. I. Vladimirov.
 
-- Check the [Contribution Guidelines](contribution_guidelines.md)
+## README in other languages
+
+1. [Русский](/README-R.md)
+2. [English](/README.md)
+
+## Table of contents
+Introduction:
+- [Running the program](#running-the-program)
+- [Introduction](#introduction)
+- [Approach](#approach)
+
+Language usage guide:
+- [Language features](#language-features)
+
+Frontend implementation:
+- [Lexer implementation](#lexer-implementation)
+- [Parser implementation](#parser-implementation)
+- [Error collector implementation](#error-collector-implementation)
+- [Scopes implementation](#scopes-implementation)
+- [Simulator implementation](#simulator-implementation)
+
+Additional:
+- [Using dump](#using-dump)
+- [Project authors](#project-authors)
 
 ### Running the program
-Cloning the repository, configuring and building are done with the following commands:
+Clone the repository, then build and compile it with the following commands:
 
 ```bash
 git clone https://github.com/RTCupid/Super_Biba_Boba_Language.git
@@ -21,35 +44,30 @@ cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
 cmake --build build
 ```
 
-Run the program as follows:
+Run the program in the following format:
+
 ```bash
 ./build/frontend/frontend <program file name>
 ```
 
-## 📖 Introduction
-Designing your own programming language is a fundamental task in computer science that enables hands-on exploration of computation principles. Creating a language with C-like syntax helps to better understand compiler architecture. This process reveals the internal logic of translating high-level constructs into intermediate representations.
+## Introduction
+Building your own programming language is a fundamental task in computer science. It helps you explore how computations work in practice. Creating a language with a C-like syntax makes it easier to understand compiler architecture. This process shows how high-level language constructs are translated into intermediate representations.
 
-Manually implementing lexical and syntax analyzers is associated with substantial complexity. This approach requires writing and debugging low-level code, which becomes especially problematic when the grammar evolves. Handling operator precedence and associativity is a nontrivial task, making language maintenance extremely labor-intensive.
+A manual implementation of a lexer and a parser comes with serious difficulties. This approach requires writing and debugging low-level code, which becomes especially painful when the grammar changes. Handling operator precedence and associativity is not trivial and makes language maintenance very time-consuming.
 
-Using tools such as `Flex` and `Bison` automates the construction of analyzers. `Flex` generates an efficient scanner based on regular expressions, while `Bison` builds an LALR(1) parser that performs syntax analysis with one-token lookahead. This approach significantly speeds up development, providing reliability and ease of grammar modifications.
+Using tools like `Flex` and `Bison` helps automate the creation of analyzers. `Flex` generates an efficient scanner from regular expressions, and `Bison` builds an LALR(1) parser that performs syntax analysis with a one-token lookahead. This approach speeds up development and makes it easier and safer to modify the grammar.
 
-## 🔑 Methodology
-Implementing the frontend of a programming language includes several tasks:
-1) defining the grammar;
-2) splitting a program into tokens, lexical analysis;
-3) building the `AST`, syntax analysis.
+## Approach
+An Extended Backus–Naur Form (`EBNF`) [1] is suitable for describing the grammar. To generate the lexer and the parser, you can use `Flex` and `Bison`.
+To execute programs, you can implement an interpreter that walks through the `AST` using the `Visitor` abstraction and simulates program execution.
 
-The `EBNF` format [1] is suitable for describing the grammar. To generate lexical and syntax analyzers, one can use `Flex` and `Bison`.
-To execute a program, you can write an interpreter that, using the `Visitor` abstraction, traverses the `AST` and simulates the program execution. 
+## Language features
 
-## 👨‍💻 Workflow
-### Grammar description
-
-The grammar of the target programming language has been designed. Below is its description in a format close to `EBNF` [1]:
+A grammar for the target programming language was created. Below is its description in a format close to `EBNF` [1]:
 
 <details>
 <summary>Grammar</summary>
-  
+
 ```
 Program        ::= StmtList EOF
 
@@ -83,44 +101,15 @@ EOF            ::= __end_of_file__
 
 </details>
 
-### Lexical analyzer implementation
-At the first stage, classes for tokens, AST nodes, the lexer and the parser were implemented:
+The language supports variable scopes.
+
+## Lexer implementation
+The lexer is generated using `Flex` (see [lexer.l](https://github.com/RTCupid/Super_Biba_Boba_Language/blob/main/frontend/src/lexer.l)).
+
+Defined:
+
 <details>
-<summary>Show code block</summary>
-  
-```C++
-class Parser {
-    std::size_t pc_ = 0;
-    std::unique_ptr<Node> root_{nullptr};
-  public:
-    bool parse(const std::vector<std::unique_ptr<Token>> &tokens);
-  private:
-    /// select a statement and run its handler
-    std::unique_ptr<Node> get_statement(const std::vector<std::unique_ptr<Token>> &tokens);
-
-    // handlers for different types of operators
-    std::unique_ptr<Node> get_assign(const std::vector<std::unique_ptr<Token>> &tokens);
-    std::unique_ptr<Node> get_input(const std::vector<std::unique_ptr<Token>> &tokens);
-
-    std::unique_ptr<Node> get_print(const std::vector<std::unique_ptr<Token>> &tokens);
-
-    std::unique_ptr<Node> get_if(const std::vector<std::unique_ptr<Token>> &tokens);
-    std::unique_ptr<Node> get_while(const std::vector<std::unique_ptr<Token>> &tokens);
-
-    ...
-};
-```
-</details>
-
-However, during development it turned out that there are tools for generating lexical and syntax analyzers: `Flex` and `Bison`. It was decided to use these tools because of their significant advantages:
-
-- **Automation** — eliminates the need to implement the parser manually
-- **Reliability** — reduces the number of errors in syntax analysis and increases robustness
-- **Support for complex grammars** — built-in handling of operator precedence and associativity
-- **Faster development** — grammar changes lead to immediate regeneration of the parser
-
-Therefore, a description file for generating the lexical analyzer was written: [lexer.l](https://github.com/RTCupid/Super_Biba_Boba_Language/blob/main/frontend/src/lexer.l).
-It defines the following constructs:
+<summary>lexical constructs and processing rules</summary>
 
 ```l
 WHITESPACE    [ \t\r\v]+
@@ -131,121 +120,317 @@ ZERO          0
 LINE_COMMENT  "//".*
 BLOCK_COMMENT "/*"([^*]|\*+[^*/])*\*+"/"
 NEWLINE  \n
-```
 
-and the rules for handling them:
-```y
-{WHITESPACE}    { /* skip blanks and tabs */ }
-{NEWLINE}       { ++yylineno; }
-{LINE_COMMENT}  { /* skip */ }
+%%
+
+{WHITESPACE}    { yycolumn += yyleng; }
+{NEWLINE}       { ++yylineno; yycolumn = 1; }
+
+{LINE_COMMENT}  { yycolumn += yyleng; }
 {BLOCK_COMMENT} { /* skip */ }
 
-"if"            { return process_if();   }
-"else"          { return process_else(); }
-"while"         { return process_while(); }
-"print"         { return process_print(); }
-"?"             { return process_input(); }
-...
+"if"            { yycolumn += yyleng; return process_if();   }
+"else"          { yycolumn += yyleng; return process_else(); }
+"while"         { yycolumn += yyleng; return process_while(); }
+"print"         { yycolumn += yyleng; return process_print(); }
+"?"             { yycolumn += yyleng; return process_input(); }
+
+"||"             { yycolumn += yyleng; return process_log_or(); }
+"&&"             { yycolumn += yyleng; return process_log_and(); }
+
+"!"             { yycolumn += yyleng; return process_not(); }
+"=="            { yycolumn += yyleng; return process_eq(); }
+"!="            { yycolumn += yyleng; return process_not_eq(); }
+"<="            { yycolumn += yyleng; return process_less_or_eq(); }
+">="            { yycolumn += yyleng; return process_greater_or_eq(); }
+"="             { yycolumn += yyleng; return process_assign(); }
+
+"+"             { yycolumn += yyleng; return process_plus(); }
+"-"             { yycolumn += yyleng; return process_minus(); }
+"*"             { yycolumn += yyleng; return process_mul(); }
+"/"             { yycolumn += yyleng; return process_div(); }
+"%"             { yycolumn += yyleng; return process_rem_div(); }
+"&"             { yycolumn += yyleng; return process_and(); }
+"^"             { yycolumn += yyleng; return process_xor(); }
+"|"             { yycolumn += yyleng; return process_or(); }
+
+"<"             { yycolumn += yyleng; return process_less(); }
+">"             { yycolumn += yyleng; return process_greater(); }
+
+"("             { yycolumn += yyleng; return process_left_paren(); }
+")"             { yycolumn += yyleng; return process_right_paren(); }
+"{"             { yycolumn += yyleng; return process_left_brace(); }
+"}"             { yycolumn += yyleng; return process_right_brace(); }
+";"             { yycolumn += yyleng; return process_semicolon(); }
+
+{NUMBER1}{NUMBER}* { yycolumn += yyleng; return process_number(); }
+{ZERO}          { yycolumn += yyleng; return process_number(); }
+
+{ID}            { yycolumn += yyleng; return process_id(); }
+
+.               {
+                    std::cerr << "Unknown token: '" << yytext << "' at line " << yylineno << std::endl;;
+                    return -1;
+                }
+
+<<EOF>>         { return 0; }
+
+%%
 ```
 
-As you can see in `lexer.l`, some functions are called to handle the rules. These functions are defined in the `Lexer` class, which inherits from
+</details>
+
+Lexeme processing functions are defined in the `Lexer` class, which inherits from
 `yyFlexLexer` (see [lexer.hpp](https://github.com/RTCupid/Super_Biba_Boba_Language/blob/main/frontend/include/lexer.hpp)).
-They store values in the `current_lexem` and `current_value` fields of the class so that they can be printed while scanning a lexeme.
-It is planned that this class will also be used for error handling. An example of a handler function:
+They return the corresponding parser token generated by `Bison`, which is required for `Bison` and `Flex` to work together.
+
+To print full error information, the following methods were added to the `Lexer` class:
+
+<details>
+<summary>methods for getting token location</summary>
+
 ```C++
-int process_if() {
-    current_lexem = "conditional operator";
-    current_value = "if";
-    return yy::parser::token::TOK_IF;
-}
+int get_line() const { return yylineno; }
+
+int get_column() const { return yycolumn; }
+
+int get_yyleng() const { return yyleng; }
 ```
 
-The return value is a token from the parser generated by `Bison`; this is done for joint work of `Bison` and `Flex`.
+</details>
 
-### Syntax analyzer implementation
-To generate the syntax analyzer with `Bison`, the grammar description was written in the corresponding format: [parser.y](https://github.com/RTCupid/Super_Biba_Boba_Language/blob/main/frontend/src/parser.y). 
+## Parser implementation
+For syntax analysis, the `My_parser` class was added (see [my_parser.hpp](https://github.com/RTCupid/Super_Biba_Boba_Language/blob/main/frontend/include/my_parser.hpp)). It inherits from `yy::parser`, which is generated by Bison (see [parser.y](https://github.com/RTCupid/Super_Biba_Boba_Language/blob/main/frontend/src/parser.y)), and contains the following fields and methods:
 
-The function that connects the parser with the lexer looks like this:
+<details>
+<summary>My_parser class</summary>
+
 ```C++
-int yylex(yy::parser::semantic_type*   yylval,
-          yy::parser::location_type*   yylloc,
-          language::Lexer*             scanner)
-{
-    auto tt = scanner->yylex();
+class My_parser final : public yy::parser {
+  private:
+    Lexer *scanner_;
+    std::unique_ptr<Program> root_;
+    std::vector<std::string> source_lines_;
 
-    if (tt == yy::parser::token::TOK_NUMBER)
+  public:
+    Error_collector error_collector;
+    Scope scopes;
+
+    My_parser(Lexer *scanner, std::unique_ptr<language::Program> &root,
+              const std::string &program_file)
+        : yy::parser(scanner, root, this), scanner_(scanner),
+          root_(std::move(root)), error_collector(program_file) {
+        read_source(program_file);
+    }
+    ...
+};
+```
+
+</details>
+
+The function that connects the parser with the lexer:
+
+<details>
+<summary>yylex function</summary>
+
+```C++
+int yylex(yy::parser::semantic_type* yylval,
+          yy::parser::location_type* yylloc,
+          language::Lexer*           scanner) {
+  int line_before = scanner->get_line();
+
+  auto tt = scanner->yylex();
+
+  yylloc->begin.line = line_before;
+  yylloc->begin.column = scanner->get_column() - scanner->get_yyleng();
+  yylloc->end.line = scanner->get_line();
+  yylloc->end.column = scanner->get_column();
+
+  if (tt == yy::parser::token::TOK_NUMBER)
       yylval->build<int>() = std::stoi(scanner->YYText());
 
-    if (tt == yy::parser::token::TOK_ID)
+  if (tt == yy::parser::token::TOK_ID)
       yylval->build<std::string>() = scanner->YYText();
 
-    return tt;
+  return tt;
 }
 ```
-For numbers and variables, the value is stored in `yylval`; in other cases the token type is simply returned.
 
-During syntax analysis, an `AST` (abstract syntax tree) is built. 
-By introducing additional rules for syntax analysis, the hierarchy of operator precedence is implemented.
+For numbers and variables, the value is saved into `yylval`. In other cases, only the token type is returned.
 
-The tree can also be visualized using graphviz. To build the image, run:
-```bash
-dot dump/graph_dump.gv -Tsvg -o dump/graph_dump.svg
+</details>
+
+During parsing, an `AST` (abstract syntax tree) is built.
+By adding new parsing rules, the execution order hierarchy was implemented.
+
+## Error collector implementation
+The `Error_collector` (see [error_collector.hpp](https://github.com/RTCupid/Super_Biba_Boba_Language/blob/main/frontend/include/error_collector.hpp)) is implemented to collect errors.
+
+It stores a `std::vector` with information about each error:
+
+<details>
+<summary>Error_info struct</summary>
+
+```C++  
+struct Error_info {
+  const std::string program_file_;
+  const yy::location loc_;
+  const std::string msg_;
+  const std::string line_with_error_;
+
+  Error_info(const std::string program_file, const yy::location &loc,
+             const std::string &msg, const std::string &line_with_error)
+      : program_file_(program_file), loc_(loc), msg_(msg),
+        line_with_error_(line_with_error) {}
+
+  Error_info(const std::string program_file, const yy::location &loc,
+             const std::string &msg)
+      : program_file_(program_file), loc_(loc), msg_(msg) {}
+
+  void print(std::ostream &os) const {
+      ...
+  }
+};
 ```
-and you will get a graphical representation of the tree (example):
-<div align="center">
-  <img src="img/graph_dump.svg" alt="Dump Banner" width="1200">
-</div>
 
-### Simulator
-To simulate the execution of a program, a `Simulator` class was implemented [simulator.hpp](https://github.com/RTCupid/Super_Biba_Boba_Language/blob/main/frontend/include/simulator.hpp), which inherits from the abstract class `ASTVisitor`:
+</details>
+
+It also contains methods for adding and printing errors:
+
+<details>
+<summary>Error_collector methods</summary>
 
 ```C++
-// Visitor pattern for AST traversal
+void add_error(const yy::location &loc, const std::string &msg,
+               const std::string &line_with_error) {
+    errors_.push_back(Error_info{program_file_, loc, msg, line_with_error});
+}
+
+void add_error(const yy::location &loc, const std::string &msg) {
+    errors_.push_back(Error_info{program_file_, loc, msg});
+}
+
+bool has_errors() const { return !errors_.empty(); }
+
+void print_errors(std::ostream &os) const {
+    if (!errors_.empty())
+        for (auto &error : errors_)
+            error.print(os);
+}
+```
+
+</details>
+
+`My_parser` contains an `Error_collector` field, which makes it possible to add errors directly during parsing.
+
+## Scopes implementation
+To support local variables, the `Scope` class was added (see [scope.hpp](https://github.com/RTCupid/Super_Biba_Boba_Language/blob/main/frontend/include/scope.hpp)). It stores a vector of name tables for each scope and provides methods to push new scopes and pop the most recently added scope, as well as to search for a variable by name in all scopes that are visible at the current point in the program:
+
+<details>
+<summary>Scope class</summary>
+
+```C++
+class Scope final {
+  private:
+    std::vector<nametable_t> scopes_;
+
+  public:
+    Scope() {
+        push(nametable_t{}); // add global scope
+    }
+
+    void push(nametable_t nametable) { scopes_.push_back(nametable); }
+
+    void pop() { scopes_.pop_back(); }
+
+    void add_variable(name_t &var_name, bool defined) {
+        assert(!scopes_.empty());
+        scopes_.back().emplace(var_name, defined);
+    }
+
+    bool find(name_t &var_name) const {
+        for (auto it = scopes_.rbegin(), last_it = scopes_.rend();
+             it != last_it; ++it) {
+            auto var_iter = it->find(var_name);
+            if (var_iter != it->end())
+                return true;
+        }
+
+        return false;
+    }
+};
+```
+
+</details>
+
+An instance of `Scope` is stored in the `My_parser` class and is used to check whether a variable exists in scope during parsing.
+
+## Simulator implementation
+To simulate program execution, the `Simulator` class was implemented (see [simulator.hpp](https://github.com/RTCupid/Super_Biba_Boba_Language/blob/main/frontend/include/simulator.hpp)). It inherits from the abstract `ASTVisitor` class:
+
+<details>
+<summary>ASTVisitor class</summary>
+
+```C++
 class ASTVisitor {
   public:
     virtual ~ASTVisitor() = default;
 
     virtual void visit(Program &node) = 0;
     virtual void visit(Block_stmt &node) = 0;
+    virtual void visit(Empty_stmt &node) = 0;
     virtual void visit(Assignment_stmt &node) = 0;
-    virtual void visit(Input_stmt &node) = 0;
+    virtual void visit(Assignment_expr &node) = 0;
+    virtual void visit(Input &node) = 0;
     virtual void visit(If_stmt &node) = 0;
-...
+    virtual void visit(While_stmt &node) = 0;
+    virtual void visit(Print_stmt &node) = 0;
+    virtual void visit(Binary_operator &node) = 0;
+    virtual void visit(Unary_operator &node) = 0;
+    virtual void visit(Number &node) = 0;
+    virtual void visit(Variable &node) = 0;
 };
 ```
 
-In the `Simulator` class, the virtual functions of `ASTVisitor` are overridden and an expression evaluation function is introduced,
-which uses a special `ExpressionEvaluator` class [expr_evaluator.hpp](https://github.com/RTCupid/Super_Biba_Boba_Language/blob/main/frontend/include/expr_evaluator.hpp):
+</details>
+
+In `Simulator`, the virtual methods of `ASTVisitor` are overridden. Also, a function for evaluating expressions is introduced, which uses a special `ExpressionEvaluator` class (see [expr_evaluator.hpp](https://github.com/RTCupid/Super_Biba_Boba_Language/blob/main/frontend/include/expr_evaluator.hpp)):
+
+<details>
+<summary>evaluate_expression function</summary>
 
 ```C++
 number_t Simulator::evaluate_expression(Expression &expression) {
     ExpressionEvaluator evaluator(*this);
     expression.accept(evaluator);
-
     return evaluator.get_result();
 }
 ```
 
-`ExpressionEvaluator` is specialized only for expression evaluation. It contains the `result_` field to store the expression result, and `simulator_` — 
-a reference to the simulator instance from which it was called, so that it has access to the symbol table.
+</details>
 
-### Example program
-Below is a simple example of a correct program in the language — computing the n-th `Fibonacci number`:
+`ExpressionEvaluator` is specialized only for expression evaluation. It contains the `result_` field to store the result, and `simulator_` —
+a reference to the simulator that called it, so it can access the name table.
 
-```C
-fst = 0;               // no type required, everything is int 
-snd = 1;
-iters = ?;             // read a number from std::cin and define the variable
-while (iters > 1) {
-    tmp = fst;
-    fst = snd;
-    snd = snd + tmp;
-    iters = iters - 1;
-}
-print snd;             // print the value of the variable to std::cout
+## Using dump
+The built `AST` can be viewed in a graphical form using Graphviz. To generate an image, run:
+
+```bash
+dot graph_dump/graph_dump.gv -Tsvg -o graph_dump/graph_dump.svg
 ```
 
-## 👥 Authors
+As a result, you will get the following tree representation:
+
+<details>
+<summary>example of a generated AST</summary>
+
+<div align="center">
+  <img src="img/graph_dump.svg" alt="Dump Banner" width="1200">
+</div>
+
+</details>
+
+## Project authors
 
 <div align="center">
 
@@ -266,4 +451,4 @@ print snd;             // print the value of the variable to std::cout
 </div>
 
 ## 📚 References
-1. Extended Backus–Naur Form (EBNF) [Electronic resource] (in Russian): article – https://divancoder.ru/2017/06/ebnf/ (accessed May 21, 2025).
+1. Extended Backus–Naur Form (EBNF) [Electronic resource]: article. - https://divancoder.ru/2017/06/ebnf/ (accessed May 21, 2025)
