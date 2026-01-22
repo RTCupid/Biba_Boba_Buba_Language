@@ -195,7 +195,7 @@ int get_yyleng() const { return yyleng; }
 </details>
 
 ## Реализация синтаксического анализатора
-Класс синтаксического анализатора наследуется от yy::parser, который генерируется при помощи Bison (см. [parser.y](https://github.com/RTCupid/Super_Biba_Boba_Language/blob/main/frontend/src/parser.y)), и содержит следующие поля и методы:
+Класс синтаксического анализатора (см. [my_parser.hpp](https://github.com/RTCupid/Super_Biba_Boba_Language/blob/main/frontend/include/my_parser.hpp)) наследуется от yy::parser, который генерируется при помощи Bison (см. [parser.y](https://github.com/RTCupid/Super_Biba_Boba_Language/blob/main/frontend/src/parser.y)), и содержит следующие поля и методы:
 
 <details>
 <summary>класс Parser</summary>
