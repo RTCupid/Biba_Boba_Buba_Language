@@ -77,15 +77,8 @@ EOF            ::= __end_of_file__
 </details>
 
 ### Реализация лексического анализатора
-Существуют инструменты для генерации лексических и синтаксических анализаторов `Flex` и `Bison`. Решено использовать эти инструменты благодаря их значительным преимуществам:
-
-- **Автоматизация** — исключает необходимость ручной реализации парсера
-- **Надежность** — снижение количества ошибок при синтаксическом анализе и повышение устойчивости
-- **Поддержка сложных грамматик** — встроенная обработка приоритета и ассоциативности операторов
-- **Быстрая разработка** — изменения грамматики приводят к немедленной перегенерации парсера
-
-Поэтому написан файл с описанием для генерации лексического анализатора [lexer.l](https://github.com/RTCupid/Super_Biba_Boba_Language/blob/main/frontend/src/lexer.l).
-В нём определены следующие конструкции:
+Реализована генерация лексического анализатора [lexer.l](https://github.com/RTCupid/Super_Biba_Boba_Language/blob/main/frontend/src/lexer.l) при помощи `Flex`.
+Определены следующие конструкции:
 
 ```l
 WHITESPACE    [ \t\r\v]+
@@ -113,13 +106,16 @@ NEWLINE  \n
 ...
 ```
 
-Как можно заметить в файле `lexer.l` для обработки правил вызываются некоторые функции. Эти функции определены в классе `Lexer`, который наследуется от
-`yyFlexLexer` (см. файл [lexer.hpp](https://github.com/RTCupid/Super_Biba_Boba_Language/blob/main/frontend/include/lexer.hpp)).
+Функции для обработки правил определены в классе `Lexer`, который наследуется от
+`yyFlexLexer`[lexer.hpp](https://github.com/RTCupid/Super_Biba_Boba_Language/blob/main/frontend/include/lexer.hpp).
 Они возвращают соответствующий token парсера, который генерирует `Bison`, это сделано для совместной работы `Bison` и `Flex`.
 
 Для вывода полной информации об ошибке в класс `Lexer` добавлены следующие функции: 
 
-```
+<details>
+<summary>функции для получения локации токена</summary>
+
+```C++
 int get_line() const { return yylineno; }
 
 int get_column() const { return yycolumn; }
@@ -127,26 +123,67 @@ int get_column() const { return yycolumn; }
 int get_yyleng() const { return yyleng; }
 ```
 
+</details>
+
 ### Реализация синтаксического анализатора
-Для генерации синтаксического анализатора при помощи `Bison` в соответствующей форме написано описание грамматики [parser.y](https://github.com/RTCupid/Super_Biba_Boba_Language/blob/main/frontend/src/parser.y). 
+Класс синтаксического анализатора наследуется от yy::parser, который генерируется при помощи Bison[parser.y](https://github.com/RTCupid/Super_Biba_Boba_Language/blob/main/frontend/src/parser.y), и содержит следующие поля и методы:
+
+<details>
+<summary>class Parser</summary>
+  
+```C++
+class My_parser final : public yy::parser {
+  private:
+    Lexer *scanner_;
+    std::unique_ptr<Program> root_;
+    std::vector<std::string> source_lines_;
+
+  public:
+    Error_collector error_collector;
+    Scope scopes;
+
+    My_parser(Lexer *scanner, std::unique_ptr<language::Program> &root,
+              const std::string &program_file)
+        : yy::parser(scanner, root, this), scanner_(scanner),
+          root_(std::move(root)), error_collector(program_file) {
+        read_source(program_file);
+    }
+    ...
+};
+```
+
+</details>
 
 Функция, через которую осуществляется взаимодействие парсера с лексером:
-```C++
-int yylex(yy::parser::semantic_type*   yylval,
-          yy::parser::location_type*   yylloc,
-          language::Lexer*             scanner)
-{
-    auto tt = scanner->yylex();
 
-    if (tt == yy::parser::token::TOK_NUMBER)
+<details>
+<summary>функция yylex</summary>
+
+```C++
+int yylex(yy::parser::semantic_type* yylval,
+          yy::parser::location_type* yylloc,
+          language::Lexer*           scanner) {
+  int line_before = scanner->get_line();
+
+  auto tt = scanner->yylex();
+
+  yylloc->begin.line = line_before;
+  yylloc->begin.column = scanner->get_column() - scanner->get_yyleng();
+  yylloc->end.line = scanner->get_line();
+  yylloc->end.column = scanner->get_column();
+
+  if (tt == yy::parser::token::TOK_NUMBER)
       yylval->build<int>() = std::stoi(scanner->YYText());
 
-    if (tt == yy::parser::token::TOK_ID)
+  if (tt == yy::parser::token::TOK_ID)
       yylval->build<std::string>() = scanner->YYText();
 
-    return tt;
+  return tt;
 }
 ```
+
+</details>
+
 Для чисел и переменных сохраняется значение в `yylval`, в остальных случаях возвращается тип токена.
 
 Во время синтаксического анализа строится `AST` (abstract-syntax-tree). 
