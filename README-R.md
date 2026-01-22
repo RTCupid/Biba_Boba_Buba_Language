@@ -26,6 +26,8 @@
 Реализация фронтенда:
 - [Реализация лексического анализатора](#реализация-лексического-анализатора)
 - [Реализация синтаксического анализатора](#реализация-синтаксического-анализатора)
+- [Реализация сборщика ошибок](#реализация-сборщика-ошибок)
+- [Реализация областей видимости](#реализация-областей-видимости)
 - [Реализация симулятора](#реализация-симулятора)
 
 Дополнительно:
@@ -97,6 +99,8 @@ EOF            ::= __end_of_file__
 ```
 
 </details>
+
+В языке поддержаны области видимости переменных
 
 ## Реализация лексического анализатора
 Реализована генерация лексического анализатора при помощи `Flex` (см. [lexer.l](https://github.com/RTCupid/Super_Biba_Boba_Language/blob/main/frontend/src/lexer.l)).
@@ -195,10 +199,10 @@ int get_yyleng() const { return yyleng; }
 </details>
 
 ## Реализация синтаксического анализатора
-Класс синтаксического анализатора наследуется от yy::parser, который генерируется при помощи Bison (см. [parser.y](https://github.com/RTCupid/Super_Biba_Boba_Language/blob/main/frontend/src/parser.y)), и содержит следующие поля и методы:
+Для синтаксического анализа, добавлен класс `My_parser` (см. [my_parser.hpp](https://github.com/RTCupid/Super_Biba_Boba_Language/blob/main/frontend/include/my_parser.hpp)). Он наследуется от `yy::parser`, который генерируется при помощи `Bison` (см. [parser.y](https://github.com/RTCupid/Super_Biba_Boba_Language/blob/main/frontend/src/parser.y)), и содержит следующие поля и методы:
 
 <details>
-<summary>класс Parser</summary>
+<summary>класс My_parser</summary>
   
 ```C++
 class My_parser final : public yy::parser {
@@ -258,8 +262,113 @@ int yylex(yy::parser::semantic_type* yylval,
 Во время синтаксического анализа строится `AST` (abstract-syntax-tree). 
 При помощи введения новых правил для синтаксического анализа реализована иерархия порядка исполнения.
 
+## Реализация сборщика ошибок
+Для сбора ошибок реализован сборщик `Error_collector` (см. [error_collector.hpp](https://github.com/RTCupid/Super_Biba_Boba_Language/blob/main/frontend/include/error_collector.hpp)).
+
+Внутри себя он хранит `std::vector` с информацией о каждой ошибке:
+
+<details>
+<summary>структура Error_info</summary>
+
+```C++  
+struct Error_info {
+  const std::string program_file_;
+  const yy::location loc_;
+  const std::string msg_;
+  const std::string line_with_error_;
+
+  Error_info(const std::string program_file, const yy::location &loc,
+             const std::string &msg, const std::string &line_with_error)
+      : program_file_(program_file), loc_(loc), msg_(msg),
+        line_with_error_(line_with_error) {}
+
+  Error_info(const std::string program_file, const yy::location &loc,
+             const std::string &msg)
+      : program_file_(program_file), loc_(loc), msg_(msg) {}
+
+  void print(std::ostream &os) const {
+      ...
+  }
+};
+```
+
+</details>
+
+А также содержит методы для добавления и вывода ошибок:
+
+<details>
+<summary>методы Error_collector</summary>
+
+<details>
+<summary>класс ASTVisitor</summary>
+  
+```C++
+void add_error(const yy::location &loc, const std::string &msg,
+               const std::string &line_with_error) {
+    errors_.push_back(Error_info{program_file_, loc, msg, line_with_error});
+}
+
+void add_error(const yy::location &loc, const std::string &msg) {
+    errors_.push_back(Error_info{program_file_, loc, msg});
+}
+
+bool has_errors() const { return !errors_.empty(); }
+
+void print_errors(std::ostream &os) const {
+    if (!errors_.empty())
+        for (auto &error : errors_)
+            error.print(os);
+}
+```
+
+</details>
+
+`My_parser` содержит поле `Error_collector`, что позволяет добавлять ошибки прямо во время синтаксического анализа.
+
+## Реализация областей видимости
+Для поддержки локальных переменных добавлен класс `Scope` (см. [scope.hpp](https://github.com/RTCupid/Super_Biba_Boba_Language/blob/main/frontend/include/scope.hpp)), который хранит вектор из таблиц имён для каждой области видимости и имеет методы для добавления новых и удаления крайних добавленных областей видимости, а также для поиска переменной по имени во всех доступных в данной точке программы областях:
+
+<details>
+<summary>класс Scope</summary>
+
+```C++
+class Scope final {
+  private:
+    std::vector<nametable_t> scopes_;
+
+  public:
+    Scope() {
+        push(nametable_t{}); // add global scope
+    }
+
+    void push(nametable_t nametable) { scopes_.push_back(nametable); }
+
+    void pop() { scopes_.pop_back(); }
+
+    void add_variable(name_t &var_name, bool defined) {
+        assert(!scopes_.empty());
+        scopes_.back().emplace(var_name, defined);
+    }
+
+    bool find(name_t &var_name) const {
+        for (auto it = scopes_.rbegin(), last_it = scopes_.rend();
+             it != last_it; ++it) {
+            auto var_iter = it->find(var_name);
+            if (var_iter != it->end())
+                return true;
+        }
+
+        return false;
+    }
+};
+```
+
+</details>
+
+Экземпляр класса `Scope` хранится в классе `My_parser` и используется для проверки наличия переменной в области видимости в процессе синтаксического анализа.  
+
 ## Реализация симулятора
-Чтобы симулировать выполнение программы, реализован класс `Simulator` (см. [simulator.hpp](https://github.com/RTCupid/Super_Biba_Boba_Language/blob/main/frontend/include/simulator.hpp)), наследующийся от абстрактного класса ASTVisitor:
+Чтобы симулировать выполнение программы, реализован класс `Simulator` (см. [simulator.hpp](https://github.com/RTCupid/Super_Biba_Boba_Language/blob/main/frontend/include/simulator.hpp)), наследующийся от абстрактного класса `ASTVisitor`:
 
 <details>
 <summary>класс ASTVisitor</summary>
@@ -306,7 +415,7 @@ number_t Simulator::evaluate_expression(Expression &expression) {
 ссылку на симулятор, из которого он был вызван, чтобы иметь доступ к таблице имён.
 
 ## Использование dump
-Построенное дерево AST можно посмотреть в графическом представлении при помощи graphviz. Для генерации изображения можно ввести
+Построенное дерево `AST` можно посмотреть в графическом представлении при помощи `graphviz`. Для генерации изображения можно ввести
 ```bash
 dot graph_dump/graph_dump.gv -Tsvg -o graph_dump/graph_dump.svg
 ```

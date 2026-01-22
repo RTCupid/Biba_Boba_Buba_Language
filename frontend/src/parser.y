@@ -238,21 +238,18 @@ print_stmt     : TOK_PRINT expression
                 }
                ;
 
-expression
-              : assignment_expr 
-                { 
-                  $$ = std::move($1); 
+expression     : assignment_expr
+                {
+                  $$ = std::move($1);
                 }
               ;
 
-or
-              : and { $$ = std::move($1); }
+or            : and { $$ = std::move($1); }
               | or TOK_LOG_OR and
                 { $$ = AST_Factory::makeBinaryOp(Binary_operators::LogOr, std::move($1), std::move($3)); }
               ;
 
-and
-                : bitwise_op { $$ = std::move($1); }
+and           : bitwise_op { $$ = std::move($1); }
                 | and TOK_LOG_AND bitwise_op
                   { $$ = AST_Factory::makeBinaryOp(Binary_operators::LogAnd, std::move($1), std::move($3)); }
                 ;
@@ -334,7 +331,7 @@ primary        : TOK_NUMBER
 
 assignment_expr
               : or { $$ = std::move($1); }
-              | TOK_ID TOK_ASSIGN assignment_expr  
+              | TOK_ID TOK_ASSIGN assignment_expr
                 {
                   auto variable = AST_Factory::makeVariable(std::move($1));
                   auto var_name = variable->get_name();
