@@ -413,10 +413,13 @@ number_t Simulator::evaluate_expression(Expression &expression) {
 a reference to the simulator that called it, so it can access the name table.
 
 ## Using dump
-The built `AST` can be viewed in a graphical form using Graphviz. To generate an image, run:
-
+To enable the tree graph dump option, set the -GRAPH_DUMP flag, which is disabled by default
 ```bash
-dot graph_dump/graph_dump.gv -Tsvg -o graph_dump/graph_dump.svg
+cmake -S . -B build -DGRAPH_DUMP=ON
+```
+The constructed `AST` tree can be viewed in graphical form using `graphviz`. To generate the image, enter
+```bash
+dot dot dump/dump.gv -Tsvg -o dump/dump.svg
 ```
 
 As a result, you will get the following tree representation:
