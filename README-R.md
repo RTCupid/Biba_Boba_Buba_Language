@@ -412,9 +412,13 @@ number_t Simulator::evaluate_expression(Expression &expression) {
 ссылку на симулятор, из которого он был вызван, чтобы иметь доступ к таблице имён.
 
 ## Использование dump
+Для включения опции графического дампа дерева нужно выставить флаг -GRAPH_DUMP, который по умолчанию отключен
+```bash
+cmake -S . -B build -DGRAPH_DUMP=ON
+```
 Построенное дерево `AST` можно посмотреть в графическом представлении при помощи `graphviz`. Для генерации изображения можно ввести
 ```bash
-dot graph_dump/graph_dump.gv -Tsvg -o graph_dump/graph_dump.svg
+dot dot dump/dump.gv -Tsvg -o dump/dump.svg
 ```
 Получится следующее представление дерева
 
