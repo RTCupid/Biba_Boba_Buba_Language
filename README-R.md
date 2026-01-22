@@ -258,6 +258,64 @@ int yylex(yy::parser::semantic_type* yylval,
 Во время синтаксического анализа строится `AST` (abstract-syntax-tree). 
 При помощи введения новых правил для синтаксического анализа реализована иерархия порядка исполнения.
 
+## Реализация сборщика ошибок
+Для сбора ошибок, возникающих при синтаксическом анализе программы, реализован сборщик ошибок Error_collector (см. [error_collector.hpp](https://github.com/RTCupid/Super_Biba_Boba_Language/blob/main/frontend/include/error_collector.hpp)).
+
+Внутри себя он хранит `std::vector` с информацией о каждой ошибке:
+
+<details>
+<summary>структура Error_info</summary>
+
+```C++  
+struct Error_info {
+  const std::string program_file_;
+  const yy::location loc_;
+  const std::string msg_;
+  const std::string line_with_error_;
+
+  Error_info(const std::string program_file, const yy::location &loc,
+             const std::string &msg, const std::string &line_with_error)
+      : program_file_(program_file), loc_(loc), msg_(msg),
+        line_with_error_(line_with_error) {}
+
+  Error_info(const std::string program_file, const yy::location &loc,
+             const std::string &msg)
+      : program_file_(program_file), loc_(loc), msg_(msg) {}
+
+  void print(std::ostream &os) const {
+      ...
+  }
+};
+```
+
+</details>
+
+А также содержит методы для добавления и вывода ошибок:
+
+<details>
+<summary>структура Error_info</summary>
+
+```C++
+void add_error(const yy::location &loc, const std::string &msg,
+               const std::string &line_with_error) {
+    errors_.push_back(Error_info{program_file_, loc, msg, line_with_error});
+}
+
+void add_error(const yy::location &loc, const std::string &msg) {
+    errors_.push_back(Error_info{program_file_, loc, msg});
+}
+
+bool has_errors() const { return !errors_.empty(); }
+
+void print_errors(std::ostream &os) const {
+    if (!errors_.empty())
+        for (auto &error : errors_)
+            error.print(os);
+}
+```
+
+</details>
+
 ## Реализация симулятора
 Чтобы симулировать выполнение программы, реализован класс `Simulator` (см. [simulator.hpp](https://github.com/RTCupid/Super_Biba_Boba_Language/blob/main/frontend/include/simulator.hpp)), наследующийся от абстрактного класса ASTVisitor:
 
