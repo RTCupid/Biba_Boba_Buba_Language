@@ -26,6 +26,8 @@
 Реализация фронтенда:
 - [Реализация лексического анализатора](#реализация-лексического-анализатора)
 - [Реализация синтаксического анализатора](#реализация-синтаксического-анализатора)
+- [Реализация сборщика ошибок](#реализация-сборщика-ошибок)
+- [Реализация областей видимости](#реализация-областей-видимости)
 - [Реализация симулятора](#реализация-симулятора)
 
 Дополнительно:
@@ -197,10 +199,10 @@ int get_yyleng() const { return yyleng; }
 </details>
 
 ## Реализация синтаксического анализатора
-Класс синтаксического анализатора (см. [my_parser.hpp](https://github.com/RTCupid/Super_Biba_Boba_Language/blob/main/frontend/include/my_parser.hpp)) наследуется от yy::parser, который генерируется при помощи Bison (см. [parser.y](https://github.com/RTCupid/Super_Biba_Boba_Language/blob/main/frontend/src/parser.y)), и содержит следующие поля и методы:
+Для синтаксического анализа, добавлен класс `My_parser` (см. [my_parser.hpp](https://github.com/RTCupid/Super_Biba_Boba_Language/blob/main/frontend/include/my_parser.hpp)). Он наследуется от `yy::parser`, который генерируется при помощи `Bison` (см. [parser.y](https://github.com/RTCupid/Super_Biba_Boba_Language/blob/main/frontend/src/parser.y)), и содержит следующие поля и методы:
 
 <details>
-<summary>класс Parser</summary>
+<summary>класс My_parser</summary>
   
 ```C++
 class My_parser final : public yy::parser {
@@ -363,7 +365,7 @@ class Scope final {
 Экземпляр класса `Scope` хранится в классе `My_parser` и используется для проверки наличия переменной в области видимости в процессе синтаксического анализа.  
 
 ## Реализация симулятора
-Чтобы симулировать выполнение программы, реализован класс `Simulator` (см. [simulator.hpp](https://github.com/RTCupid/Super_Biba_Boba_Language/blob/main/frontend/include/simulator.hpp)), наследующийся от абстрактного класса ASTVisitor:
+Чтобы симулировать выполнение программы, реализован класс `Simulator` (см. [simulator.hpp](https://github.com/RTCupid/Super_Biba_Boba_Language/blob/main/frontend/include/simulator.hpp)), наследующийся от абстрактного класса `ASTVisitor`:
 
 <details>
 <summary>класс ASTVisitor</summary>
@@ -410,7 +412,7 @@ number_t Simulator::evaluate_expression(Expression &expression) {
 ссылку на симулятор, из которого он был вызван, чтобы иметь доступ к таблице имён.
 
 ## Использование dump
-Построенное дерево AST можно посмотреть в графическом представлении при помощи graphviz. Для генерации изображения можно ввести
+Построенное дерево `AST` можно посмотреть в графическом представлении при помощи `graphviz`. Для генерации изображения можно ввести
 ```bash
 dot graph_dump/graph_dump.gv -Tsvg -o graph_dump/graph_dump.svg
 ```
