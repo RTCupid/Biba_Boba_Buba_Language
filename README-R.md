@@ -293,7 +293,7 @@ struct Error_info {
 А также содержит методы для добавления и вывода ошибок:
 
 <details>
-<summary>структура Error_info</summary>
+<summary>методы Error_collector</summary>
 
 ```C++
 void add_error(const yy::location &loc, const std::string &msg,
