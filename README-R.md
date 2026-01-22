@@ -283,7 +283,7 @@ number_t Simulator::evaluate_expression(Expression &expression) {
 }
 ```
 
-<\details>
+</details>
 
 `ExpressionEvaluator` специализируется только на вычислении выражений, содержит поле `result_` для сохранения результата выражения, а также `simulator_` - 
 ссылку на симулятор, из которого он был вызван, чтобы иметь доступ к таблице имён.
