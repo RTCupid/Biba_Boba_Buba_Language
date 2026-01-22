@@ -9,6 +9,21 @@
 
 - Данный проект представляет реализацию языка программирования `ParaCL` из курса C++ от К.И. Владимирова.
 
+### Запуск программы
+Клонирование репозитория, сборка и компиляция выполняется при помощи следующих команд:
+
+```
+git clone https://github.com/RTCupid/Super_Biba_Boba_Language.git
+cd Super_Biba_Boba_Language
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+cmake --build build
+```
+
+Запуск программы производится в следующем формате:
+```
+./build/frontend/frontend <имя файла с программой>
+```
+
 ## 📖 Введение
 Разработка собственного языка программирования представляет собой фундаментальную задачу в компьютерных науках, позволяющую на практике исследовать принципы вычислений. Создание языка с C-подобным синтаксисом позволяет лучше понять архитектуру компиляторов. Этот процесс раскрывает внутреннюю логику трансляции высокоуровневых конструкций в промежуточные представления.
 
@@ -36,9 +51,9 @@
 ```
 Program        ::= StmtList EOF
 
-StmtList       ::= /* empty */ | StmtList Statement
+StmtList       ::= /* empty */ |  StmtList Statement 
 
-Statement      ::= AssignmentStmt ';' | InputStmt ';' | IfStmt | WhileStmt | PrintStmt ';' | BlockStmt
+Statement      ::= AssignmentStmt ';' | InputStmt ';' | IfStmt | WhileStmt | PrintStmt ';' | BlockStmt | ';'
 
 BlockStmt      ::= '{' StmtList '}'
 AssignmentStmt ::= Var '=' Expression
@@ -47,20 +62,20 @@ IfStmt         ::= 'if'    '(' Expression ')' Statement [ 'else' Statement ]
 WhileStmt      ::= 'while' '(' Expression ')' Statement
 PrintStmt      ::= 'print' Expression
 
-Expression     ::= Or
-
-Or             ::= And ( '||' And )*
-And            ::= Equality ( '&&' Equality )*
-
+Expression     ::= AssignmentExpr
+AssignmentExpr ::= Or | Var '=' AssignmentExpr
+Or             ::= And | Or '||' And
+And            ::= BitwiseOp | And '&&' BitwiseOp
+BitwiseOp      ::= Equality | BitwiseOp '&' Equality | BitwiseOp '^' Equality | BitwiseOp '|'  Equality
 Equality       ::= Relational ( ( '==' | '!=' ) Relational )*
 Relational     ::= AddSub ( ( '<' | '>' | '<=' | '>=' ) AddSub )*
 AddSub         ::= MulDiv ( ( '+' | '-' ) MulDiv )*
 MulDiv         ::= Unary  ( ( '*' | '/' ) Unary )*
-Unary          ::= '-' Unary | Primary
+Unary          ::= '-' Unary | '+' Unary | '~' Unary | Primary
 Primary        ::= '(' Expression ')' | Var | Number
 
 Var            ::= [A-Za-z_][A-Za-z0-9_]*
-Number         ::= [0-9]+
+Number         ::= [1-9][0-9]* | '0'
 EOF            ::= __end_of_file__
 ```
 
@@ -226,20 +241,6 @@ while (iters > 1) {
     iters = iters - 1;
 }
 print snd;             // вывести значение переменной в std::cout
-```
-### Запуск программы
-Клонирование репозитория, сборка и компиляция выполняется при помощи следующих команд:
-
-```
-git clone https://github.com/RTCupid/Super_Biba_Boba_Language.git
-cd Super_Biba_Boba_Language
-cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
-cmake --build build
-```
-
-Запуск программы производится в следующем формате:
-```
-./build/frontend/frontend <имя файла с программой>
 ```
 
 ## 👥 Создатели проекта
