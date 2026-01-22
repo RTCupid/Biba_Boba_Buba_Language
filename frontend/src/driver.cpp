@@ -1,12 +1,13 @@
 #include "driver.hpp"
 
-void driver(int argc, char**& argv) {
+void driver(int argc, char **&argv) {
     if (argc < 2) {
-        throw std::runtime_error(std::string("Usage: ") + argv[0] + " <program_file>");
+        throw std::runtime_error(std::string("Usage: ") + argv[0] +
+                                 " <program_file>");
     }
 
     std::ifstream program_file(argv[1]);
-    if (!program_file)  {
+    if (!program_file) {
         throw std::runtime_error("Cannot open program file\n");
     }
     language::Lexer scanner(&program_file, &std::cout);

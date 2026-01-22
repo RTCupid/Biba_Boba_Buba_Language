@@ -11,6 +11,6 @@
 #include <iostream>
 #include <memory>
 
-void driver(int argc, char**& argv);
+void driver(int argc, char **&argv);
 
 #endif // INCLUDE_DRIVER_HPP

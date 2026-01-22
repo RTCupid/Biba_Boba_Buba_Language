@@ -8,10 +8,10 @@ int yyFlexLexer::yywrap() { return 1; }
 int main(int argc, char *argv[]) {
     try {
         driver(argc, argv);
-    } catch(const std::exception &e) {
+    } catch (const std::exception &e) {
         std::cerr << "error: " << e.what() << "\n";
         return 1;
-    } catch(...) {
+    } catch (...) {
         std::cerr << "unknown error\n";
     }
     return 0;
