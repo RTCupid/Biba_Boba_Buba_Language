@@ -31,16 +31,17 @@ void driver(int argc, char **&argv) {
     language::Simulator simulator{};
     root->accept(simulator);
 
+    #ifdef GRAPH_DUMP
     // ____________GRAPH DUMP___________ //
-    // const auto paths = language::make_dump_paths();
-    // const std::string gv_file = paths.gv.string();
-    // const std::string svg_file = paths.svg.string();
-    // // dot dump/dump.gv -Tsvg -o dump/dump.svg
+    const auto paths = language::make_dump_paths();
+    const std::string gv_file = paths.gv.string();
+    const std::string svg_file = paths.svg.string();
+    // dot dump/dump.gv -Tsvg -o dump/dump.svg
 
-    // std::ofstream gv(gv_file);
-    // if (!gv) {
-    //     std::cerr << "unable to open gv file\n";
-    //     return 1;
-    // }
-    // root->graph_dump(gv, nullptr);
+    std::ofstream gv(gv_file);
+    if (!gv) {
+        throw std::runtime_error("unable to open gv file\n");
+    }
+    root->graph_dump(gv, nullptr);
+    #endif
 }

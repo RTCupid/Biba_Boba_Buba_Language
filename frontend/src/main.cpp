@@ -13,6 +13,6 @@ int main(int argc, char *argv[]) {
         return 1;
     } catch (...) {
         std::cerr << "unknown error\n";
+        return 2;
     }
-    return 0;
 }
