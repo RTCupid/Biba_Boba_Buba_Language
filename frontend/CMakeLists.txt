@@ -39,12 +39,18 @@ add_custom_target(generate_parser
 
 add_executable(frontend
     src/main.cpp
+    src/driver.cpp
     src/expr_evaluator.cpp
     src/simulator.cpp
     src/graph_dump.cpp
     ${FLEX_Lexer_OUTPUTS}
     ${BISON_Parser_OUTPUTS}
 )
+option(GRAPH_DUMP "Enable Graphviz dump" OFF)
+
+if (GRAPH_DUMP)
+    target_compile_definitions(frontend PRIVATE GRAPH_DUMP)
+endif()
 
 target_include_directories(frontend PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/include

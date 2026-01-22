@@ -299,6 +299,9 @@ struct Error_info {
 <details>
 <summary>методы Error_collector</summary>
 
+<details>
+<summary>класс ASTVisitor</summary>
+  
 ```C++
 void add_error(const yy::location &loc, const std::string &msg,
                const std::string &line_with_error) {
