@@ -98,6 +98,8 @@ EOF            ::= __end_of_file__
 
 </details>
 
+В языке поддержаны области видимости переменных
+
 ## Реализация лексического анализатора
 Реализована генерация лексического анализатора при помощи `Flex` (см. [lexer.l](https://github.com/RTCupid/Super_Biba_Boba_Language/blob/main/frontend/src/lexer.l)).
 
@@ -259,7 +261,7 @@ int yylex(yy::parser::semantic_type* yylval,
 При помощи введения новых правил для синтаксического анализа реализована иерархия порядка исполнения.
 
 ## Реализация сборщика ошибок
-Для сбора ошибок, возникающих при синтаксическом анализе программы, реализован сборщик ошибок Error_collector (см. [error_collector.hpp](https://github.com/RTCupid/Super_Biba_Boba_Language/blob/main/frontend/include/error_collector.hpp)).
+Для сбора ошибок реализован сборщик `Error_collector` (см. [error_collector.hpp](https://github.com/RTCupid/Super_Biba_Boba_Language/blob/main/frontend/include/error_collector.hpp)).
 
 Внутри себя он хранит `std::vector` с информацией о каждой ошибке:
 
@@ -315,6 +317,50 @@ void print_errors(std::ostream &os) const {
 ```
 
 </details>
+
+`My_parser` содержит поле `Error_collector`, что позволяет добавлять ошибки прямо во время синтаксического анализа.
+
+## Реализация областей видимости
+Для поддержки локальных переменных добавлен класс `Scope` (см. [scope.hpp](https://github.com/RTCupid/Super_Biba_Boba_Language/blob/main/frontend/include/scope.hpp)), который хранит вектор из таблиц имён для каждой области видимости и имеет методы для добавления новых и удаления крайних добавленных областей видимости, а также для поиска переменной по имени во всех доступных в данной точке программы областях:
+
+<details>
+<summary>класс Scope</summary>
+
+```C++
+class Scope final {
+  private:
+    std::vector<nametable_t> scopes_;
+
+  public:
+    Scope() {
+        push(nametable_t{}); // add global scope
+    }
+
+    void push(nametable_t nametable) { scopes_.push_back(nametable); }
+
+    void pop() { scopes_.pop_back(); }
+
+    void add_variable(name_t &var_name, bool defined) {
+        assert(!scopes_.empty());
+        scopes_.back().emplace(var_name, defined);
+    }
+
+    bool find(name_t &var_name) const {
+        for (auto it = scopes_.rbegin(), last_it = scopes_.rend();
+             it != last_it; ++it) {
+            auto var_iter = it->find(var_name);
+            if (var_iter != it->end())
+                return true;
+        }
+
+        return false;
+    }
+};
+```
+
+</details>
+
+Экземпляр класса `Scope` хранится в классе `My_parser` и используется для проверки наличия переменной в области видимости в процессе синтаксического анализа.  
 
 ## Реализация симулятора
 Чтобы симулировать выполнение программы, реализован класс `Simulator` (см. [simulator.hpp](https://github.com/RTCupid/Super_Biba_Boba_Language/blob/main/frontend/include/simulator.hpp)), наследующийся от абстрактного класса ASTVisitor:
