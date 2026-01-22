@@ -11,6 +11,21 @@
 
 - Check the [Contribution Guidelines](contribution_guidelines.md)
 
+### Running the program
+Cloning the repository, configuring and building are done with the following commands:
+
+```bash
+git clone https://github.com/RTCupid/Super_Biba_Boba_Language.git
+cd Super_Biba_Boba_Language
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+cmake --build build
+```
+
+Run the program as follows:
+```bash
+./build/frontend/frontend <program file name>
+```
+
 ## 📖 Introduction
 Designing your own programming language is a fundamental task in computer science that enables hands-on exploration of computation principles. Creating a language with C-like syntax helps to better understand compiler architecture. This process reveals the internal logic of translating high-level constructs into intermediate representations.
 
@@ -38,9 +53,9 @@ The grammar of the target programming language has been designed. Below is its d
 ```
 Program        ::= StmtList EOF
 
-StmtList       ::= /* empty */ | StmtList Statement
+StmtList       ::= /* empty */ |  StmtList Statement 
 
-Statement      ::= AssignmentStmt ';' | InputStmt ';' | IfStmt | WhileStmt | PrintStmt ';' | BlockStmt
+Statement      ::= AssignmentStmt ';' | InputStmt ';' | IfStmt | WhileStmt | PrintStmt ';' | BlockStmt | ';'
 
 BlockStmt      ::= '{' StmtList '}'
 AssignmentStmt ::= Var '=' Expression
@@ -49,16 +64,20 @@ IfStmt         ::= 'if'    '(' Expression ')' Statement [ 'else' Statement ]
 WhileStmt      ::= 'while' '(' Expression ')' Statement
 PrintStmt      ::= 'print' Expression
 
-Expression     ::= Equality
+Expression     ::= AssignmentExpr
+AssignmentExpr ::= Or | Var '=' AssignmentExpr
+Or             ::= And | Or '||' And
+And            ::= BitwiseOp | And '&&' BitwiseOp
+BitwiseOp      ::= Equality | BitwiseOp '&' Equality | BitwiseOp '^' Equality | BitwiseOp '|'  Equality
 Equality       ::= Relational ( ( '==' | '!=' ) Relational )*
 Relational     ::= AddSub ( ( '<' | '>' | '<=' | '>=' ) AddSub )*
 AddSub         ::= MulDiv ( ( '+' | '-' ) MulDiv )*
 MulDiv         ::= Unary  ( ( '*' | '/' ) Unary )*
-Unary          ::= '-' Unary | Primary
+Unary          ::= '-' Unary | '+' Unary | '~' Unary | Primary
 Primary        ::= '(' Expression ')' | Var | Number
 
 Var            ::= [A-Za-z_][A-Za-z0-9_]*
-Number         ::= [0-9]+
+Number         ::= [1-9][0-9]* | '0'
 EOF            ::= __end_of_file__
 ```
 
@@ -224,20 +243,6 @@ while (iters > 1) {
     iters = iters - 1;
 }
 print snd;             // print the value of the variable to std::cout
-```
-### Running the program
-Cloning the repository, configuring and building are done with the following commands:
-
-```bash
-git clone https://github.com/RTCupid/Super_Biba_Boba_Language.git
-cd Super_Biba_Boba_Language
-cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
-cmake --build build
-```
-
-Run the program as follows:
-```bash
-./build/frontend/frontend <program file name>
 ```
 
 ## 👥 Authors
