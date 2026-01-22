@@ -77,8 +77,12 @@ EOF            ::= __end_of_file__
 </details>
 
 ### Реализация лексического анализатора
-Реализована генерация лексического анализатора [lexer.l](https://github.com/RTCupid/Super_Biba_Boba_Language/blob/main/frontend/src/lexer.l) при помощи `Flex`.
-Определены следующие конструкции:
+Реализована генерация лексического анализатора при помощи `Flex` (см. [lexer.l](https://github.com/RTCupid/Super_Biba_Boba_Language/blob/main/frontend/src/lexer.l)).
+
+Определены:
+
+<details>
+<summary>лексические конструкции</summary>
 
 ```l
 WHITESPACE    [ \t\r\v]+
@@ -91,26 +95,74 @@ BLOCK_COMMENT "/*"([^*]|\*+[^*/])*\*+"/"
 NEWLINE  \n
 ```
 
-и правила для их обработки:
+</details>
+
+и 
+
+<details>
+<summary>правила для их обработки</summary>
+  
 ```y
-{WHITESPACE}    { /* skip blanks and tabs */ }
-{NEWLINE}       { ++yylineno; }
-{LINE_COMMENT}  { /* skip */ }
+{WHITESPACE}    { yycolumn += yyleng; }
+{NEWLINE}       { ++yylineno; yycolumn = 1; }
+
+{LINE_COMMENT}  { yycolumn += yyleng; }
 {BLOCK_COMMENT} { /* skip */ }
 
-"if"            { return process_if();   }
-"else"          { return process_else(); }
-"while"         { return process_while(); }
-"print"         { return process_print(); }
-"?"             { return process_input(); }
-...
+"if"            { yycolumn += yyleng; return process_if();   }
+"else"          { yycolumn += yyleng; return process_else(); }
+"while"         { yycolumn += yyleng; return process_while(); }
+"print"         { yycolumn += yyleng; return process_print(); }
+"?"             { yycolumn += yyleng; return process_input(); }
+
+"||"             { yycolumn += yyleng; return process_log_or(); }
+"&&"             { yycolumn += yyleng; return process_log_and(); }
+
+"!"             { yycolumn += yyleng; return process_not(); }
+"=="            { yycolumn += yyleng; return process_eq(); }
+"!="            { yycolumn += yyleng; return process_not_eq(); }
+"<="            { yycolumn += yyleng; return process_less_or_eq(); }
+">="            { yycolumn += yyleng; return process_greater_or_eq(); }
+"="             { yycolumn += yyleng; return process_assign(); }
+
+"+"             { yycolumn += yyleng; return process_plus(); }
+"-"             { yycolumn += yyleng; return process_minus(); }
+"*"             { yycolumn += yyleng; return process_mul(); }
+"/"             { yycolumn += yyleng; return process_div(); }
+"%"             { yycolumn += yyleng; return process_rem_div(); }
+"&"             { yycolumn += yyleng; return process_and(); }
+"^"             { yycolumn += yyleng; return process_xor(); }
+"|"             { yycolumn += yyleng; return process_or(); }
+
+"<"             { yycolumn += yyleng; return process_less(); }
+">"             { yycolumn += yyleng; return process_greater(); }
+
+"("             { yycolumn += yyleng; return process_left_paren(); }
+")"             { yycolumn += yyleng; return process_right_paren(); }
+"{"             { yycolumn += yyleng; return process_left_brace(); }
+"}"             { yycolumn += yyleng; return process_right_brace(); }
+";"             { yycolumn += yyleng; return process_semicolon(); }
+
+{NUMBER1}{NUMBER}* { yycolumn += yyleng; return process_number(); }
+{ZERO}          { yycolumn += yyleng; return process_number(); }
+
+{ID}            { yycolumn += yyleng; return process_id(); }
+
+.               {
+                    std::cerr << "Unknown token: '" << yytext << "' at line " << yylineno << std::endl;;
+                    return -1;
+                }
+
+<<EOF>>         { return 0; }
 ```
 
+</details>
+
 Функции для обработки правил определены в классе `Lexer`, который наследуется от
-`yyFlexLexer`[lexer.hpp](https://github.com/RTCupid/Super_Biba_Boba_Language/blob/main/frontend/include/lexer.hpp).
+`yyFlexLexer`(см. [lexer.hpp](https://github.com/RTCupid/Super_Biba_Boba_Language/blob/main/frontend/include/lexer.hpp)).
 Они возвращают соответствующий token парсера, который генерирует `Bison`, это сделано для совместной работы `Bison` и `Flex`.
 
-Для вывода полной информации об ошибке в класс `Lexer` добавлены следующие функции: 
+Для вывода полной информации об ошибке в класс `Lexer` добавлены: 
 
 <details>
 <summary>функции для получения локации токена</summary>
@@ -126,10 +178,10 @@ int get_yyleng() const { return yyleng; }
 </details>
 
 ### Реализация синтаксического анализатора
-Класс синтаксического анализатора наследуется от yy::parser, который генерируется при помощи Bison[parser.y](https://github.com/RTCupid/Super_Biba_Boba_Language/blob/main/frontend/src/parser.y), и содержит следующие поля и методы:
+Класс синтаксического анализатора наследуется от yy::parser, который генерируется при помощи Bison (см. [parser.y](https://github.com/RTCupid/Super_Biba_Boba_Language/blob/main/frontend/src/parser.y)), и содержит следующие поля и методы:
 
 <details>
-<summary>class Parser</summary>
+<summary>класс Parser</summary>
   
 ```C++
 class My_parser final : public yy::parser {
@@ -182,24 +234,15 @@ int yylex(yy::parser::semantic_type* yylval,
 }
 ```
 
-</details>
-
 Для чисел и переменных сохраняется значение в `yylval`, в остальных случаях возвращается тип токена.
+
+</details>
 
 Во время синтаксического анализа строится `AST` (abstract-syntax-tree). 
 При помощи введения новых правил для синтаксического анализа реализована иерархия порядка исполнения.
 
-Также это дерево можно посмотреть в графическом представлении при помощи graphviz. Для компиляции изображения необходимо ввести
-```bash
-dot graph_dump/graph_dump.gv -Tsvg -o graph_dump/graph_dump.svg
-```
-и мы получим следующее представление дерева (пример)
-<div align="center">
-  <img src="img/graph_dump.svg" alt="Dump Banner" width="1200">
-</div>
-
 ### Симулятор
-Чтобы симулировать выполнение программы, реализован класс `Simulator` [simulator.hpp](https://github.com/RTCupid/Super_Biba_Boba_Language/blob/main/frontend/include/simulator.hpp), наследующийся от абстрактного класса ASTVisitor:
+Чтобы симулировать выполнение программы, реализован класс `Simulator` (см. [simulator.hpp](https://github.com/RTCupid/Super_Biba_Boba_Language/blob/main/frontend/include/simulator.hpp)), наследующийся от абстрактного класса ASTVisitor:
 
 ```C++
 // Visitor pattern for AST traversal
@@ -217,7 +260,7 @@ class ASTVisitor {
 ```
 
 В классе `Simulator` выполняется переопределение виртуальных функций `ASTVisitor`, а также вводится функция для вычисления выражений, которая
-использует специальный класс `ExpressionEvaluator` [expr_evaluator.hpp](https://github.com/RTCupid/Super_Biba_Boba_Language/blob/main/frontend/include/expr_evaluator.hpp):
+использует специальный класс `ExpressionEvaluator` (см. [expr_evaluator.hpp](https://github.com/RTCupid/Super_Biba_Boba_Language/blob/main/frontend/include/expr_evaluator.hpp)):
 
 ```C++
 number_t Simulator::evaluate_expression(Expression &expression) {
@@ -246,6 +289,16 @@ while (iters > 1) {
 }
 print snd;             // вывести значение переменной в std::cout
 ```
+
+### Dump
+Построенное дерево AST можно посмотреть в графическом представлении при помощи graphviz. Для генерации изображения можно ввести
+```bash
+dot graph_dump/graph_dump.gv -Tsvg -o graph_dump/graph_dump.svg
+```
+Получится следующее представление дерева (пример)
+<div align="center">
+  <img src="img/graph_dump.svg" alt="Dump Banner" width="1200">
+</div>
 
 ## 👥 Создатели проекта
 
