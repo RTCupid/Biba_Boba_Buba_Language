@@ -34,7 +34,6 @@ Additional:
 - [Using dump](#using-dump)
 - [Project structure](#project-structure)
 - [Project authors](#project-authors)
-- [Project structure](#project-structure)
 
 ### Running the program
 Cloning the repository, building, and compiling can be done with the following commands:
@@ -486,52 +485,6 @@ You will get the following tree representation:
   <a href="https://github.com/lavrt"><strong>@lavrt</strong></a>
   <br>
 </div>
-
-## Project structure
-
-<details>
-<summary>structure</summary>
-
-```txt
-├── build
-├── CMakeLists.txt
-├── contribution_guidelines.md
-├── frontend
-│   ├── CMakeLists.txt
-│   ├── include
-│   │   ├── ast_factory.hpp
-│   │   ├── config.hpp
-│   │   ├── driver.hpp
-│   │   ├── dump_path_gen.hpp
-│   │   ├── error_collector.hpp
-│   │   ├── expr_evaluator.hpp
-│   │   ├── lexer.hpp
-│   │   ├── my_parser.hpp
-│   │   ├── node.hpp
-│   │   ├── scope.hpp
-│   │   └── simulator.hpp
-│   ├── src
-│   │   ├── driver.cpp
-│   │   ├── expr_evaluator.cpp
-│   │   ├── graph_dump.cpp
-│   │   ├── lexer.l
-│   │   ├── main.cpp
-│   │   ├── parser.y
-│   │   └── simulator.cpp
-│   └── tests
-│       ├── CMakeLists.txt
-│       ├── end_to_end
-│           └── ...
-│       └── unit
-│           └── ...
-├── img
-│   └── ...
-├── LICENSE
-├── README.md
-└── README-R.md
-```
-
-</details>
 
 ## 📚 References
 1. Extended Backus–Naur form (EBNF) [Online resource]: article — https://divancoder.ru/2017/06/ebnf/ (accessed May 21, 2025)
