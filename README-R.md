@@ -314,9 +314,13 @@ dot graph_dump/graph_dump.gv -Tsvg -o graph_dump/graph_dump.svg
   <a href="https://github.com/BulgakovDmitry">
     <img src="https://raw.githubusercontent.com/BulgakovDmitry/3D_triangles/main/img/D.jpeg" width="160" height="160" style="border-radius: 50%;">
   </a>
+  <a href="https://github.com/lavrt">
+    <img src="https://raw.githubusercontent.com/RTCupid/Biba_Boba_Buba_Language/main/img/lesha.png" width="160" height="160" style="border-radius: 50%;">
+  </a>
   <br>
   <a href="https://github.com/RTCupid"><strong>@RTCupid, </strong></a>
-  <a href="https://github.com/BulgakovDmitry"><strong>@BulgakovDmitry</strong></a>
+  <a href="https://github.com/BulgakovDmitry"><strong>@BulgakovDmitry, </strong></a>
+  <a href="https://github.com/lavrt"><strong>@lavrt</strong></a>
   <br>
 </div>
 
