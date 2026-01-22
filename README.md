@@ -1,31 +1,31 @@
 <div align="center">
 
-# Implementation of the "Biba-Boba-Buba language" programming language in C++
+# Implementation of the “Biba-Boba-Buba language” programming language in C++
   ![C++](https://img.shields.io/badge/C++-23-blue?style=for-the-badge&logo=cplusplus)
   ![CMake](https://img.shields.io/badge/CMake-3.20+-green?style=for-the-badge&logo=cmake)
   ![Testing](https://img.shields.io/badge/Google_Test-Framework-red?style=for-the-badge&logo=google)
 
 </div>
 
-- This project is an implementation of the `ParaCL` programming language from the C++ course by K. I. Vladimirov.
+- This project is an implementation of the `ParaCL` programming language from K. I. Vladimirov’s C++ course.
 
 ## README in other languages
 
-1. [Русский](/README-R.md)
+1. [Russian](/README-R.md)
 2. [English](/README.md)
 
-## Table of contents
+## Table of Contents
 Introduction:
 - [Running the program](#running-the-program)
 - [Introduction](#introduction)
-- [Approach](#approach)
+- [Methodology](#methodology)
 
 Language usage guide:
-- [Language features](#language-features)
+- [Language features overview](#language-features-overview)
 
 Frontend implementation:
-- [Lexer implementation](#lexer-implementation)
-- [Parser implementation](#parser-implementation)
+- [Lexical analyzer implementation](#lexical-analyzer-implementation)
+- [Syntax analyzer implementation](#syntax-analyzer-implementation)
 - [Error collector implementation](#error-collector-implementation)
 - [Scopes implementation](#scopes-implementation)
 - [Simulator implementation](#simulator-implementation)
@@ -34,37 +34,37 @@ Additional:
 - [Using dump](#using-dump)
 - [Project structure](#project-structure)
 - [Project authors](#project-authors)
+- [Project structure](#project-structure)
 
 ### Running the program
-Clone the repository, then build and compile it with the following commands:
+Cloning the repository, building, and compiling can be done with the following commands:
 
-```bash
-git clone git@github.com:RTCupid/Biba_Boba_Buba_Language.git
-cd Super_Biba_Boba_Language
+```
+git clone https://github.com/RTCupid/Biba_Boba_Buba_Language.git
+cd Biba_Boba_Buba_Language
 cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
 cmake --build build
 ```
 
 Run the program in the following format:
-
-```bash
+```
 ./build/frontend/frontend <program file name>
 ```
 
 ## Introduction
-Building your own programming language is a fundamental task in computer science. It helps you explore how computations work in practice. Creating a language with a C-like syntax makes it easier to understand compiler architecture. This process shows how high-level language constructs are translated into intermediate representations.
+Developing your own programming language is a fundamental task in computer science that allows you to explore the principles of computation in practice. Creating a language with a C-like syntax helps to better understand compiler architecture. This process reveals the internal logic of translating high-level constructs into intermediate representations.
 
-A manual implementation of a lexer and a parser comes with serious difficulties. This approach requires writing and debugging low-level code, which becomes especially painful when the grammar changes. Handling operator precedence and associativity is not trivial and makes language maintenance very time-consuming.
+Manually implementing lexical and syntax analyzers comes with significant challenges. This approach requires writing and debugging low-level code, which is especially problematic when the grammar changes. Handling operator precedence and associativity becomes a non-trivial task, making language maintenance extremely labor-intensive.
 
-Using tools like `Flex` and `Bison` helps automate the creation of analyzers. `Flex` generates an efficient scanner from regular expressions, and `Bison` builds an LALR(1) parser that performs syntax analysis with a one-token lookahead. This approach speeds up development and makes it easier and safer to modify the grammar.
+Using tools like `Flex` and `Bison` helps automate analyzer generation. `Flex` generates an efficient scanner based on regular expressions, while `Bison` builds an LALR(1) parser that performs syntax analysis with a one-token lookahead. This approach significantly speeds up development while improving reliability and making grammar changes easier.
 
-## Approach
-An Extended Backus–Naur Form (`EBNF`) [1] is suitable for describing the grammar. To generate the lexer and the parser, you can use `Flex` and `Bison`.
-To execute programs, you can implement an interpreter that walks through the `AST` using the `Visitor` abstraction and simulates program execution.
+## Methodology
+The grammar can be described using the `EBNF` format [1]. `Flex` and `Bison` can be used to generate the lexical and syntax analyzers.
+To execute the program, you can implement an interpreter that traverses the `AST` using the `Visitor` abstraction and simulates program execution.
 
-## Language features
+## Language features overview
 
-A grammar for the target programming language was created. Below is its description in a format close to `EBNF` [1]:
+A grammar for the target programming language has been created. Below is its description in a format close to `EBNF` [1]:
 
 <details>
 <summary>Grammar</summary>
@@ -104,13 +104,13 @@ EOF            ::= __end_of_file__
 
 The language supports variable scopes.
 
-## Lexer implementation
-The lexer is generated using `Flex` (see [lexer.l](https://github.com/RTCupid/Super_Biba_Boba_Language/blob/main/frontend/src/lexer.l)).
+## Lexical analyzer implementation
+Lexical analyzer generation is implemented using `Flex` (see [lexer.l](https://github.com/RTCupid/Super_Biba_Boba_Language/blob/main/frontend/src/lexer.l)).
 
 Defined:
 
 <details>
-<summary>lexical constructs and processing rules</summary>
+<summary>lexical constructs and rules for processing them</summary>
 
 ```l
 WHITESPACE    [ \t\r\v]+
@@ -144,6 +144,7 @@ NEWLINE  \n
 "!="            { yycolumn += yyleng; return process_not_eq(); }
 "<="            { yycolumn += yyleng; return process_less_or_eq(); }
 ">="            { yycolumn += yyleng; return process_greater_or_eq(); }
+
 "="             { yycolumn += yyleng; return process_assign(); }
 
 "+"             { yycolumn += yyleng; return process_plus(); }
@@ -181,14 +182,14 @@ NEWLINE  \n
 
 </details>
 
-Lexeme processing functions are defined in the `Lexer` class, which inherits from
+Functions for processing lexemes are defined in the `Lexer` class, which inherits from
 `yyFlexLexer` (see [lexer.hpp](https://github.com/RTCupid/Super_Biba_Boba_Language/blob/main/frontend/include/lexer.hpp)).
-They return the corresponding parser token generated by `Bison`, which is required for `Bison` and `Flex` to work together.
+They return the corresponding parser token generated by `Bison`. This is done to make `Bison` and `Flex` work together.
 
-To print full error information, the following methods were added to the `Lexer` class:
+To output full error information, the following were added to the `Lexer` class:
 
 <details>
-<summary>methods for getting token location</summary>
+<summary>functions to obtain token location</summary>
 
 ```C++
 int get_line() const { return yylineno; }
@@ -200,8 +201,8 @@ int get_yyleng() const { return yyleng; }
 
 </details>
 
-## Parser implementation
-For syntax analysis, the `My_parser` class was added (see [my_parser.hpp](https://github.com/RTCupid/Super_Biba_Boba_Language/blob/main/frontend/include/my_parser.hpp)). It inherits from `yy::parser`, which is generated by Bison (see [parser.y](https://github.com/RTCupid/Super_Biba_Boba_Language/blob/main/frontend/src/parser.y)), and contains the following fields and methods:
+## Syntax analyzer implementation
+For syntax analysis, the `My_parser` class was added (see [my_parser.hpp](https://github.com/RTCupid/Super_Biba_Boba_Language/blob/main/frontend/include/my_parser.hpp)). It inherits from `yy::parser`, which is generated using `Bison` (see [parser.y](https://github.com/RTCupid/Super_Biba_Boba_Language/blob/main/frontend/src/parser.y)), and contains the following fields and methods:
 
 <details>
 <summary>My_parser class</summary>
@@ -229,7 +230,7 @@ class My_parser final : public yy::parser {
 
 </details>
 
-The function that connects the parser with the lexer:
+The function through which the parser interacts with the lexer:
 
 <details>
 <summary>yylex function</summary>
@@ -257,20 +258,20 @@ int yylex(yy::parser::semantic_type* yylval,
 }
 ```
 
-For numbers and variables, the value is saved into `yylval`. In other cases, only the token type is returned.
+For numbers and variables, the value is stored in `yylval`; in other cases, the token type is returned.
 
 </details>
 
-During parsing, an `AST` (abstract syntax tree) is built.
-By adding new parsing rules, the execution order hierarchy was implemented.
+During syntax analysis, an `AST` (abstract syntax tree) is built.
+By introducing new syntax rules, an execution-order hierarchy is also implemented.
 
 ## Error collector implementation
-The `Error_collector` (see [error_collector.hpp](https://github.com/RTCupid/Super_Biba_Boba_Language/blob/main/frontend/include/error_collector.hpp)) is implemented to collect errors.
+An `Error_collector` was implemented to collect errors (see [error_collector.hpp](https://github.com/RTCupid/Super_Biba_Boba_Language/blob/main/frontend/include/error_collector.hpp)).
 
-It stores a `std::vector` with information about each error:
+Internally, it stores a `std::vector` with information about each error:
 
 <details>
-<summary>Error_info struct</summary>
+<summary>Error_info structure</summary>
 
 ```C++  
 struct Error_info {
@@ -322,10 +323,10 @@ void print_errors(std::ostream &os) const {
 
 </details>
 
-`My_parser` contains an `Error_collector` field, which makes it possible to add errors directly during parsing.
+`My_parser` contains an `Error_collector` field, which allows adding errors directly during syntax analysis.
 
 ## Scopes implementation
-To support local variables, the `Scope` class was added (see [scope.hpp](https://github.com/RTCupid/Super_Biba_Boba_Language/blob/main/frontend/include/scope.hpp)). It stores a vector of name tables for each scope and provides methods to push new scopes and pop the most recently added scope, as well as to search for a variable by name in all scopes that are visible at the current point in the program:
+To support local variables, the `Scope` class was added (see [scope.hpp](https://github.com/RTCupid/Super_Biba_Boba_Language/blob/main/frontend/include/scope.hpp)). It stores a vector of name tables for each scope and provides methods for adding new scopes, removing the last added scope, and searching for a variable by name across all scopes available at a given point in the program:
 
 <details>
 <summary>Scope class</summary>
@@ -364,10 +365,10 @@ class Scope final {
 
 </details>
 
-An instance of `Scope` is stored in the `My_parser` class and is used to check whether a variable exists in scope during parsing.
+An instance of `Scope` is stored in `My_parser` and is used to check whether a variable exists in the current scope during syntax analysis.
 
 ## Simulator implementation
-To simulate program execution, the `Simulator` class was implemented (see [simulator.hpp](https://github.com/RTCupid/Super_Biba_Boba_Language/blob/main/frontend/include/simulator.hpp)). It inherits from the abstract `ASTVisitor` class:
+To simulate program execution, the `Simulator` class was implemented (see [simulator.hpp](https://github.com/RTCupid/Super_Biba_Boba_Language/blob/main/frontend/include/simulator.hpp)), inheriting from the abstract `ASTVisitor` class:
 
 <details>
 <summary>ASTVisitor class</summary>
@@ -395,7 +396,7 @@ class ASTVisitor {
 
 </details>
 
-In `Simulator`, the virtual methods of `ASTVisitor` are overridden. Also, a function for evaluating expressions is introduced, which uses a special `ExpressionEvaluator` class (see [expr_evaluator.hpp](https://github.com/RTCupid/Super_Biba_Boba_Language/blob/main/frontend/include/expr_evaluator.hpp)):
+In `Simulator`, the virtual functions of `ASTVisitor` are overridden, and a function for evaluating expressions is introduced. It uses a dedicated `ExpressionEvaluator` class (see [expr_evaluator.hpp](https://github.com/RTCupid/Super_Biba_Boba_Language/blob/main/frontend/include/expr_evaluator.hpp)):
 
 <details>
 <summary>evaluate_expression function</summary>
@@ -410,20 +411,19 @@ number_t Simulator::evaluate_expression(Expression &expression) {
 
 </details>
 
-`ExpressionEvaluator` is specialized only for expression evaluation. It contains the `result_` field to store the result, and `simulator_` —
-a reference to the simulator that called it, so it can access the name table.
+`ExpressionEvaluator` is specialized only for evaluating expressions; it contains the `result_` field to store the expression result,
+as well as `simulator_` — a reference to the simulator from which it was called, so it has access to the name table.
 
 ## Using dump
-To enable the tree graph dump option, set the -GRAPH_DUMP flag, which is disabled by default
+To enable graphical AST dump, set the `-GRAPH_DUMP` flag, which is disabled by default:
 ```bash
 cmake -S . -B build -DGRAPH_DUMP=ON
 ```
-The constructed `AST` tree can be viewed in graphical form using `graphviz`. To generate the image, enter
+The constructed `AST` tree can be viewed graphically using `graphviz`. To generate an image, run:
 ```bash
 dot dot dump/dump.gv -Tsvg -o dump/dump.svg
 ```
-
-As a result, you will get the following tree representation:
+You will get the following tree representation:
 
 <details>
 <summary>example of a generated AST</summary>
@@ -487,5 +487,51 @@ As a result, you will get the following tree representation:
   <br>
 </div>
 
+## Project structure
+
+<details>
+<summary>structure</summary>
+
+```txt
+├── build
+├── CMakeLists.txt
+├── contribution_guidelines.md
+├── frontend
+│   ├── CMakeLists.txt
+│   ├── include
+│   │   ├── ast_factory.hpp
+│   │   ├── config.hpp
+│   │   ├── driver.hpp
+│   │   ├── dump_path_gen.hpp
+│   │   ├── error_collector.hpp
+│   │   ├── expr_evaluator.hpp
+│   │   ├── lexer.hpp
+│   │   ├── my_parser.hpp
+│   │   ├── node.hpp
+│   │   ├── scope.hpp
+│   │   └── simulator.hpp
+│   ├── src
+│   │   ├── driver.cpp
+│   │   ├── expr_evaluator.cpp
+│   │   ├── graph_dump.cpp
+│   │   ├── lexer.l
+│   │   ├── main.cpp
+│   │   ├── parser.y
+│   │   └── simulator.cpp
+│   └── tests
+│       ├── CMakeLists.txt
+│       ├── end_to_end
+│           └── ...
+│       └── unit
+│           └── ...
+├── img
+│   └── ...
+├── LICENSE
+├── README.md
+└── README-R.md
+```
+
+</details>
+
 ## 📚 References
-1. Extended Backus–Naur Form (EBNF) [Electronic resource]: article. - https://divancoder.ru/2017/06/ebnf/ (accessed May 21, 2025)
+1. Extended Backus–Naur form (EBNF) [Online resource]: article — https://divancoder.ru/2017/06/ebnf/ (accessed May 21, 2025)

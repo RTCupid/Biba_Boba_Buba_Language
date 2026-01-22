@@ -34,13 +34,14 @@
 - [Использование dump](#использование-dump)
 - [Структура проекта](#структура-проекта)
 - [Авторы проекта](#авторы-проекта)
+- [Структура проекта](#структура-проекта)
 
 ### Запуск программы
 Клонирование репозитория, сборка и компиляция выполняется при помощи следующих команд:
 
 ```
-git clone git@github.com:RTCupid/Biba_Boba_Buba_Language.git
-cd Super_Biba_Boba_Language
+git clone https://github.com/RTCupid/Biba_Boba_Buba_Language.git
+cd Biba_Boba_Buba_Language
 cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
 cmake --build build
 ```
@@ -485,5 +486,54 @@ dot dot dump/dump.gv -Tsvg -o dump/dump.svg
   <br>
 </div>
 
+## Структура проекта
+
+<details>
+<summary>структура</summary>
+
+```txt
+├── build
+├── CMakeLists.txt
+├── contribution_guidelines.md
+├── frontend
+│   ├── CMakeLists.txt
+│   ├── include
+│   │   ├── ast_factory.hpp
+│   │   ├── config.hpp
+│   │   ├── driver.hpp
+│   │   ├── dump_path_gen.hpp
+│   │   ├── error_collector.hpp
+│   │   ├── expr_evaluator.hpp
+│   │   ├── lexer.hpp
+│   │   ├── my_parser.hpp
+│   │   ├── node.hpp
+│   │   ├── scope.hpp
+│   │   └── simulator.hpp
+│   ├── src
+│   │   ├── driver.cpp
+│   │   ├── expr_evaluator.cpp
+│   │   ├── graph_dump.cpp
+│   │   ├── lexer.l
+│   │   ├── main.cpp
+│   │   ├── parser.y
+│   │   └── simulator.cpp
+│   └── tests
+│       ├── CMakeLists.txt
+│       ├── end_to_end
+│           └── ...
+│       └── unit
+│           └── ...
+├── img
+│   └── ...
+├── LICENSE
+├── README.md
+└── README-R.md
+
+
+```
+
+</details>
+
 ## 📚 Литература
 1. Расширенная форма Бэккуса-Науэра [Электронный ресурс]: статья. -  https://divancoder.ru/2017/06/ebnf/ (дата обращения 21 мая 2025)
+
