@@ -1,27 +1,27 @@
 <div align="center">
 
-# Implementation of the "Biba-Boba-Buba language" programming language in C++
+# Реализация языка программирования "Biba-Boba-Buba language" на C++
   ![C++](https://img.shields.io/badge/C++-23-blue?style=for-the-badge&logo=cplusplus)
   ![CMake](https://img.shields.io/badge/CMake-3.20+-green?style=for-the-badge&logo=cmake)
   ![Testing](https://img.shields.io/badge/Google_Test-Framework-red?style=for-the-badge&logo=google)
 
 </div>
 
-- This project is an implementation of the `ParaCL` programming language from the C++ course by K. I. Vladimirov.
+- Данный проект представляет реализацию языка программирования `ParaCL` из курса C++ от К.И. Владимирова.
 
-## README in other languages
+## README на других языках 
 
 1. [Русский](/README-R.md)
 2. [English](/README.md)
 
-## Table of contents
-Introduction:
-- [Running the program](#running-the-program)
-- [Introduction](#introduction)
-- [Approach](#approach)
+## Оглавление
+Вступление:
+- [Запуск программы](#запуск-программы)
+- [Введение](#введение)
+- [Методика](#методика)
 
-Language usage guide:
-- [Language features](#language-features)
+Инструкция по использованию языка:
+- [Описание возможностей языка](#описание-возможностей-языка)
 
 Реализация фронтенда:
 - [Реализация лексического анализатора](#реализация-лексического-анализатора)
@@ -33,41 +33,41 @@ Language usage guide:
 Дополнительно:
 - [Использование dump](#использование-dump)
 - [Авторы проекта](#авторы-проекта)
+- [Структура проекта](#структура-проекта)
 
-### Running the program
-Clone the repository, then build and compile it with the following commands:
+### Запуск программы
+Клонирование репозитория, сборка и компиляция выполняется при помощи следующих команд:
 
 ```
-git clone git@github.com:RTCupid/Biba_Boba_Buba_Language.git
-cd Super_Biba_Boba_Language
+git clone https://github.com/RTCupid/Biba_Boba_Buba_Language.git
+cd Biba_Boba_Buba_Language
 cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
 cmake --build build
 ```
 
-Run the program in the following format:
-
-```bash
-./build/frontend/frontend <program file name>
+Запуск программы производится в следующем формате:
+```
+./build/frontend/frontend <имя файла с программой>
 ```
 
-## Introduction
-Building your own programming language is a fundamental task in computer science. It helps you explore how computations work in practice. Creating a language with a C-like syntax makes it easier to understand compiler architecture. This process shows how high-level language constructs are translated into intermediate representations.
+## Введение
+Разработка собственного языка программирования представляет собой фундаментальную задачу в компьютерных науках, позволяющую на практике исследовать принципы вычислений. Создание языка с C-подобным синтаксисом позволяет лучше понять архитектуру компиляторов. Этот процесс раскрывает внутреннюю логику трансляции высокоуровневых конструкций в промежуточные представления.
 
-A manual implementation of a lexer and a parser comes with serious difficulties. This approach requires writing and debugging low-level code, which becomes especially painful when the grammar changes. Handling operator precedence and associativity is not trivial and makes language maintenance very time-consuming.
+Ручная реализация лексического и синтаксического анализаторов сопряжена с существенными сложностями. Такой подход требует написания и отладки низкоуровневого кода, что особенно проблематично при модификации грамматики. Обработка приоритета операторов и ассоциативности становится нетривиальной задачей, делая поддержку языка чрезвычайно трудоёмкой.
 
-Using tools like `Flex` and `Bison` helps automate the creation of analyzers. `Flex` generates an efficient scanner from regular expressions, and `Bison` builds an LALR(1) parser that performs syntax analysis with a one-token lookahead. This approach speeds up development and makes it easier and safer to modify the grammar.
+Использование инструментов `Flex` и `Bison` позволяет автоматизировать создание анализаторов. `Flex` генерирует эффективный сканер на основе регулярных выражений, а `Bison` строит LALR(1)-парсер, выполняющий синтаксический анализ с опережающим просмотром в один токен. Этот подход значительно ускоряет разработку, обеспечивая надёжность и лёгкость модификации грамматики.
 
-## Approach
-An Extended Backus–Naur Form (`EBNF`) [1] is suitable for describing the grammar. To generate the lexer and the parser, you can use `Flex` and `Bison`.
-To execute programs, you can implement an interpreter that walks through the `AST` using the `Visitor` abstraction and simulates program execution.
+## Методика
+Для описания грамматики подойдёт формат `РБНФ` [1]. Для генерации лексического и синтаксического анализаторов можно использовать `Flex` и `Bison`.
+Для выполнения программы можно написать интерпретатор, который при помощи абстракции `Visitor'a` пройдёт по `AST` и просимулирует выполнение программы. 
 
-## Language features
+## Описание возможностей языка
 
-A grammar for the target programming language was created. Below is its description in a format close to `EBNF` [1]:
+Составлена грамматика целевого языка программирования. Ниже приведено её описание в формате, близком к `РБНФ` [1]:
 
 <details>
-<summary>Grammar</summary>
-
+<summary>Грамматика</summary>
+  
 ```
 Program        ::= StmtList EOF
 
@@ -106,10 +106,10 @@ EOF            ::= __end_of_file__
 ## Реализация лексического анализатора
 Реализована генерация лексического анализатора при помощи `Flex` (см. [lexer.l](https://github.com/RTCupid/Super_Biba_Boba_Language/blob/main/frontend/src/lexer.l)).
 
-Defined:
+Определены:
 
 <details>
-<summary>lexical constructs and processing rules</summary>
+<summary>лексические конструкции и правила для их обработки</summary>
 
 ```l
 WHITESPACE    [ \t\r\v]+
@@ -180,14 +180,14 @@ NEWLINE  \n
 
 </details>
 
-Lexeme processing functions are defined in the `Lexer` class, which inherits from
-`yyFlexLexer` (see [lexer.hpp](https://github.com/RTCupid/Super_Biba_Boba_Language/blob/main/frontend/include/lexer.hpp)).
-They return the corresponding parser token generated by `Bison`, which is required for `Bison` and `Flex` to work together.
+Функции для обработки лексем определены в классе `Lexer`, который наследуется от
+`yyFlexLexer`(см. [lexer.hpp](https://github.com/RTCupid/Super_Biba_Boba_Language/blob/main/frontend/include/lexer.hpp)).
+Они возвращают соответствующий token парсера, который генерирует `Bison`, это сделано для совместной работы `Bison` и `Flex`.
 
-To print full error information, the following methods were added to the `Lexer` class:
+Для вывода полной информации об ошибке в класс `Lexer` добавлены: 
 
 <details>
-<summary>methods for getting token location</summary>
+<summary>функции для получения локации токена</summary>
 
 ```C++
 int get_line() const { return yylineno; }
@@ -228,10 +228,10 @@ class My_parser final : public yy::parser {
 
 </details>
 
-The function that connects the parser with the lexer:
+Функция, через которую осуществляется взаимодействие парсера с лексером:
 
 <details>
-<summary>yylex function</summary>
+<summary>функция yylex</summary>
 
 ```C++
 int yylex(yy::parser::semantic_type* yylval,
@@ -256,110 +256,7 @@ int yylex(yy::parser::semantic_type* yylval,
 }
 ```
 
-For numbers and variables, the value is saved into `yylval`. In other cases, only the token type is returned.
-
-</details>
-
-During parsing, an `AST` (abstract syntax tree) is built.
-By adding new parsing rules, the execution order hierarchy was implemented.
-
-## Error collector implementation
-The `Error_collector` (see [error_collector.hpp](https://github.com/RTCupid/Super_Biba_Boba_Language/blob/main/frontend/include/error_collector.hpp)) is implemented to collect errors.
-
-It stores a `std::vector` with information about each error:
-
-<details>
-<summary>Error_info struct</summary>
-
-```C++  
-struct Error_info {
-  const std::string program_file_;
-  const yy::location loc_;
-  const std::string msg_;
-  const std::string line_with_error_;
-
-  Error_info(const std::string program_file, const yy::location &loc,
-             const std::string &msg, const std::string &line_with_error)
-      : program_file_(program_file), loc_(loc), msg_(msg),
-        line_with_error_(line_with_error) {}
-
-  Error_info(const std::string program_file, const yy::location &loc,
-             const std::string &msg)
-      : program_file_(program_file), loc_(loc), msg_(msg) {}
-
-  void print(std::ostream &os) const {
-      ...
-  }
-};
-```
-
-</details>
-
-It also contains methods for adding and printing errors:
-
-<details>
-<summary>Error_collector methods</summary>
-
-```C++
-void add_error(const yy::location &loc, const std::string &msg,
-               const std::string &line_with_error) {
-    errors_.push_back(Error_info{program_file_, loc, msg, line_with_error});
-}
-
-void add_error(const yy::location &loc, const std::string &msg) {
-    errors_.push_back(Error_info{program_file_, loc, msg});
-}
-
-bool has_errors() const { return !errors_.empty(); }
-
-void print_errors(std::ostream &os) const {
-    if (!errors_.empty())
-        for (auto &error : errors_)
-            error.print(os);
-}
-```
-
-</details>
-
-`My_parser` contains an `Error_collector` field, which makes it possible to add errors directly during parsing.
-
-## Scopes implementation
-To support local variables, the `Scope` class was added (see [scope.hpp](https://github.com/RTCupid/Super_Biba_Boba_Language/blob/main/frontend/include/scope.hpp)). It stores a vector of name tables for each scope and provides methods to push new scopes and pop the most recently added scope, as well as to search for a variable by name in all scopes that are visible at the current point in the program:
-
-<details>
-<summary>Scope class</summary>
-
-```C++
-class Scope final {
-  private:
-    std::vector<nametable_t> scopes_;
-
-  public:
-    Scope() {
-        push(nametable_t{}); // add global scope
-    }
-
-    void push(nametable_t nametable) { scopes_.push_back(nametable); }
-
-    void pop() { scopes_.pop_back(); }
-
-    void add_variable(name_t &var_name, bool defined) {
-        assert(!scopes_.empty());
-        scopes_.back().emplace(var_name, defined);
-    }
-
-    bool find(name_t &var_name) const {
-        for (auto it = scopes_.rbegin(), last_it = scopes_.rend();
-             it != last_it; ++it) {
-            auto var_iter = it->find(var_name);
-            if (var_iter != it->end())
-                return true;
-        }
-
-        return false;
-    }
-};
-```
+Для чисел и переменных сохраняется значение в `yylval`, в остальных случаях возвращается тип токена.
 
 </details>
 
@@ -472,8 +369,8 @@ class Scope final {
 Чтобы симулировать выполнение программы, реализован класс `Simulator` (см. [simulator.hpp](https://github.com/RTCupid/Super_Biba_Boba_Language/blob/main/frontend/include/simulator.hpp)), наследующийся от абстрактного класса `ASTVisitor`:
 
 <details>
-<summary>ASTVisitor class</summary>
-
+<summary>класс ASTVisitor</summary>
+  
 ```C++
 class ASTVisitor {
   public:
@@ -497,10 +394,10 @@ class ASTVisitor {
 
 </details>
 
-In `Simulator`, the virtual methods of `ASTVisitor` are overridden. Also, a function for evaluating expressions is introduced, which uses a special `ExpressionEvaluator` class (see [expr_evaluator.hpp](https://github.com/RTCupid/Super_Biba_Boba_Language/blob/main/frontend/include/expr_evaluator.hpp)):
+В классе `Simulator` выполняется переопределение виртуальных функций `ASTVisitor`, а также вводится функция для вычисления выражений, которая использует специальный класс `ExpressionEvaluator` (см. [expr_evaluator.hpp](https://github.com/RTCupid/Super_Biba_Boba_Language/blob/main/frontend/include/expr_evaluator.hpp)):
 
 <details>
-<summary>evaluate_expression function</summary>
+<summary>функция evaluate_expression</summary>
 
 ```C++
 number_t Simulator::evaluate_expression(Expression &expression) {
@@ -512,8 +409,8 @@ number_t Simulator::evaluate_expression(Expression &expression) {
 
 </details>
 
-`ExpressionEvaluator` is specialized only for expression evaluation. It contains the `result_` field to store the result, and `simulator_` —
-a reference to the simulator that called it, so it can access the name table.
+`ExpressionEvaluator` специализируется только на вычислении выражений, содержит поле `result_` для сохранения результата выражения, а также `simulator_` - 
+ссылку на симулятор, из которого он был вызван, чтобы иметь доступ к таблице имён.
 
 ## Использование dump
 Для включения опции графического дампа дерева нужно выставить флаг -GRAPH_DUMP, который по умолчанию отключен
@@ -524,19 +421,18 @@ cmake -S . -B build -DGRAPH_DUMP=ON
 ```bash
 dot dot dump/dump.gv -Tsvg -o dump/dump.svg
 ```
-
-As a result, you will get the following tree representation:
+Получится следующее представление дерева
 
 <details>
-<summary>example of a generated AST</summary>
-
+<summary>пример сгенерированного AST</summary>
+  
 <div align="center">
   <img src="img/graph_dump.svg" alt="Dump Banner" width="1200">
 </div>
 
 </details>
 
-## Project authors
+## Авторы проекта
 
 <div align="center">
 
@@ -556,5 +452,54 @@ As a result, you will get the following tree representation:
   <br>
 </div>
 
-## 📚 References
-1. Extended Backus–Naur Form (EBNF) [Electronic resource]: article. - https://divancoder.ru/2017/06/ebnf/ (accessed May 21, 2025)
+## Структура проекта
+
+<details>
+<summary>структура</summary>
+
+```txt
+├── build
+├── CMakeLists.txt
+├── contribution_guidelines.md
+├── frontend
+│   ├── CMakeLists.txt
+│   ├── include
+│   │   ├── ast_factory.hpp
+│   │   ├── config.hpp
+│   │   ├── driver.hpp
+│   │   ├── dump_path_gen.hpp
+│   │   ├── error_collector.hpp
+│   │   ├── expr_evaluator.hpp
+│   │   ├── lexer.hpp
+│   │   ├── my_parser.hpp
+│   │   ├── node.hpp
+│   │   ├── scope.hpp
+│   │   └── simulator.hpp
+│   ├── src
+│   │   ├── driver.cpp
+│   │   ├── expr_evaluator.cpp
+│   │   ├── graph_dump.cpp
+│   │   ├── lexer.l
+│   │   ├── main.cpp
+│   │   ├── parser.y
+│   │   └── simulator.cpp
+│   └── tests
+│       ├── CMakeLists.txt
+│       ├── end_to_end
+│           └── ...
+│       └── unit
+│           └── ...
+├── img
+│   └── ...
+├── LICENSE
+├── README.md
+└── README-R.md
+
+
+```
+
+</details>
+
+## 📚 Литература
+1. Расширенная форма Бэккуса-Науэра [Электронный ресурс]: статья. -  https://divancoder.ru/2017/06/ebnf/ (дата обращения 21 мая 2025)
+
