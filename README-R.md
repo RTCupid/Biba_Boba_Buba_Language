@@ -1,6 +1,6 @@
 <div align="center">
 
-# Реализация языка программирования Super Biba-Boba language на C++
+# Реализация языка программирования "Biba-Boba-Buba language" на C++
   ![C++](https://img.shields.io/badge/C++-23-blue?style=for-the-badge&logo=cplusplus)
   ![CMake](https://img.shields.io/badge/CMake-3.20+-green?style=for-the-badge&logo=cmake)
   ![Testing](https://img.shields.io/badge/Google_Test-Framework-red?style=for-the-badge&logo=google)
@@ -29,7 +29,7 @@
 - [Реализация симулятора](#реализация-симулятора)
 
 Дополнительно:
-- [Использование dump](#dump)
+- [Использование dump](#использование-dump)
 - [Авторы проекта](#авторы-проекта)
 
 ### Запуск программы
@@ -104,7 +104,7 @@ EOF            ::= __end_of_file__
 Определены:
 
 <details>
-<summary>лексические конструкции</summary>
+<summary>лексические конструкции и правила для их обработки</summary>
 
 ```l
 WHITESPACE    [ \t\r\v]+
@@ -115,16 +115,9 @@ ZERO          0
 LINE_COMMENT  "//".*
 BLOCK_COMMENT "/*"([^*]|\*+[^*/])*\*+"/"
 NEWLINE  \n
-```
 
-</details>
+%%
 
-и 
-
-<details>
-<summary>правила для их обработки</summary>
-  
-```y
 {WHITESPACE}    { yycolumn += yyleng; }
 {NEWLINE}       { ++yylineno; yycolumn = 1; }
 
@@ -176,11 +169,13 @@ NEWLINE  \n
                 }
 
 <<EOF>>         { return 0; }
+
+%%
 ```
 
 </details>
 
-Функции для обработки правил определены в классе `Lexer`, который наследуется от
+Функции для обработки лексем определены в классе `Lexer`, который наследуется от
 `yyFlexLexer`(см. [lexer.hpp](https://github.com/RTCupid/Super_Biba_Boba_Language/blob/main/frontend/include/lexer.hpp)).
 Они возвращают соответствующий token парсера, который генерирует `Bison`, это сделано для совместной работы `Bison` и `Flex`.
 
@@ -310,7 +305,7 @@ number_t Simulator::evaluate_expression(Expression &expression) {
 `ExpressionEvaluator` специализируется только на вычислении выражений, содержит поле `result_` для сохранения результата выражения, а также `simulator_` - 
 ссылку на симулятор, из которого он был вызван, чтобы иметь доступ к таблице имён.
 
-## Dump
+## Использование dump
 Построенное дерево AST можно посмотреть в графическом представлении при помощи graphviz. Для генерации изображения можно ввести
 ```bash
 dot graph_dump/graph_dump.gv -Tsvg -o graph_dump/graph_dump.svg
