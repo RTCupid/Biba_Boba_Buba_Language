@@ -244,61 +244,65 @@ int yylex(yy::parser::semantic_type* yylval,
 ### Симулятор
 Чтобы симулировать выполнение программы, реализован класс `Simulator` (см. [simulator.hpp](https://github.com/RTCupid/Super_Biba_Boba_Language/blob/main/frontend/include/simulator.hpp)), наследующийся от абстрактного класса ASTVisitor:
 
+<details>
+<summary>класс ASTVisitor</summary>
+  
 ```C++
-// Visitor pattern for AST traversal
 class ASTVisitor {
   public:
     virtual ~ASTVisitor() = default;
 
     virtual void visit(Program &node) = 0;
     virtual void visit(Block_stmt &node) = 0;
+    virtual void visit(Empty_stmt &node) = 0;
     virtual void visit(Assignment_stmt &node) = 0;
-    virtual void visit(Input_stmt &node) = 0;
+    virtual void visit(Assignment_expr &node) = 0;
+    virtual void visit(Input &node) = 0;
     virtual void visit(If_stmt &node) = 0;
-...
+    virtual void visit(While_stmt &node) = 0;
+    virtual void visit(Print_stmt &node) = 0;
+    virtual void visit(Binary_operator &node) = 0;
+    virtual void visit(Unary_operator &node) = 0;
+    virtual void visit(Number &node) = 0;
+    virtual void visit(Variable &node) = 0;
 };
 ```
 
-В классе `Simulator` выполняется переопределение виртуальных функций `ASTVisitor`, а также вводится функция для вычисления выражений, которая
-использует специальный класс `ExpressionEvaluator` (см. [expr_evaluator.hpp](https://github.com/RTCupid/Super_Biba_Boba_Language/blob/main/frontend/include/expr_evaluator.hpp)):
+</details>
+
+В классе `Simulator` выполняется переопределение виртуальных функций `ASTVisitor`, а также вводится функция для вычисления выражений, которая использует специальный класс `ExpressionEvaluator` (см. [expr_evaluator.hpp](https://github.com/RTCupid/Super_Biba_Boba_Language/blob/main/frontend/include/expr_evaluator.hpp)):
+
+<details>
+<summary>функция evaluate_expression</summary>
 
 ```C++
 number_t Simulator::evaluate_expression(Expression &expression) {
     ExpressionEvaluator evaluator(*this);
     expression.accept(evaluator);
-
     return evaluator.get_result();
 }
 ```
 
+<\details>
+
 `ExpressionEvaluator` специализируется только на вычислении выражений, содержит поле `result_` для сохранения результата выражения, а также `simulator_` - 
 ссылку на симулятор, из которого он был вызван, чтобы иметь доступ к таблице имён.
-
-### Пример программы
-Ниже приведён простой пример корректной программы на языке - вычисление n-го `числа Фиббоначи`:
-
-```C
-fst = 0;               // тип не требуется, все типы int 
-snd = 1;
-iters = ?;             // считать со std::cin число и определить переменную
-while (iters > 1) {
-    tmp = fst;
-    fst = snd;
-    snd = snd + tmp;
-    iters = iters - 1;
-}
-print snd;             // вывести значение переменной в std::cout
-```
 
 ### Dump
 Построенное дерево AST можно посмотреть в графическом представлении при помощи graphviz. Для генерации изображения можно ввести
 ```bash
 dot graph_dump/graph_dump.gv -Tsvg -o graph_dump/graph_dump.svg
 ```
-Получится следующее представление дерева (пример)
+Получится следующее представление дерева
+
+<details>
+<summary>пример сгенерированного AST</summary>
+  
 <div align="center">
   <img src="img/graph_dump.svg" alt="Dump Banner" width="1200">
 </div>
+
+</details>
 
 ## 👥 Создатели проекта
 
