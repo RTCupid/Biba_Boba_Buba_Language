@@ -39,6 +39,7 @@ add_custom_target(generate_parser
 
 add_executable(frontend
     src/main.cpp
+    src/driver.cpp
     src/expr_evaluator.cpp
     src/simulator.cpp
     src/graph_dump.cpp
