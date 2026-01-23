@@ -35,6 +35,8 @@
 Реализация фронтенда:
 - [Реализация лексического анализатора](#реализация-лексического-анализатора)
 - [Реализация синтаксического анализатора](#реализация-синтаксического-анализатора)
+- [Проектирование структур данных для хранения программы](#проектирование-структур-данных-для-хранения-программы)
+- [Реализация статической фабрики для генерации узлов AST](#реализация-статической-фабрики-для-генерации-узлов-ast)
 - [Реализация сборщика ошибок](#реализация-сборщика-ошибок)
 - [Реализация областей видимости](#реализация-областей-видимости)
 - [Реализация симулятора](#реализация-симулятора)
@@ -488,6 +490,136 @@ int yylex(yy::parser::semantic_type* yylval,
 
 Во время синтаксического анализа строится `AST` (abstract-syntax-tree). 
 При помощи введения новых правил для синтаксического анализа реализована иерархия порядка исполнения.
+
+## Проектирование структур данных для хранения программы
+В качестве представления структурной программы, то есть программы содержащей только ветвления и циклы, без goto, решено использовать древовидную структуру - `AST` (abstract-syntax-tree). Для хранения такого рода данных реализована следующая иерархия классов (см. [node.hpp](https://github.com/RTCupid/Super_Biba_Boba_Language/blob/main/frontend/include/node.hpp)): для всех классов узлов создан общий родитель - узел `Node` с виртуальным деструктором и виртуальным методом `accept` для использования паттерна `Visitor`:
+
+<details>
+<summary>класс Node</summary>
+
+```C++
+class Node {
+  public:
+    virtual ~Node() = default;
+    virtual void accept(ASTVisitor &visitor) = 0;
+};
+```
+
+</details>
+
+От `Node` наследуется два класса: `Statement` и `Expression`, первый для реализации одиночных операторов, второй - для выражений:
+
+<details>
+<summary>абстрактные классы Statement и Expression</summary>
+
+```C++
+class Statement : public Node {};
+class Expression : public Node {};
+```
+
+</details>
+
+Затем от `Expression` наследуются классы всех операторов, имеющих смысл выражения, а от `Statement` наследуются классы всех остальных операторов: то есть операторов вывода, ветвления и цикла, а также пустого оператора и блока операторов. Например, следующим образом выглядит класс для оператора цикла `while`:
+
+<details>
+<summary>класс While_stmt</summary>
+
+```C++
+class While_stmt : public Statement {
+  private:
+    Expression_ptr condition_;
+    Statement_ptr body_;
+
+  public:
+    While_stmt(Expression_ptr condition, Statement_ptr body)
+        : condition_(std::move(condition)), body_(std::move(body)) {}
+
+    Expression &get_condition() { return *condition_; }
+    Statement &get_body() { return *body_; }
+
+    void accept(ASTVisitor &visitor) override { visitor.visit(*this); }
+};
+```
+
+</details>
+
+Он публично наследуется от Statement и внутри себя переопределяет функцию accept для `Visitor`.
+
+И, например, так реализуется класс для бинарных операторов, наследующийся от `Expression`:
+
+<details>
+<summary>класс Binary_operator</summary>
+
+```C++
+class Binary_operator : public Expression {
+  private:
+    Binary_operators op_;
+    Expression_ptr left_;
+    Expression_ptr right_;
+
+  public:
+    Binary_operator(Binary_operators op, Expression_ptr left,
+                    Expression_ptr right)
+        : op_(op), left_(std::move(left)), right_(std::move(right)) {}
+
+    Binary_operators get_operator() const { return op_; }
+    Expression &get_left() { return *left_; }
+    const Expression &get_left() const { return *left_; }
+    Expression &get_right() { return *right_; }
+    const Expression &get_right() const { return *right_; }
+
+    void accept(ASTVisitor &visitor) override { visitor.visit(*this); }
+};
+```
+
+</details>
+
+Классы переменной - `Variable`, и числа - `Number`, также наследуются от `Expression`. Исключением является оператор присваивания, который разделён на два класса - один, наследующийся от `Statement`, второй - от `Expression`, потому что он может использоваться в разных контекстах с разным смыслом.
+
+## Реализация статической фабрики для генерации узлов AST
+Для генерации `AST` из узлов, имеющих классы, рассмотренные выше, решено использовать статическую фабрику (см. [ast_factory.hpp](https://github.com/RTCupid/Super_Biba_Boba_Language/blob/main/frontend/include/ast_factory.hpp)). Этот метод позволяет человеку, разрабатывающему синтаксический анализатор, не задумываться о внутреннем строении дерева, а вызывать соответствующие методы с именованными аргументами:
+
+<details>
+<summary>класс AST_Factory</summary>
+
+```C++
+class AST_Factory final {
+  public:
+    static std::unique_ptr<Program> makeProgram(StmtList stmts) {
+        return std::make_unique<Program>(std::move(stmts));
+    }
+
+    static Statement_ptr makeEmpty() { return std::make_unique<Empty_stmt>(); }
+
+    static Statement_ptr makeBlock(StmtList stmts = {}) {
+        return std::make_unique<Block_stmt>(std::move(stmts));
+    }
+
+    static Statement_ptr makeWhile(Expression_ptr condition,
+                                   Statement_ptr body) {
+        return std::make_unique<While_stmt>(std::move(condition),
+                                            std::move(body));
+    }
+
+    static Statement_ptr makeIf(Expression_ptr condition,
+                                Statement_ptr then_branch,
+                                Statement_ptr else_branch = nullptr) {
+        return std::make_unique<If_stmt>(std::move(condition),
+                                         std::move(then_branch),
+                                         std::move(else_branch));
+    }
+
+    static Expression_ptr makeAssignmentExpr(Variable_ptr variable,
+                                             Expression_ptr expression) {
+        return std::make_unique<Assignment_expr>(std::move(variable),
+                                                 std::move(expression));
+    }
+...
+};
+```
+
+</details>
+
 
 ## Реализация сборщика ошибок
 Для сбора ошибок реализован сборщик `Error_collector` (см. [error_collector.hpp](https://github.com/RTCupid/Super_Biba_Boba_Language/blob/main/frontend/include/error_collector.hpp)).
