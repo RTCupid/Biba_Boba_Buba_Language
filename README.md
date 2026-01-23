@@ -201,7 +201,7 @@ int get_yyleng() const { return yyleng; }
 </details>
 
 ## Syntax analyzer implementation
-For syntax analysis, the `My_parser` class was added (see [my_parser.hpp](https://github.com/RTCupid/Super_Biba_Boba_Language/blob/main/frontend/include/my_parser.hpp)). It inherits from `yy::parser`, which is generated using `Bison` (see [parser.y](https://github.com/RTCupid/Super_Biba_Boba_Language/blob/main/frontend/src/parser.y)), and contains the following fields and methods:
+For syntax analysis the `My_parser` class was added (see [my_parser.hpp](https://github.com/RTCupid/Super_Biba_Boba_Language/blob/main/frontend/include/my_parser.hpp)). It inherits from `yy::parser`, which is generated using `Bison` (see [parser.y](https://github.com/RTCupid/Super_Biba_Boba_Language/blob/main/frontend/src/parser.y)), and contains the following fields and methods:
 
 <details>
 <summary>My_parser class</summary>
