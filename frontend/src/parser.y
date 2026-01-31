@@ -144,6 +144,8 @@
 %token TOK_EOF 0
 /* ______________________________________________________ */
 
+%type <language::StmtList>             toplevel_stmt_list
+%type <language::Statement_ptr>        toplevel_statement
 %type <language::StmtList>             stmt_list
 %type <language::Statement_ptr>        statement
 %type <language::Statement_ptr>        assignment_stmt if_stmt while_stmt print_stmt block_stmt empty_stmt
@@ -154,13 +156,34 @@
 
 %%
 
-program        : stmt_list TOK_EOF
+program        : toplevel_stmt_list TOK_EOF
                 {
                   root = AST_Factory::makeProgram(std::move($1));
                 }
                ;
 
-stmt_list      :
+toplevel_stmt_list: 
+                {
+                  $$ = language::StmtList{};
+                }
+               | toplevel_stmt_list toplevel_statement
+                {
+                  $1.push_back(std::move($2));
+                  $$ = std::move($1);
+                }
+               ;
+
+toplevel_statement: statement
+                {
+                  $$ = std::move($1);
+                }
+               | TOK_RIGHT_BRACE
+                {
+                  error(@1, "unmatched '}'");
+                }
+                ;
+
+stmt_list: 
                 {
                   $$ = language::StmtList{};
                 }
