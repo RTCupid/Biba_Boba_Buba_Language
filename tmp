@@ -1,0 +1,6 @@
+a = 1;
+if (5) {
+    b = 10;
+}
+print b;
+// print b;
