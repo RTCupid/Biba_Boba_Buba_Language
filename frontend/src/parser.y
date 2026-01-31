@@ -183,6 +183,10 @@ statement      : assignment_stmt TOK_SEMICOLON
                  { $$ = std::move($1); }
                | empty_stmt
                  { $$ = std::move($1); }
+               | error TOK_SEMICOLON
+                 {
+                   yyerrok;
+                 }
                ;
 
 empty_stmt     : TOK_SEMICOLON
@@ -224,11 +228,27 @@ if_stmt        : TOK_IF TOK_LEFT_PAREN expression TOK_RIGHT_PAREN statement %pre
                 {
                   $$ = AST_Factory::makeIf(std::move($3), std::move($5), std::move($7));
                 }
+               | TOK_IF error TOK_RIGHT_PAREN statement %prec PREC_IFX
+                {
+                  yyerrok;
+                }
+               | TOK_IF TOK_LEFT_PAREN error statement %prec PREC_IFX
+                {
+                  yyerrok;
+                }
                ;
 
 while_stmt     : TOK_WHILE TOK_LEFT_PAREN expression TOK_RIGHT_PAREN statement
                 {
                   $$ = AST_Factory::makeWhile(std::move($3), std::move($5));
+                }
+               | TOK_WHILE error TOK_RIGHT_PAREN statement
+                {
+                  yyerrok;
+                }
+               | TOK_WHILE TOK_LEFT_PAREN error statement
+                {
+                  yyerrok;
                 }
                ;
 
