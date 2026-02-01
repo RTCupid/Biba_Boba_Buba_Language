@@ -8,7 +8,7 @@
 
 namespace language {
 
-using nametable_t = std::unordered_set<language::name_t>;
+using nametable_t = std::unordered_set<name_t>;
 
 class Scope final {
   private:
@@ -23,12 +23,12 @@ class Scope final {
 
     void pop() { scopes_.pop_back(); }
 
-    void add_variable(name_t &var_name) {
+    void add_variable(const name_t &var_name) {
         assert(!scopes_.empty());
         scopes_.back().emplace(var_name);
     }
 
-    bool find(name_t &var_name) const {
+    bool find(const name_t &var_name) const {
         for (auto it = scopes_.rbegin(), last_it = scopes_.rend();
              it != last_it; ++it) {
             if (it->find(var_name) != it->end())

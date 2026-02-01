@@ -16,6 +16,7 @@
 %code requires {
   #include <string>
   #include <iostream>
+  #include "config.hpp"
   #include "node.hpp"
   #include "ast_factory.hpp"
   #include "scope.hpp"
@@ -27,6 +28,7 @@
   using language::Binary_operators;
   using language::Unary_operators;
   using language::nametable_t;
+  using language::name_t;
 
   template<typename T>
   void push_scope(T* parser, nametable_t&& nametable);
@@ -35,10 +37,10 @@
   void pop_scope(T* parser);
 
   template<typename T>
-  bool find_in_scopes(T* parser, std::string& var_name);
+  bool find_in_scopes(T* parser, const name_t& var_name);
 
   template<typename T>
-  void add_var_to_scope(T* parser, std::string& var_name);
+  void add_var_to_scope(T* parser, const name_t& var_name);
 }
 
 %code {
@@ -60,12 +62,12 @@
   }
 
   template<typename T>
-  bool find_in_scopes(T* parser, std::string& var_name) {
+  bool find_in_scopes(T* parser, const name_t& var_name) {
     return parser->scopes.find(var_name);
   }
 
   template<typename T>
-  void add_var_to_scope(T* parser, std::string& var_name) {
+  void add_var_to_scope(T* parser, const name_t& var_name) {
     parser->scopes.add_variable(var_name);
   }
 

@@ -9,7 +9,7 @@
 
 namespace language {
 
-using nametable_t = std::unordered_set<language::name_t>;
+using nametable_t = std::unordered_set<name_t>;
 
 class My_parser final : public yy::parser {
   private:
