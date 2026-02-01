@@ -2,7 +2,6 @@
 #define FRONTEND_INCLUDE_AST_HPP
 
 #include "config.hpp"
-#include "iterative_ast_deleter.hpp"
 #include <memory>
 #include <utility>
 #include <vector>
