@@ -17,7 +17,9 @@ class Scope final {
         push(nametable_t{}); // add global scope
     }
 
-    void push(nametable_t nametable = {}) { scopes_.emplace_back(std::move(nametable)); }
+    void push(nametable_t nametable = {}) {
+        scopes_.emplace_back(std::move(nametable));
+    }
 
     void pop() { scopes_.pop_back(); }
 
