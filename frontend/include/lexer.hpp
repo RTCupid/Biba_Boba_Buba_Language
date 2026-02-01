@@ -45,12 +45,18 @@ class Lexer final : public yyFlexLexer {
     int process_less() const { return yy::parser::token::TOK_LESS; }
     int process_greater() const { return yy::parser::token::TOK_GREATER; }
     int process_less_or_eq() const { return yy::parser::token::TOK_LESS_OR_EQ; }
-    int process_greater_or_eq() const { return yy::parser::token::TOK_GREATER_OR_EQ; }
+    int process_greater_or_eq() const {
+        return yy::parser::token::TOK_GREATER_OR_EQ;
+    }
     int process_not() const { return yy::parser::token::TOK_NOT; }
     int process_left_paren() const { return yy::parser::token::TOK_LEFT_PAREN; }
-    int process_right_paren() const { return yy::parser::token::TOK_RIGHT_PAREN; }
+    int process_right_paren() const {
+        return yy::parser::token::TOK_RIGHT_PAREN;
+    }
     int process_left_brace() const { return yy::parser::token::TOK_LEFT_BRACE; }
-    int process_right_brace() const { return yy::parser::token::TOK_RIGHT_BRACE; }
+    int process_right_brace() const {
+        return yy::parser::token::TOK_RIGHT_BRACE;
+    }
     int process_semicolon() const { return yy::parser::token::TOK_SEMICOLON; }
     int process_id() const { return yy::parser::token::TOK_ID; }
     int process_number() { return yy::parser::token::TOK_NUMBER; }
