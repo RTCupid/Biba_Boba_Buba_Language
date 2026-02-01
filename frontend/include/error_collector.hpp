@@ -60,8 +60,7 @@ class Error_collector final {
     bool has_errors() const { return !errors_.empty(); }
 
     void print_errors(std::ostream &os) const {
-        if (!errors_.empty())
-            for (auto &error : errors_)
+        for (auto &error : errors_)
                 error.print(os);
     }
 };
