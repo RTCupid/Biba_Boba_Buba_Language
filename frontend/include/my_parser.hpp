@@ -1,6 +1,7 @@
 #ifndef FRONTEND_INCLUDE_MY_PARSER_HPP
 #define FRONTEND_INCLUDE_MY_PARSER_HPP
 
+#include "config.hpp"
 #include "error_collector.hpp"
 #include "lexer.hpp"
 #include "parser.hpp"
@@ -8,8 +9,6 @@
 #include <unordered_set>
 
 namespace language {
-
-using nametable_t = std::unordered_set<name_t>;
 
 class My_parser final : public yy::parser {
   private:

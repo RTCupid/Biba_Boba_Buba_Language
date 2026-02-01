@@ -2,11 +2,14 @@
 #define FRONTEND_INCLUDE_CONFIG_HPP
 
 #include <string>
+#include <unordered_set>
 
 namespace language {
 
 using number_t = int;
 using name_t = std::string;
+
+using nametable_t = std::unordered_set<name_t>;
 
 } // namespace language
 

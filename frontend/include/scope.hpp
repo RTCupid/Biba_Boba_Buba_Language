@@ -8,8 +8,6 @@
 
 namespace language {
 
-using nametable_t = std::unordered_set<name_t>;
-
 class Scope final {
   private:
     std::vector<nametable_t> scopes_;
