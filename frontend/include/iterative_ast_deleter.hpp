@@ -1,8 +1,10 @@
-#ifndef FRONTEND_INCLUDE_LEXER_HPP
-#define FRONTEND_INCLUDE_LEXER_HPP
+#ifndef FRONTEND_INCLUDE_ITERATIVE_AST_DELETER_HPP
+#define FRONTEND_INCLUDE_ITERATIVE_AST_DELETER_HPP
 
-#include "iterative_ast_deleter.hpp"
 #include "node.hpp"
+#include <memory>
+#include <vector>
+#include <utility>
 
 namespace language {
 
@@ -26,4 +28,4 @@ struct Iterative_ast_deleter {
 
 } // namespace language
 
-#endif // FRONTEND_INCLUDE_LEXER_HPP
+#endif // FRONTEND_INCLUDE_ITERATIVE_AST_DELETER_HPP

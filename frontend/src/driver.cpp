@@ -12,9 +12,9 @@ void driver(int argc, char **&argv) {
     }
     language::Lexer scanner(&program_file, &std::cout);
 
-    std::unique_ptr<language::Program, language::Iterative_ast_deleter> root;
+    std::unique_ptr<language::Program> root_tmp;
 
-    language::My_parser parser(&scanner, root, argv[1]);
+    language::My_parser parser(&scanner, root_tmp, argv[1]);
 
     int result = parser.parse();
 
@@ -28,6 +28,8 @@ void driver(int argc, char **&argv) {
         throw std::runtime_error("unknown error\n");
     }
 
+    std::unique_ptr<language::Program, language::Iterative_ast_deleter> root(root_tmp.release());
+    
     language::Simulator simulator{};
     root->accept(simulator);
 
