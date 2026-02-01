@@ -5,11 +5,11 @@
 
 namespace language {
 
-number_t ExpressionEvaluator::get_result() const { return result_; }
+number_t Expression_evaluator::get_result() const { return result_; }
 
-void ExpressionEvaluator::visit(Number &node) { result_ = node.get_value(); }
+void Expression_evaluator::visit(Number &node) { result_ = node.get_value(); }
 
-void ExpressionEvaluator::visit(Variable &node) {
+void Expression_evaluator::visit(Variable &node) {
     std::string var_name = node.get_name();
 
     auto it = simulator_.nametable.find(var_name);
@@ -20,10 +20,10 @@ void ExpressionEvaluator::visit(Variable &node) {
     }
 }
 
-void ExpressionEvaluator::visit(Assignment_expr &node) {
+void Expression_evaluator::visit(Assignment_expr &node) {
     const auto &var_name = node.get_variable()->get_name();
 
-    ExpressionEvaluator result_eval{simulator_};
+    Expression_evaluator result_eval{simulator_};
     node.get_value().accept(result_eval);
     result_ = result_eval.result_;
 
@@ -34,12 +34,12 @@ void ExpressionEvaluator::visit(Assignment_expr &node) {
         simulator_.nametable.emplace(var_name, result_);
 };
 
-void ExpressionEvaluator::visit(Binary_operator &node) {
-    ExpressionEvaluator left_eval{simulator_};
+void Expression_evaluator::visit(Binary_operator &node) {
+    Expression_evaluator left_eval{simulator_};
     node.get_left().accept(left_eval);
     auto left_value = left_eval.result_;
 
-    ExpressionEvaluator right_eval{simulator_};
+    Expression_evaluator right_eval{simulator_};
     node.get_right().accept(right_eval);
     auto right_value = right_eval.result_;
 
@@ -113,8 +113,8 @@ void ExpressionEvaluator::visit(Binary_operator &node) {
     }
 }
 
-void ExpressionEvaluator::visit(Unary_operator &node) {
-    ExpressionEvaluator eval{simulator_};
+void Expression_evaluator::visit(Unary_operator &node) {
+    Expression_evaluator eval{simulator_};
     node.get_operand().accept(eval);
     auto value = eval.result_;
     switch (node.get_operator()) {
@@ -135,19 +135,19 @@ void ExpressionEvaluator::visit(Unary_operator &node) {
     }
 }
 
-void ExpressionEvaluator::visit(Input &node) {
+void Expression_evaluator::visit(Input &node) {
     number_t value;
     std::cin >> value;
 
     result_ = value;
 }
 
-void ExpressionEvaluator::visit(Program &node) {}
-void ExpressionEvaluator::visit(Block_stmt &node) {}
-void ExpressionEvaluator::visit(Empty_stmt &node) {}
-void ExpressionEvaluator::visit(Assignment_stmt &node) {}
-void ExpressionEvaluator::visit(If_stmt &node) {}
-void ExpressionEvaluator::visit(While_stmt &node) {}
-void ExpressionEvaluator::visit(Print_stmt &node) {}
+void Expression_evaluator::visit(Program &node) {}
+void Expression_evaluator::visit(Block_stmt &node) {}
+void Expression_evaluator::visit(Empty_stmt &node) {}
+void Expression_evaluator::visit(Assignment_stmt &node) {}
+void Expression_evaluator::visit(If_stmt &node) {}
+void Expression_evaluator::visit(While_stmt &node) {}
+void Expression_evaluator::visit(Print_stmt &node) {}
 
 } // namespace language

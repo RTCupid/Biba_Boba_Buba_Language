@@ -5,14 +5,13 @@
 
 namespace language {
 
-class ExpressionEvaluator final : public ASTVisitor {
+class Expression_evaluator final : public ASTVisitor {
   private:
     Simulator &simulator_;
     number_t result_{0};
 
   public:
-    ExpressionEvaluator(Simulator &simulator) : simulator_{simulator} {};
-    ~ExpressionEvaluator() = default;
+    Expression_evaluator(Simulator &simulator) : simulator_{simulator} {};
 
     number_t get_result() const;
 
