@@ -12,7 +12,7 @@ void driver(int argc, char **&argv) {
     }
     language::Lexer scanner(&program_file, &std::cout);
 
-    std::unique_ptr<language::Program> root;
+    std::unique_ptr<language::Program, language::Iterative_ast_deleter> root;
 
     language::My_parser parser(&scanner, root, argv[1]);
 

@@ -10,6 +10,7 @@
 #include <fstream>
 #include <iostream>
 #include <memory>
+#include "iterative_ast_deleter.hpp"
 
 void driver(int argc, char **&argv);
 
