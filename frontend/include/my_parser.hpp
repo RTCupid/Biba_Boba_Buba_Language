@@ -6,7 +6,6 @@
 #include "lexer.hpp"
 #include "parser.hpp"
 #include <memory.h>
-#include <unordered_set>
 
 namespace language {
 
