@@ -28,8 +28,9 @@ void driver(int argc, char **&argv) {
         throw std::runtime_error("unknown error\n");
     }
 
-    std::unique_ptr<language::Program, language::Iterative_ast_deleter> root(root_tmp.release());
-    
+    std::unique_ptr<language::Program, language::Iterative_ast_deleter> root(
+        root_tmp.release());
+
     language::Simulator simulator{};
     root->accept(simulator);
 

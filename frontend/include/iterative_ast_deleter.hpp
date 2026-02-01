@@ -3,8 +3,8 @@
 
 #include "node.hpp"
 #include <memory>
-#include <vector>
 #include <utility>
+#include <vector>
 
 namespace language {
 
