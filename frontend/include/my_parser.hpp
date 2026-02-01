@@ -5,10 +5,11 @@
 #include "lexer.hpp"
 #include "parser.hpp"
 #include <memory.h>
+#include <unordered_set>
 
 namespace language {
 
-using nametable_t = std::unordered_map<language::name_t, bool /*defined*/>;
+using nametable_t = std::unordered_set<language::name_t>;
 
 class My_parser final : public yy::parser {
   private:

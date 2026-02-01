@@ -3,12 +3,12 @@
 
 #include "config.hpp"
 #include <cassert>
-#include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 namespace language {
 
-using nametable_t = std::unordered_map<language::name_t, bool /*defined*/>;
+using nametable_t = std::unordered_set<language::name_t>;
 
 class Scope final {
   private:
@@ -23,16 +23,15 @@ class Scope final {
 
     void pop() { scopes_.pop_back(); }
 
-    void add_variable(name_t &var_name, bool defined) {
+    void add_variable(name_t &var_name) {
         assert(!scopes_.empty());
-        scopes_.back().emplace(var_name, defined);
+        scopes_.back().emplace(var_name);
     }
 
     bool find(name_t &var_name) const {
         for (auto it = scopes_.rbegin(), last_it = scopes_.rend();
              it != last_it; ++it) {
-            auto var_iter = it->find(var_name);
-            if (var_iter != it->end())
+            if (it->find(var_name) != it->end())
                 return true;
         }
 

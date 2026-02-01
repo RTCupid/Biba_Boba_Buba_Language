@@ -38,7 +38,7 @@
   bool find_in_scopes(T* parser, std::string& var_name);
 
   template<typename T>
-  void add_var_to_scope(T* parser, std::string& var_name, bool defined);
+  void add_var_to_scope(T* parser, std::string& var_name);
 }
 
 %code {
@@ -65,8 +65,8 @@
   }
 
   template<typename T>
-  void add_var_to_scope(T* parser, std::string& var_name, bool defined) {
-    parser->scopes.add_variable(var_name, defined);
+  void add_var_to_scope(T* parser, std::string& var_name) {
+    parser->scopes.add_variable(var_name);
   }
 
   int yylex(yy::parser::semantic_type* yylval,
@@ -208,7 +208,7 @@ assignment_stmt: TOK_ID TOK_ASSIGN expression
                   auto var_name = variable->get_name();
 
                   if (!find_in_scopes(my_parser, var_name))
-                    add_var_to_scope(my_parser, var_name, true);
+                    add_var_to_scope(my_parser, var_name);
 
                   $$ = AST_Factory::make<language::Assignment_stmt>(
                     std::move(variable),
@@ -337,7 +337,7 @@ assignment_expr
                   auto var_name = variable->get_name();
 
                   if (!find_in_scopes(my_parser, var_name))
-                    add_var_to_scope(my_parser, var_name, true);
+                    add_var_to_scope(my_parser, var_name);
 
                   $$ = AST_Factory::make<language::Assignment_expr>(std::move(variable), std::move($3));
                 }
