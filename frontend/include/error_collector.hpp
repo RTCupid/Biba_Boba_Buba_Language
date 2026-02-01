@@ -61,7 +61,7 @@ class Error_collector final {
 
     void print_errors(std::ostream &os) const {
         for (auto &error : errors_)
-                error.print(os);
+            error.print(os);
     }
 };
 
