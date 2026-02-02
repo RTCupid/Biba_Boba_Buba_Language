@@ -10,7 +10,7 @@
 
 %lex-param   { language::Lexer* scanner }
 %parse-param { language::Lexer* scanner }
-%parse-param { std::unique_ptr<language::Program> &root }
+%parse-param { language::program_ptr &root }
 %parse-param { language::My_parser* my_parser }
 
 %code requires {
@@ -18,6 +18,7 @@
   #include <iostream>
   #include "node.hpp"
   #include "ast_factory.hpp"
+  #include "iterative_ast_deleter.hpp"
   #include "scope.hpp"
 
   namespace language { class Lexer; }
