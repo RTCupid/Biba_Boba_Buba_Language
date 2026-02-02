@@ -1,6 +1,26 @@
 #include "iterative_ast_deleter.hpp"
+#include "node.hpp"
+#include <memory>
+#include <utility>
+#include <vector>
 
 namespace language {
+
+void Iterative_ast_deleter::operator()(Program *root) const noexcept {
+    if (!root) {
+        return;
+    }
+
+    std::vector<std::unique_ptr<Node>> stack;
+    stack.emplace_back(root);
+
+    while (!stack.empty()) {
+        auto node = std::move(stack.back());
+        stack.pop_back();
+
+        node->detach_children(stack);
+    }
+}
 
 void Program::detach_children(std::vector<std::unique_ptr<Node>> &stack) {
     for (auto &stmt : stmts_) {

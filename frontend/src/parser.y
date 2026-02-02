@@ -10,7 +10,7 @@
 
 %lex-param   { language::Lexer* scanner }
 %parse-param { language::Lexer* scanner }
-%parse-param { std::unique_ptr<language::Program, language::Iterative_ast_deleter> &root }
+%parse-param { language::program_ptr &root }
 %parse-param { language::My_parser* my_parser }
 
 %code requires {

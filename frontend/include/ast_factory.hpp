@@ -9,8 +9,8 @@ namespace language {
 
 class AST_Factory final {
   public:
-    static std::unique_ptr<Program, Iterative_ast_deleter> makeProgram(StmtList stmts) {
-        return std::unique_ptr<Program, Iterative_ast_deleter>(new Program(std::move(stmts)));
+    static language::program_ptr makeProgram(StmtList stmts) {
+        return language::program_ptr(new Program(std::move(stmts)));
     }
 
     static Statement_ptr makeEmpty() { return std::make_unique<Empty_stmt>(); }
