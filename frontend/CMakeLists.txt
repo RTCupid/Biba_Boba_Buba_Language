@@ -11,8 +11,10 @@ find_package(FLEX REQUIRED)
 
 add_library(frontend_headers INTERFACE)
 target_include_directories(frontend_headers
-    INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/include
-    ${CMAKE_CURRENT_BINARY_DIR}
+    INTERFACE 
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
+    $<INSTALL_INTERFACE:include>
 )
 add_library(frontend::headers ALIAS frontend_headers)
 
@@ -43,6 +45,7 @@ add_executable(frontend
     src/expr_evaluator.cpp
     src/simulator.cpp
     src/graph_dump.cpp
+    src/iterative_ast_deleter.cpp
     ${FLEX_Lexer_OUTPUTS}
     ${BISON_Parser_OUTPUTS}
 )

@@ -5,21 +5,21 @@
 #include "error_collector.hpp"
 #include "lexer.hpp"
 #include "parser.hpp"
-#include <memory.h>
+#include <memory>
 
 namespace language {
 
 class My_parser final : public yy::parser {
   private:
     Lexer *scanner_;
-    std::unique_ptr<Program> root_;
+    language::program_ptr root_;
     std::vector<std::string> source_lines_;
 
   public:
     Error_collector error_collector;
     Scope scopes;
 
-    My_parser(Lexer *scanner, std::unique_ptr<language::Program> &root,
+    My_parser(Lexer *scanner, language::program_ptr &root,
               const std::string &program_file)
         : yy::parser(scanner, root, this), scanner_(scanner),
           root_(std::move(root)), error_collector(program_file) {
