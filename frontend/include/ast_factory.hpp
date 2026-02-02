@@ -3,13 +3,14 @@
 
 #include "node.hpp"
 #include <memory>
+#include "iterative_ast_deleter.hpp" 
 
 namespace language {
 
 class AST_Factory final {
   public:
-    static std::unique_ptr<Program> makeProgram(StmtList stmts) {
-        return std::make_unique<Program>(std::move(stmts));
+    static std::unique_ptr<Program, Iterative_ast_deleter> makeProgram(StmtList stmts) {
+        return std::unique_ptr<Program, Iterative_ast_deleter>(new Program(std::move(stmts)));
     }
 
     static Statement_ptr makeEmpty() { return std::make_unique<Empty_stmt>(); }
