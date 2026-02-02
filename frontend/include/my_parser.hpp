@@ -4,7 +4,7 @@
 #include "error_collector.hpp"
 #include "lexer.hpp"
 #include "parser.hpp"
-#include <memory.h>
+#include <memory>
 
 namespace language {
 
