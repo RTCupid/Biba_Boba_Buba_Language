@@ -16,6 +16,7 @@
 %code requires {
   #include <string>
   #include <iostream>
+  #include "config.hpp"
   #include "node.hpp"
   #include "ast_factory.hpp"
   #include "iterative_ast_deleter.hpp"
@@ -28,6 +29,7 @@
   using language::Binary_operators;
   using language::Unary_operators;
   using language::nametable_t;
+  using language::name_t;
 
   template<typename T>
   void push_scope(T* parser, nametable_t&& nametable);
@@ -36,10 +38,10 @@
   void pop_scope(T* parser);
 
   template<typename T>
-  bool find_in_scopes(T* parser, std::string& var_name);
+  bool find_in_scopes(T* parser, const name_t& var_name);
 
   template<typename T>
-  void add_var_to_scope(T* parser, std::string& var_name, bool defined);
+  void add_var_to_scope(T* parser, const name_t& var_name);
 }
 
 %code {
@@ -61,13 +63,13 @@
   }
 
   template<typename T>
-  bool find_in_scopes(T* parser, std::string& var_name) {
+  bool find_in_scopes(T* parser, const name_t& var_name) {
     return parser->scopes.find(var_name);
   }
 
   template<typename T>
-  void add_var_to_scope(T* parser, std::string& var_name, bool defined) {
-    parser->scopes.add_variable(var_name, defined);
+  void add_var_to_scope(T* parser, const name_t& var_name) {
+    parser->scopes.add_variable(var_name);
   }
 
   int yylex(yy::parser::semantic_type* yylval,
@@ -188,7 +190,7 @@ statement      : assignment_stmt TOK_SEMICOLON
 
 empty_stmt     : TOK_SEMICOLON
                 {
-                  $$ = AST_Factory::makeEmpty();
+                  $$ = AST_Factory::make<language::Empty_stmt>();
                 }
 
 block_stmt     : TOK_LEFT_BRACE
@@ -199,19 +201,19 @@ block_stmt     : TOK_LEFT_BRACE
                 TOK_RIGHT_BRACE
                 {
                   pop_scope(my_parser);
-                  $$ = AST_Factory::makeBlock(std::move($3));
+                  $$ = AST_Factory::make<language::Block_stmt>(std::move($3));
                 }
                ;
 
 assignment_stmt: TOK_ID TOK_ASSIGN expression
                 {
-                  auto variable = AST_Factory::makeVariable(std::move($1));
+                  auto variable = AST_Factory::make<language::Variable>(std::move($1));
                   auto var_name = variable->get_name();
 
                   if (!find_in_scopes(my_parser, var_name))
-                    add_var_to_scope(my_parser, var_name, true);
+                    add_var_to_scope(my_parser, var_name);
 
-                  $$ = AST_Factory::makeAssignmentStmt(
+                  $$ = AST_Factory::make<language::Assignment_stmt>(
                     std::move(variable),
                     std::move($3));
                 }
@@ -219,23 +221,23 @@ assignment_stmt: TOK_ID TOK_ASSIGN expression
 
 if_stmt        : TOK_IF TOK_LEFT_PAREN expression TOK_RIGHT_PAREN statement %prec PREC_IFX
                 {
-                  $$ = AST_Factory::makeIf(std::move($3), std::move($5));
+                  $$ = AST_Factory::make<language::If_stmt>(std::move($3), std::move($5));
                 }
                | TOK_IF TOK_LEFT_PAREN expression TOK_RIGHT_PAREN statement TOK_ELSE statement
                 {
-                  $$ = AST_Factory::makeIf(std::move($3), std::move($5), std::move($7));
+                  $$ = AST_Factory::make<language::If_stmt>(std::move($3), std::move($5), std::move($7));
                 }
                ;
 
 while_stmt     : TOK_WHILE TOK_LEFT_PAREN expression TOK_RIGHT_PAREN statement
                 {
-                  $$ = AST_Factory::makeWhile(std::move($3), std::move($5));
+                  $$ = AST_Factory::make<language::While_stmt>(std::move($3), std::move($5));
                 }
                ;
 
 print_stmt     : TOK_PRINT expression
                 {
-                  $$ = AST_Factory::makePrint(std::move($2));
+                  $$ = AST_Factory::make<language::Print_stmt>(std::move($2));
                 }
                ;
 
@@ -247,77 +249,77 @@ expression     : assignment_expr
 
 or            : and { $$ = std::move($1); }
               | or TOK_LOG_OR and
-                { $$ = AST_Factory::makeBinaryOp(Binary_operators::LogOr, std::move($1), std::move($3)); }
+                { $$ = AST_Factory::make<language::Binary_operator>(Binary_operators::LogOr, std::move($1), std::move($3)); }
               ;
 
 and           : bitwise_op { $$ = std::move($1); }
                 | and TOK_LOG_AND bitwise_op
-                  { $$ = AST_Factory::makeBinaryOp(Binary_operators::LogAnd, std::move($1), std::move($3)); }
+                  { $$ = AST_Factory::make<language::Binary_operator>(Binary_operators::LogAnd, std::move($1), std::move($3)); }
                 ;
 
 bitwise_op     : equality
                   { $$ = std::move($1); }
                | bitwise_op TOK_AND equality
-                  { $$ = AST_Factory::makeBinaryOp(Binary_operators::And, std::move($1), std::move($3)); }
+                  { $$ = AST_Factory::make<language::Binary_operator>(Binary_operators::And, std::move($1), std::move($3)); }
                | bitwise_op TOK_XOR equality
-                  { $$ = AST_Factory::makeBinaryOp(Binary_operators::Xor, std::move($1), std::move($3)); }
+                  { $$ = AST_Factory::make<language::Binary_operator>(Binary_operators::Xor, std::move($1), std::move($3)); }
                | bitwise_op TOK_OR  equality
-                  { $$ = AST_Factory::makeBinaryOp(Binary_operators::Or, std::move($1), std::move($3)); }
+                  { $$ = AST_Factory::make<language::Binary_operator>(Binary_operators::Or, std::move($1), std::move($3)); }
                ;
 
 equality       : relational
                  { $$ = std::move($1); }
                | equality TOK_EQ  relational
-                 { $$ = AST_Factory::makeBinaryOp(Binary_operators::Eq,  std::move($1), std::move($3)); }
+                 { $$ = AST_Factory::make<language::Binary_operator>(Binary_operators::Eq,  std::move($1), std::move($3)); }
                | equality TOK_NEQ relational
-                 { $$ = AST_Factory::makeBinaryOp(Binary_operators::Neq,  std::move($1), std::move($3)); }
+                 { $$ = AST_Factory::make<language::Binary_operator>(Binary_operators::Neq,  std::move($1), std::move($3)); }
                ;
 
 relational     : add_sub
                  { $$ = std::move($1); }
                | relational TOK_LESS          add_sub
-                 { $$ = AST_Factory::makeBinaryOp(Binary_operators::Less, std::move($1), std::move($3)); }
+                 { $$ = AST_Factory::make<language::Binary_operator>(Binary_operators::Less, std::move($1), std::move($3)); }
                | relational TOK_LESS_OR_EQ    add_sub
-                 { $$ = AST_Factory::makeBinaryOp(Binary_operators::LessEq, std::move($1), std::move($3)); }
+                 { $$ = AST_Factory::make<language::Binary_operator>(Binary_operators::LessEq, std::move($1), std::move($3)); }
                | relational TOK_GREATER       add_sub
-                 { $$ = AST_Factory::makeBinaryOp(Binary_operators::Greater, std::move($1), std::move($3)); }
+                 { $$ = AST_Factory::make<language::Binary_operator>(Binary_operators::Greater, std::move($1), std::move($3)); }
                | relational TOK_GREATER_OR_EQ add_sub
-                 { $$ = AST_Factory::makeBinaryOp(Binary_operators::GreaterEq, std::move($1), std::move($3)); }
+                 { $$ = AST_Factory::make<language::Binary_operator>(Binary_operators::GreaterEq, std::move($1), std::move($3)); }
                ;
 
 add_sub        : mul_div
                  { $$ = std::move($1); }
                | add_sub TOK_PLUS  mul_div
-                 { $$ = AST_Factory::makeBinaryOp(Binary_operators::Add, std::move($1), std::move($3)); }
+                 { $$ = AST_Factory::make<language::Binary_operator>(Binary_operators::Add, std::move($1), std::move($3)); }
                | add_sub TOK_MINUS mul_div
-                 { $$ = AST_Factory::makeBinaryOp(Binary_operators::Sub, std::move($1), std::move($3)); }
+                 { $$ = AST_Factory::make<language::Binary_operator>(Binary_operators::Sub, std::move($1), std::move($3)); }
                ;
 
 mul_div        : unary
                  { $$ = std::move($1); }
                | mul_div TOK_MUL unary
-                 { $$ = AST_Factory::makeBinaryOp(Binary_operators::Mul, std::move($1), std::move($3)); }
+                 { $$ = AST_Factory::make<language::Binary_operator>(Binary_operators::Mul, std::move($1), std::move($3)); }
                | mul_div TOK_DIV unary
-                 { $$ = AST_Factory::makeBinaryOp(Binary_operators::Div, std::move($1), std::move($3)); }
+                 { $$ = AST_Factory::make<language::Binary_operator>(Binary_operators::Div, std::move($1), std::move($3)); }
                | mul_div TOK_REM_DIV unary
-                 { $$ = AST_Factory::makeBinaryOp(Binary_operators::RemDiv, std::move($1), std::move($3)); }
+                 { $$ = AST_Factory::make<language::Binary_operator>(Binary_operators::RemDiv, std::move($1), std::move($3)); }
                ;
 
 unary          : TOK_MINUS unary
-                { $$ = AST_Factory::makeUnaryOp(Unary_operators::Neg, std::move($2)); }
+                { $$ = AST_Factory::make<language::Unary_operator>(Unary_operators::Neg, std::move($2)); }
                | TOK_PLUS unary
-                { $$ = AST_Factory::makeUnaryOp(Unary_operators::Plus, std::move($2)); }
+                { $$ = AST_Factory::make<language::Unary_operator>(Unary_operators::Plus, std::move($2)); }
                | TOK_NOT unary
-                { $$ = AST_Factory::makeUnaryOp(Unary_operators::Not, std::move($2)); }
+                { $$ = AST_Factory::make<language::Unary_operator>(Unary_operators::Not, std::move($2)); }
                | primary
                 { $$ = std::move($1); }
                ;
 
 primary        : TOK_NUMBER
-                { $$ = AST_Factory::makeNumber($1); }
+                { $$ = AST_Factory::make<language::Number>($1); }
                | TOK_ID
                 {
-                  auto variable = AST_Factory::makeVariable(std::move($1));
+                  auto variable = AST_Factory::make<language::Variable>(std::move($1));
                   if (!find_in_scopes(my_parser, variable->get_name())) {
                     error(@1, "\'" + variable->get_name() + "\' was not declared in this scope");
                   }
@@ -327,20 +329,20 @@ primary        : TOK_NUMBER
                | TOK_LEFT_PAREN expression TOK_RIGHT_PAREN
                 { $$ = std::move($2); }
                | TOK_INPUT
-                { $$ = AST_Factory::makeInput(); }
+                { $$ = AST_Factory::make<language::Input>(); }
                ;
 
 assignment_expr
               : or { $$ = std::move($1); }
               | TOK_ID TOK_ASSIGN assignment_expr
                 {
-                  auto variable = AST_Factory::makeVariable(std::move($1));
+                  auto variable = AST_Factory::make<language::Variable>(std::move($1));
                   auto var_name = variable->get_name();
 
                   if (!find_in_scopes(my_parser, var_name))
-                    add_var_to_scope(my_parser, var_name, true);
+                    add_var_to_scope(my_parser, var_name);
 
-                  $$ = AST_Factory::makeAssignmentExpr(std::move(variable), std::move($3));
+                  $$ = AST_Factory::make<language::Assignment_expr>(std::move(variable), std::move($3));
                 }
               ;
 %%

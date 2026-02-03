@@ -331,7 +331,6 @@ class Variable : public Expression {
   public:
     explicit Variable(name_t var_name) : var_name_(std::move(var_name)) {}
 
-    name_t &get_name() { return var_name_; }
     const name_t &get_name() const { return var_name_; }
 
     void accept(ASTVisitor &visitor) override { visitor.visit(*this); }

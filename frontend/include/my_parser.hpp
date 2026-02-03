@@ -1,14 +1,13 @@
 #ifndef FRONTEND_INCLUDE_MY_PARSER_HPP
 #define FRONTEND_INCLUDE_MY_PARSER_HPP
 
+#include "config.hpp"
 #include "error_collector.hpp"
 #include "lexer.hpp"
 #include "parser.hpp"
 #include <memory>
 
 namespace language {
-
-using nametable_t = std::unordered_map<language::name_t, bool /*defined*/>;
 
 class My_parser final : public yy::parser {
   private:
@@ -27,14 +26,14 @@ class My_parser final : public yy::parser {
         read_source(program_file);
     }
 
-    void read_source(const std::string &file_name) {
-        std::ifstream input_file(file_name);
+    void read_source(std::string_view file_name) {
+        std::ifstream input_file(std::string{file_name});
         std::string line;
         while (std::getline(input_file, line))
             source_lines_.push_back(line);
     }
 
-    std::string get_line_content(const int num_line) const {
+    std::string_view get_line_content(const int num_line) const {
         return source_lines_[num_line - 1];
     }
 };

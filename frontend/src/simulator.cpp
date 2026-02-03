@@ -68,7 +68,7 @@ void Simulator::visit(Number &node) {}
 void Simulator::visit(Variable &node) {}
 
 number_t Simulator::evaluate_expression(Expression &expression) {
-    ExpressionEvaluator evaluator(*this);
+    Expression_evaluator evaluator(*this);
     expression.accept(evaluator);
     return evaluator.get_result();
 }

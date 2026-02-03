@@ -3,10 +3,10 @@
 
 namespace language {
 
-class Program; 
+class Program;
 
 struct Iterative_ast_deleter {
-    void operator()(Program* root) const noexcept;
+    void operator()(Program *root) const noexcept;
 };
 
 } // namespace language
