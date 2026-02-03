@@ -2,8 +2,8 @@
 #define FRONTEND_INCLUDE_AST_FACTORY_HPP
 
 #include "config.hpp"
-#include "node.hpp"
 #include "iterative_ast_deleter.hpp"
+#include "node.hpp"
 #include <memory>
 
 namespace language {
