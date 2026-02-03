@@ -1,10 +1,10 @@
 #ifndef FRONTEND_INCLUDE_CONFIG_HPP
 #define FRONTEND_INCLUDE_CONFIG_HPP
 
+#include "iterative_ast_deleter.hpp"
+#include <memory>
 #include <string>
 #include <unordered_set>
-#include <memory>
-#include "iterative_ast_deleter.hpp"
 
 namespace language {
 

@@ -1,8 +1,8 @@
 #ifndef FRONTEND_INCLUDE_AST_FACTORY_HPP
 #define FRONTEND_INCLUDE_AST_FACTORY_HPP
 
+#include "iterative_ast_deleter.hpp"
 #include <memory>
-#include "iterative_ast_deleter.hpp" 
 
 namespace language {
 
