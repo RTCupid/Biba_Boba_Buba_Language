@@ -159,7 +159,7 @@
 
 program        : stmt_list TOK_EOF
                 {
-                  root = AST_Factory::make<language::Program>(std::move($1));
+                  root = AST_Factory::makeProgram(std::move($1));
                 }
                ;
 
