@@ -147,6 +147,8 @@
 %token TOK_EOF 0
 /* ______________________________________________________ */
 
+%type <language::StmtList>             toplevel_stmt_list
+%type <language::Statement_ptr>        toplevel_statement
 %type <language::StmtList>             stmt_list
 %type <language::Statement_ptr>        statement
 %type <language::Statement_ptr>        assignment_stmt if_stmt while_stmt print_stmt block_stmt empty_stmt
@@ -157,13 +159,34 @@
 
 %%
 
-program        : stmt_list TOK_EOF
+program        : toplevel_stmt_list TOK_EOF
                 {
                   root = AST_Factory::makeProgram(std::move($1));
                 }
                ;
 
-stmt_list      :
+toplevel_stmt_list: 
+                {
+                  $$ = language::StmtList{};
+                }
+               | toplevel_stmt_list toplevel_statement
+                {
+                  $1.push_back(std::move($2));
+                  $$ = std::move($1);
+                }
+               ;
+
+toplevel_statement: statement
+                {
+                  $$ = std::move($1);
+                }
+               | TOK_RIGHT_BRACE
+                {
+                  error(@1, "unmatched '}'");
+                }
+                ;
+
+stmt_list: 
                 {
                   $$ = language::StmtList{};
                 }
@@ -186,6 +209,10 @@ statement      : assignment_stmt TOK_SEMICOLON
                  { $$ = std::move($1); }
                | empty_stmt
                  { $$ = std::move($1); }
+               | error TOK_SEMICOLON
+                 {
+                   yyerrok;
+                 }
                ;
 
 empty_stmt     : TOK_SEMICOLON
@@ -227,11 +254,27 @@ if_stmt        : TOK_IF TOK_LEFT_PAREN expression TOK_RIGHT_PAREN statement %pre
                 {
                   $$ = AST_Factory::make<language::If_stmt>(std::move($3), std::move($5), std::move($7));
                 }
+               | TOK_IF error TOK_RIGHT_PAREN statement %prec PREC_IFX
+                {
+                  yyerrok;
+                }
+               | TOK_IF TOK_LEFT_PAREN error statement %prec PREC_IFX
+                {
+                  yyerrok;
+                }
                ;
 
 while_stmt     : TOK_WHILE TOK_LEFT_PAREN expression TOK_RIGHT_PAREN statement
                 {
                   $$ = AST_Factory::make<language::While_stmt>(std::move($3), std::move($5));
+                }
+               | TOK_WHILE error TOK_RIGHT_PAREN statement
+                {
+                  yyerrok;
+                }
+               | TOK_WHILE TOK_LEFT_PAREN error statement
+                {
+                  yyerrok;
                 }
                ;
 
