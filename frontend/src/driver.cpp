@@ -42,6 +42,6 @@ void driver(int argc, const char **argv) {
     if (!gv) {
         throw std::runtime_error("unable to open gv file\n");
     }
-    root->graph_dump(gv, nullptr);
+    language::graph_dump(gv, *root);
 #endif
 }

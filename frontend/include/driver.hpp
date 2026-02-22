@@ -7,6 +7,7 @@
 #include "node.hpp"
 #include "parser.hpp"
 #include "simulator.hpp"
+#include "graph_dump.hpp"
 #include <iostream>
 
 void driver(int argc, const char **argv);
