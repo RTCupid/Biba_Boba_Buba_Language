@@ -3,7 +3,7 @@
 
 namespace language {
 
-void Program::graph_dump(std::ostream &gv, Node *parent) const {
+void Program::graph_dump(std::ostream &gv, const Node *parent) const {
     gv << "digraph G {\n"
        << "    rankdir=TB;\n"
        << "    node [style=filled, fontname=\"Helvetica\", fontcolor=darkblue, "
@@ -35,7 +35,7 @@ void Program::graph_dump(std::ostream &gv, Node *parent) const {
     gv << "\n}\n";
 }
 
-void Block_stmt::graph_dump(std::ostream &gv, Node *parent) const {
+void Block_stmt::graph_dump(std::ostream &gv, const Node *parent) const {
     std::size_t size = stmts_.size();
 
     gv << "    node_" << this
@@ -59,7 +59,7 @@ void Block_stmt::graph_dump(std::ostream &gv, Node *parent) const {
     }
 }
 
-void Empty_stmt::graph_dump(std::ostream &gv, Node *parent) const {
+void Empty_stmt::graph_dump(std::ostream &gv, const Node *parent) const {
     gv << "    node_" << this
        << "[shape=Mrecord; style=filled; fillcolor=lavenderblush1"
        << "; color=\"#000000\"; " << "fontcolor=\"#000000\"; "
@@ -67,7 +67,7 @@ void Empty_stmt::graph_dump(std::ostream &gv, Node *parent) const {
        << "}\"" << "];\n";
 }
 
-void Assignment_stmt::graph_dump(std::ostream &gv, Node *parent) const {
+void Assignment_stmt::graph_dump(std::ostream &gv, const Node *parent) const {
     gv << "    node_" << this << "[shape=Mrecord; style=filled; fillcolor=plum"
        << "; color=\"#000000\"; " << "fontcolor=\"#000000\"; "
        << "label=\"{ Assignment" << " | addr: " << this
@@ -84,7 +84,7 @@ void Assignment_stmt::graph_dump(std::ostream &gv, Node *parent) const {
     }
 }
 
-void Assignment_expr::graph_dump(std::ostream &gv, Node *parent) const {
+void Assignment_expr::graph_dump(std::ostream &gv, const Node *parent) const {
     gv << "    node_" << this << "[shape=Mrecord; style=filled; fillcolor=plum"
        << "; color=\"#000000\"; " << "fontcolor=\"#000000\"; "
        << "label=\"{ Assignment expr" << " | addr: " << this
@@ -101,7 +101,7 @@ void Assignment_expr::graph_dump(std::ostream &gv, Node *parent) const {
     }
 }
 
-void While_stmt::graph_dump(std::ostream &gv, Node *parent) const {
+void While_stmt::graph_dump(std::ostream &gv, const Node *parent) const {
     gv << "    node_" << this
        << "[shape=Mrecord; style=filled; fillcolor=turquoise"
        << "; color=\"#000000\"; " << "fontcolor=\"#000000\"; "
@@ -119,7 +119,7 @@ void While_stmt::graph_dump(std::ostream &gv, Node *parent) const {
     }
 }
 
-void If_stmt::graph_dump(std::ostream &gv, Node *parent) const {
+void If_stmt::graph_dump(std::ostream &gv, const Node *parent) const {
     gv << "    node_" << this
        << "[shape=Mrecord; style=filled; fillcolor=turquoise"
        << "; color=\"#000000\"; " << "fontcolor=\"#000000\"; " << "label=\"{ If"
@@ -141,7 +141,7 @@ void If_stmt::graph_dump(std::ostream &gv, Node *parent) const {
     }
 }
 
-void Input::graph_dump(std::ostream &gv, Node *parent) const {
+void Input::graph_dump(std::ostream &gv, const Node *parent) const {
     gv << "    node_" << this
        << "[shape=Mrecord; style=filled; fillcolor=lavenderblush1"
        << "; color=\"#000000\"; " << "fontcolor=\"#000000\"; "
@@ -149,7 +149,7 @@ void Input::graph_dump(std::ostream &gv, Node *parent) const {
        << "}\"" << "];\n";
 }
 
-void Binary_operator::graph_dump(std::ostream &gv, Node *parent) const {
+void Binary_operator::graph_dump(std::ostream &gv, const Node *parent) const {
     const char *op_str = "";
     switch (op_) {
     case Binary_operators::Eq:
@@ -220,7 +220,7 @@ void Binary_operator::graph_dump(std::ostream &gv, Node *parent) const {
     }
 }
 
-void Unary_operator::graph_dump(std::ostream &gv, Node *parent) const {
+void Unary_operator::graph_dump(std::ostream &gv, const Node *parent) const {
     const char *op_str = "";
     switch (op_) {
     case Unary_operators::Neg:
@@ -247,7 +247,7 @@ void Unary_operator::graph_dump(std::ostream &gv, Node *parent) const {
     }
 }
 
-void Number::graph_dump(std::ostream &gv, Node *parent) const {
+void Number::graph_dump(std::ostream &gv, const Node *parent) const {
     gv << "    node_" << this
        << "[shape=Mrecord; style=filled; fillcolor=palegreen"
        << "; color=\"#000000\"; " << "fontcolor=\"#000000\"; "
@@ -255,7 +255,7 @@ void Number::graph_dump(std::ostream &gv, Node *parent) const {
        << " | value: " << number_ << " }\"" << "];\n";
 }
 
-void Variable::graph_dump(std::ostream &gv, Node *parent) const {
+void Variable::graph_dump(std::ostream &gv, const Node *parent) const {
     gv << "    node_" << this
        << "[shape=Mrecord; style=filled; fillcolor=cornflowerblue"
        << "; color=\"#000000\"; " << "fontcolor=\"#000000\"; "
@@ -263,7 +263,7 @@ void Variable::graph_dump(std::ostream &gv, Node *parent) const {
        << " | name: " << var_name_ << " }\"" << "];\n";
 }
 
-void Print_stmt::graph_dump(std::ostream &gv, Node *parent) const {
+void Print_stmt::graph_dump(std::ostream &gv, const Node *parent) const {
     gv << "    node_" << this
        << "[shape=Mrecord; style=filled; fillcolor=darkorange"
        << "; color=\"#000000\"; " << "fontcolor=\"#000000\"; "
