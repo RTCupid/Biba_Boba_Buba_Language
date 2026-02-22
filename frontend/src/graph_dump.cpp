@@ -105,8 +105,8 @@ void While_stmt::graph_dump(std::ostream &gv, Node *parent) const {
        << "[shape=Mrecord; style=filled; fillcolor=turquoise"
        << "; color=\"#000000\"; " << "fontcolor=\"#000000\"; "
        << "label=\"{ While" << " | addr: " << this << " | parent: " << parent
-       << "| { left: " << condition_ << " | right: " << body_
-       << " } }\"" << "];\n";
+       << "| { left: " << condition_ << " | right: " << body_ << " } }\""
+       << "];\n";
 
     if (condition_) {
         gv << "    node_" << this << " -> node_" << condition_ << ";\n";
@@ -206,8 +206,8 @@ void Binary_operator::graph_dump(std::ostream &gv, Node *parent) const {
        << "; color=\"#000000\"; " << "fontcolor=\"#000000\"; "
        << "label=\"{ Binary operator" << " | addr: " << this
        << " | parent: " << parent << " | operator: " << op_str
-       << " | { left: " << left_ << " | right: " << right_
-       << " } }\"" << "];\n";
+       << " | { left: " << left_ << " | right: " << right_ << " } }\""
+       << "];\n";
 
     if (left_) {
         gv << "    node_" << this << " -> node_" << left_ << ";\n";

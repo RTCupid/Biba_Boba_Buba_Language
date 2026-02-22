@@ -93,10 +93,10 @@ enum class Unary_operators { Neg, Plus, Not };
 class Statement : public Node {};
 class Expression : public Node {};
 
-using Statement_ptr = Statement*;
+using Statement_ptr = Statement *;
 using StmtList = std::vector<Statement_ptr>;
-using Expression_ptr = Expression*;
-using Variable_ptr = Variable*;
+using Expression_ptr = Expression *;
+using Variable_ptr = Variable *;
 
 class Program : public Node {
   private:

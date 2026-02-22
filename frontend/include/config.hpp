@@ -13,7 +13,7 @@ using name_t = std::string;
 using nametable_t = std::unordered_set<name_t>;
 class Program;
 
-using program_ptr = Program*;
+using program_ptr = Program *;
 
 } // namespace language
 
