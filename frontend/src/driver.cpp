@@ -12,11 +12,11 @@ void driver(int argc, char **&argv) {
     }
     language::Lexer scanner(&program_file, &std::cout);
 
-    language::program_ptr root;
-
-    language::My_parser parser(&scanner, root, argv[1]);
+    language::My_parser parser(&scanner, argv[1]);
 
     int result = parser.parse();
+
+    language::program_ptr root = parser.get_root();
 
     if (parser.error_collector.has_errors()) {
         std::cout << "FAILED: ";
