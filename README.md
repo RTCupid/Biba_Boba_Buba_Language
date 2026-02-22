@@ -783,7 +783,7 @@ cmake -S . -B build -DGRAPH_DUMP=ON
 ```
 The constructed `AST` tree can be viewed in graphical representation using `graphviz`. To generate an image, you can enter:
 ```bash
-dot dot dump/dump.gv -Tsvg -o dump/dump.svg
+dot dump/dump.gv -Tsvg -o dump/dump.svg
 ```
 This produces the following tree representation:
 
