@@ -5,7 +5,7 @@ yy::parser::semantic_type *yylval = nullptr;
 
 int yyFlexLexer::yywrap() { return 1; }
 
-int main(int argc, char *argv[]) {
+int main(int argc, const char *argv[]) {
     try {
         driver(argc, argv);
     } catch (const std::exception &e) {

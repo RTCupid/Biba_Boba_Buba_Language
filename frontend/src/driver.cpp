@@ -1,6 +1,6 @@
 #include "driver.hpp"
 
-void driver(int argc, char **&argv) {
+void driver(int argc, const char **argv) {
     if (argc < 2) {
         throw std::runtime_error(std::string("Usage: ") + argv[0] +
                                  " <program_file>");
