@@ -161,7 +161,7 @@
 
 program        : toplevel_stmt_list TOK_EOF
                 {
-                  root = my_parser->pool.make<language::Program>($1);
+                  root = pool.make<language::Program>($1);
                 }
                ;
 
@@ -217,7 +217,7 @@ statement      : assignment_stmt TOK_SEMICOLON
 
 empty_stmt     : TOK_SEMICOLON
                 {
-                  $$ = my_parser->pool.make<language::Empty_stmt>();
+                  $$ = pool.make<language::Empty_stmt>();
                 }
 
 block_stmt     : TOK_LEFT_BRACE
@@ -228,29 +228,29 @@ block_stmt     : TOK_LEFT_BRACE
                 TOK_RIGHT_BRACE
                 {
                   pop_scope(my_parser);
-                  $$ = my_parser->pool.make<language::Block_stmt>($3);
+                  $$ = pool.make<language::Block_stmt>($3);
                 }
                ;
 
 assignment_stmt: TOK_ID TOK_ASSIGN expression
                 {
-                  auto variable = my_parser->pool.make<language::Variable>($1);
+                  auto variable = pool.make<language::Variable>($1);
                   auto var_name = variable->get_name();
 
                   if (!find_in_scopes(my_parser, var_name))
                     add_var_to_scope(my_parser, var_name);
 
-                  $$ = my_parser->pool.make<language::Assignment_stmt>(variable, $3);
+                  $$ = pool.make<language::Assignment_stmt>(variable, $3);
                 }
                ;
 
 if_stmt        : TOK_IF TOK_LEFT_PAREN expression TOK_RIGHT_PAREN statement %prec PREC_IFX
                 {
-                  $$ = my_parser->pool.make<language::If_stmt>($3, $5);
+                  $$ = pool.make<language::If_stmt>($3, $5);
                 }
                | TOK_IF TOK_LEFT_PAREN expression TOK_RIGHT_PAREN statement TOK_ELSE statement
                 {
-                  $$ = my_parser->pool.make<language::If_stmt>($3, $5, $7);
+                  $$ = pool.make<language::If_stmt>($3, $5, $7);
                 }
                | TOK_IF error TOK_RIGHT_PAREN statement %prec PREC_IFX
                 {
@@ -264,7 +264,7 @@ if_stmt        : TOK_IF TOK_LEFT_PAREN expression TOK_RIGHT_PAREN statement %pre
 
 while_stmt     : TOK_WHILE TOK_LEFT_PAREN expression TOK_RIGHT_PAREN statement
                 {
-                  $$ = my_parser->pool.make<language::While_stmt>($3, $5);
+                  $$ = pool.make<language::While_stmt>($3, $5);
                 }
                | TOK_WHILE error TOK_RIGHT_PAREN statement
                 {
@@ -278,7 +278,7 @@ while_stmt     : TOK_WHILE TOK_LEFT_PAREN expression TOK_RIGHT_PAREN statement
 
 print_stmt     : TOK_PRINT expression
                 {
-                  $$ = my_parser->pool.make<language::Print_stmt>($2);
+                  $$ = pool.make<language::Print_stmt>($2);
                 }
                ;
 
@@ -290,77 +290,77 @@ expression     : assignment_expr
 
 or            : and { $$ = $1; }
               | or TOK_LOG_OR and
-                { $$ = my_parser->pool.make<language::Binary_operator>(Binary_operators::LogOr, $1, $3); }
+                { $$ = pool.make<language::Binary_operator>(Binary_operators::LogOr, $1, $3); }
               ;
 
 and           : bitwise_op { $$ = $1; }
                 | and TOK_LOG_AND bitwise_op
-                  { $$ = my_parser->pool.make<language::Binary_operator>(Binary_operators::LogAnd, $1, $3); }
+                  { $$ = pool.make<language::Binary_operator>(Binary_operators::LogAnd, $1, $3); }
                 ;
 
 bitwise_op     : equality
                   { $$ = $1; }
                | bitwise_op TOK_AND equality
-                  { $$ = my_parser->pool.make<language::Binary_operator>(Binary_operators::And, $1, $3); }
+                  { $$ = pool.make<language::Binary_operator>(Binary_operators::And, $1, $3); }
                | bitwise_op TOK_XOR equality
-                  { $$ = my_parser->pool.make<language::Binary_operator>(Binary_operators::Xor, $1, $3); }
+                  { $$ = pool.make<language::Binary_operator>(Binary_operators::Xor, $1, $3); }
                | bitwise_op TOK_OR  equality
-                  { $$ = my_parser->pool.make<language::Binary_operator>(Binary_operators::Or, $1, $3); }
+                  { $$ = pool.make<language::Binary_operator>(Binary_operators::Or, $1, $3); }
                ;
 
 equality       : relational
                  { $$ = $1; }
                | equality TOK_EQ  relational
-                 { $$ = my_parser->pool.make<language::Binary_operator>(Binary_operators::Eq,  $1, $3); }
+                 { $$ = pool.make<language::Binary_operator>(Binary_operators::Eq,  $1, $3); }
                | equality TOK_NEQ relational
-                 { $$ = my_parser->pool.make<language::Binary_operator>(Binary_operators::Neq,  $1, $3); }
+                 { $$ = pool.make<language::Binary_operator>(Binary_operators::Neq,  $1, $3); }
                ;
 
 relational     : add_sub
                  { $$ = $1; }
                | relational TOK_LESS          add_sub
-                 { $$ = my_parser->pool.make<language::Binary_operator>(Binary_operators::Less, $1, $3); }
+                 { $$ = pool.make<language::Binary_operator>(Binary_operators::Less, $1, $3); }
                | relational TOK_LESS_OR_EQ    add_sub
-                 { $$ = my_parser->pool.make<language::Binary_operator>(Binary_operators::LessEq, $1, $3); }
+                 { $$ = pool.make<language::Binary_operator>(Binary_operators::LessEq, $1, $3); }
                | relational TOK_GREATER       add_sub
-                 { $$ = my_parser->pool.make<language::Binary_operator>(Binary_operators::Greater, $1, $3); }
+                 { $$ = pool.make<language::Binary_operator>(Binary_operators::Greater, $1, $3); }
                | relational TOK_GREATER_OR_EQ add_sub
-                 { $$ = my_parser->pool.make<language::Binary_operator>(Binary_operators::GreaterEq, $1, $3); }
+                 { $$ = pool.make<language::Binary_operator>(Binary_operators::GreaterEq, $1, $3); }
                ;
 
 add_sub        : mul_div
                  { $$ = $1; }
                | add_sub TOK_PLUS  mul_div
-                 { $$ = my_parser->pool.make<language::Binary_operator>(Binary_operators::Add, $1, $3); }
+                 { $$ = pool.make<language::Binary_operator>(Binary_operators::Add, $1, $3); }
                | add_sub TOK_MINUS mul_div
-                 { $$ = my_parser->pool.make<language::Binary_operator>(Binary_operators::Sub, $1, $3); }
+                 { $$ = pool.make<language::Binary_operator>(Binary_operators::Sub, $1, $3); }
                ;
 
 mul_div        : unary
                  { $$ = $1; }
                | mul_div TOK_MUL unary
-                 { $$ = my_parser->pool.make<language::Binary_operator>(Binary_operators::Mul, $1, $3); }
+                 { $$ = pool.make<language::Binary_operator>(Binary_operators::Mul, $1, $3); }
                | mul_div TOK_DIV unary
-                 { $$ = my_parser->pool.make<language::Binary_operator>(Binary_operators::Div, $1, $3); }
+                 { $$ = pool.make<language::Binary_operator>(Binary_operators::Div, $1, $3); }
                | mul_div TOK_REM_DIV unary
-                 { $$ = my_parser->pool.make<language::Binary_operator>(Binary_operators::RemDiv, $1, $3); }
+                 { $$ = pool.make<language::Binary_operator>(Binary_operators::RemDiv, $1, $3); }
                ;
 
 unary          : TOK_MINUS unary
-                { $$ = my_parser->pool.make<language::Unary_operator>(Unary_operators::Neg, $2); }
+                { $$ = pool.make<language::Unary_operator>(Unary_operators::Neg, $2); }
                | TOK_PLUS unary
-                { $$ = my_parser->pool.make<language::Unary_operator>(Unary_operators::Plus, $2); }
+                { $$ = pool.make<language::Unary_operator>(Unary_operators::Plus, $2); }
                | TOK_NOT unary
-                { $$ = my_parser->pool.make<language::Unary_operator>(Unary_operators::Not, $2); }
+                { $$ = pool.make<language::Unary_operator>(Unary_operators::Not, $2); }
                | primary
                 { $$ = $1; }
                ;
 
 primary        : TOK_NUMBER
-                { $$ = my_parser->pool.make<language::Number>($1); }
+                { $$ = pool.make<language::Number>($1); }
                | TOK_ID
                 {
-                  auto variable = my_parser->pool.make<language::Variable>($1);
+                  auto variable = pool.make<language::Variable>($1);
                   if (!find_in_scopes(my_parser, variable->get_name())) {
                     error(@1, "\'" + variable->get_name() + "\' was not declared in this scope");
                   }
@@ -370,20 +370,20 @@ primary        : TOK_NUMBER
                | TOK_LEFT_PAREN expression TOK_RIGHT_PAREN
                 { $$ = $2; }
                | TOK_INPUT
-                { $$ = my_parser->pool.make<language::Input>(); }
+                { $$ = pool.make<language::Input>(); }
                ;
 
 assignment_expr
               : or { $$ = $1; }
               | TOK_ID TOK_ASSIGN assignment_expr
                 {
-                  auto variable = my_parser->pool.make<language::Variable>($1);
+                  auto variable = pool.make<language::Variable>($1);
                   auto var_name = variable->get_name();
 
                   if (!find_in_scopes(my_parser, var_name))
                     add_var_to_scope(my_parser, var_name);
 
-                  $$ = my_parser->pool.make<language::Assignment_expr>(variable, $3);
+                  $$ = pool.make<language::Assignment_expr>(variable, $3);
                 }
               ;
 %%
