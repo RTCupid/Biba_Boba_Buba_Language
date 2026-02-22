@@ -107,16 +107,12 @@ class Program : public Node {
 
     void accept(ASTVisitor &visitor) override { visitor.visit(*this); }
 
-    // virtual void graph_dump(std::ostream &gv,
-    //                         const Node *parent) const override;
 };
 
 class Empty_stmt : public Statement {
   public:
     void accept(ASTVisitor &visitor) override { visitor.visit(*this); }
 
-    // virtual void graph_dump(std::ostream &gv,
-    //                         const Node *parent) const override;
 };
 
 class Block_stmt : public Statement {
@@ -131,8 +127,6 @@ class Block_stmt : public Statement {
 
     void accept(ASTVisitor &visitor) override { visitor.visit(*this); }
 
-    // virtual void graph_dump(std::ostream &gv,
-    //                         const Node *parent) const override;
 };
 
 class Assignment_stmt : public Statement {
@@ -150,8 +144,6 @@ class Assignment_stmt : public Statement {
 
     void accept(ASTVisitor &visitor) override { visitor.visit(*this); }
 
-    // virtual void graph_dump(std::ostream &gv,
-    //                         const Node *parent) const override;
 };
 
 class Assignment_expr : public Expression {
@@ -169,8 +161,6 @@ class Assignment_expr : public Expression {
 
     void accept(ASTVisitor &visitor) override { visitor.visit(*this); }
 
-    // virtual void graph_dump(std::ostream &gv,
-    //                         const Node *parent) const override;
 };
 
 class While_stmt : public Statement {
@@ -187,8 +177,6 @@ class While_stmt : public Statement {
 
     void accept(ASTVisitor &visitor) override { visitor.visit(*this); }
 
-    // virtual void graph_dump(std::ostream &gv,
-    //                         const Node *parent) const override;
 };
 
 class If_stmt : public Statement {
@@ -211,16 +199,12 @@ class If_stmt : public Statement {
 
     void accept(ASTVisitor &visitor) override { visitor.visit(*this); }
 
-    // virtual void graph_dump(std::ostream &gv,
-    //                         const Node *parent) const override;
 };
 
 class Input : public Expression {
   public:
     void accept(ASTVisitor &visitor) override { visitor.visit(*this); }
 
-    // virtual void graph_dump(std::ostream &gv,
-    //                         const Node *parent) const override;
 };
 
 class Print_stmt : public Statement {
@@ -235,8 +219,6 @@ class Print_stmt : public Statement {
 
     void accept(ASTVisitor &visitor) override { visitor.visit(*this); }
 
-    // virtual void graph_dump(std::ostream &gv,
-    //                         const Node *parent) const override;
 };
 
 class Binary_operator : public Expression {
@@ -258,8 +240,6 @@ class Binary_operator : public Expression {
 
     void accept(ASTVisitor &visitor) override { visitor.visit(*this); }
 
-    // virtual void graph_dump(std::ostream &gv,
-    //                         const Node *parent) const override;
 };
 
 class Unary_operator : public Expression {
@@ -277,8 +257,6 @@ class Unary_operator : public Expression {
 
     void accept(ASTVisitor &visitor) override { visitor.visit(*this); }
 
-    // virtual void graph_dump(std::ostream &gv,
-    //                         const Node *parent) const override;
 };
 
 class Number : public Expression {
@@ -292,8 +270,6 @@ class Number : public Expression {
 
     void accept(ASTVisitor &visitor) override { visitor.visit(*this); }
 
-    // virtual void graph_dump(std::ostream &gv,
-    //                         const Node *parent) const override;
 };
 
 class Variable : public Expression {
@@ -307,8 +283,6 @@ class Variable : public Expression {
 
     void accept(ASTVisitor &visitor) override { visitor.visit(*this); }
 
-    // virtual void graph_dump(std::ostream &gv,
-    //                         const Node *parent) const override;
 };
 
 } // namespace language
