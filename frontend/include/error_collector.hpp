@@ -58,10 +58,10 @@ class Error_collector final {
         errors_.push_back(Error_info{program_file_, loc, msg});
     }
 
-    bool has_errors() const { return !errors_.empty(); }
+    bool has_errors() const noexcept { return !errors_.empty(); }
 
     void print_errors(std::ostream &os) const {
-        for (auto &error : errors_)
+        for (const auto &error : errors_)
             error.print(os);
     }
 };

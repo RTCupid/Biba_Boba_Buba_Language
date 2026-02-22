@@ -103,8 +103,8 @@ class Program : public Node {
   public:
     explicit Program(StmtList stmts) : stmts_(std::move(stmts)) {}
 
-    const StmtList &get_stmts() const { return stmts_; }
-    StmtList &get_stmts() { return stmts_; }
+    const StmtList &get_stmts() const noexcept { return stmts_; }
+    StmtList &get_stmts() noexcept { return stmts_; }
 
     void accept(ASTVisitor &visitor) override { visitor.visit(*this); }
 
@@ -125,8 +125,8 @@ class Block_stmt : public Statement {
   public:
     explicit Block_stmt(StmtList stmts) : stmts_(std::move(stmts)) {}
 
-    const StmtList &get_stmts() const { return stmts_; }
-    StmtList &get_stmts() { return stmts_; }
+    const StmtList &get_stmts() const noexcept { return stmts_; }
+    StmtList &get_stmts() noexcept { return stmts_; }
 
     void accept(ASTVisitor &visitor) override { visitor.visit(*this); }
 
@@ -142,9 +142,9 @@ class Assignment_stmt : public Statement {
     Assignment_stmt(Variable_ptr variable, Expression_ptr value)
         : variable_(std::move(variable)), value_(std::move(value)) {}
 
-    const Variable_ptr &get_variable() const { return variable_; }
-    Expression &get_value() { return *value_; }
-    const Expression &get_value() const { return *value_; }
+    const Variable_ptr &get_variable() const noexcept { return variable_; }
+    Expression &get_value() noexcept { return *value_; }
+    const Expression &get_value() const noexcept { return *value_; }
 
     void accept(ASTVisitor &visitor) override { visitor.visit(*this); }
 
@@ -160,9 +160,9 @@ class Assignment_expr : public Expression {
     Assignment_expr(Variable_ptr variable, Expression_ptr value)
         : variable_(std::move(variable)), value_(std::move(value)) {}
 
-    const Variable_ptr &get_variable() const { return variable_; }
-    Expression &get_value() { return *value_; }
-    const Expression &get_value() const { return *value_; }
+    const Variable_ptr &get_variable() const noexcept { return variable_; }
+    Expression &get_value() noexcept { return *value_; }
+    const Expression &get_value() const noexcept { return *value_; }
 
     void accept(ASTVisitor &visitor) override { visitor.visit(*this); }
 
@@ -178,8 +178,8 @@ class While_stmt : public Statement {
     While_stmt(Expression_ptr condition, Statement_ptr body)
         : condition_(std::move(condition)), body_(std::move(body)) {}
 
-    Expression &get_condition() { return *condition_; }
-    Statement &get_body() { return *body_; }
+    Expression &get_condition() noexcept { return *condition_; }
+    Statement &get_body() noexcept { return *body_; }
 
     void accept(ASTVisitor &visitor) override { visitor.visit(*this); }
 
@@ -199,10 +199,10 @@ class If_stmt : public Statement {
           then_branch_(std::move(then_branch)),
           else_branch_(std::move(else_branch)) {}
 
-    Expression &get_condition() { return *condition_; }
-    Statement &then_branch() { return *then_branch_; }
-    Statement &else_branch() { return *else_branch_; }
-    bool contains_else_branch() const { return else_branch_; }
+    Expression &get_condition() noexcept { return *condition_; }
+    Statement &then_branch() noexcept { return *then_branch_; }
+    Statement &else_branch() noexcept { return *else_branch_; }
+    bool contains_else_branch() const noexcept { return else_branch_; }
 
     void accept(ASTVisitor &visitor) override { visitor.visit(*this); }
 
@@ -223,8 +223,8 @@ class Print_stmt : public Statement {
   public:
     explicit Print_stmt(Expression_ptr value) : value_(std::move(value)) {}
 
-    Expression &get_value() { return *value_; }
-    const Expression &get_value() const { return *value_; }
+    Expression &get_value() noexcept { return *value_; }
+    const Expression &get_value() const noexcept { return *value_; }
 
     void accept(ASTVisitor &visitor) override { visitor.visit(*this); }
 
@@ -242,11 +242,11 @@ class Binary_operator : public Expression {
                     Expression_ptr right)
         : op_(op), left_(std::move(left)), right_(std::move(right)) {}
 
-    Binary_operators get_operator() const { return op_; }
-    Expression &get_left() { return *left_; }
-    const Expression &get_left() const { return *left_; }
-    Expression &get_right() { return *right_; }
-    const Expression &get_right() const { return *right_; }
+    Binary_operators get_operator() const noexcept { return op_; }
+    Expression &get_left() noexcept { return *left_; }
+    const Expression &get_left() const noexcept { return *left_; }
+    Expression &get_right() noexcept { return *right_; }
+    const Expression &get_right() const noexcept { return *right_; }
 
     void accept(ASTVisitor &visitor) override { visitor.visit(*this); }
 
@@ -262,9 +262,9 @@ class Unary_operator : public Expression {
     Unary_operator(Unary_operators op, Expression_ptr operand)
         : op_(op), operand_(std::move(operand)) {}
 
-    Unary_operators get_operator() const { return op_; }
-    Expression &get_operand() { return *operand_; }
-    const Expression &get_operand() const { return *operand_; }
+    Unary_operators get_operator() const noexcept { return op_; }
+    Expression &get_operand() noexcept { return *operand_; }
+    const Expression &get_operand() const noexcept { return *operand_; }
 
     void accept(ASTVisitor &visitor) override { visitor.visit(*this); }
 
@@ -277,8 +277,8 @@ class Number : public Expression {
 
   public:
     explicit Number(number_t number) : number_(number) {}
-    number_t &get_value() { return number_; }
-    const number_t &get_value() const { return number_; }
+    number_t &get_value() noexcept { return number_; }
+    const number_t &get_value() const noexcept { return number_; }
 
     void accept(ASTVisitor &visitor) override { visitor.visit(*this); }
 
@@ -292,7 +292,7 @@ class Variable : public Expression {
   public:
     explicit Variable(name_t var_name) : var_name_(std::move(var_name)) {}
 
-    const name_t &get_name() const { return var_name_; }
+    const name_t &get_name() const noexcept { return var_name_; }
 
     void accept(ASTVisitor &visitor) override { visitor.visit(*this); }
 
