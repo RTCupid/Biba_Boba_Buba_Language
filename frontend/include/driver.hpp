@@ -7,9 +7,7 @@
 #include "node.hpp"
 #include "parser.hpp"
 #include "simulator.hpp"
-#include <fstream>
 #include <iostream>
-#include <memory>
 
 void driver(int argc, const char **argv);
 

@@ -1,7 +1,6 @@
 #ifndef FRONTEND_INCLUDE_CONFIG_HPP
 #define FRONTEND_INCLUDE_CONFIG_HPP
 
-#include <memory>
 #include <string>
 #include <unordered_set>
 

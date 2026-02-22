@@ -5,7 +5,6 @@
 #include "error_collector.hpp"
 #include "lexer.hpp"
 #include "parser.hpp"
-#include <memory>
 
 namespace language {
 

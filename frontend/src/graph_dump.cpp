@@ -1,5 +1,6 @@
 #include "node.hpp"
 #include <ostream>
+
 namespace language {
 
 void Program::graph_dump(std::ostream &gv, Node *parent) const {

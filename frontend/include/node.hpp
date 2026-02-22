@@ -2,8 +2,6 @@
 #define FRONTEND_INCLUDE_AST_HPP
 
 #include "config.hpp"
-#include <memory>
-#include <utility>
 #include <vector>
 
 namespace language {

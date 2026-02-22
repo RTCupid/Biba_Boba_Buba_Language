@@ -2,9 +2,6 @@
 #define DUMP_PATH_GEN_HPP
 
 #include <filesystem>
-#include <fstream>
-#include <functional>
-#include <iostream>
 
 namespace language {
 
