@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
-#include <sstream>
 #include <iostream>
+#include <sstream>
 
 #include "lexer.hpp"
 
@@ -88,7 +88,7 @@ TEST(LexerTest, ProcessMulSetsToken) {
     EXPECT_EQ(token, yy::parser::token::TOK_MUL);
 }
 
-// % 
+// %
 TEST(LexerTest, ProcessRemDivSetsToken) {
     std::istringstream in("");
     std::ostringstream out;
@@ -244,5 +244,5 @@ TEST(LexerTest, YyLexIsCallableOnEmptyInput) {
     Lexer lexer(&in, &out);
 
     int token = lexer.yylex();
-    (void)token; 
+    (void)token;
 }
