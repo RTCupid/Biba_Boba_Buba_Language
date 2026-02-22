@@ -1,19 +1,19 @@
 #ifndef INCLUDE_GRAPH_DUMP
 #define INCLUDE_GRAPH_DUMP
 
-#include <fstream>
 #include "node.hpp"
+#include <fstream>
 
 namespace language {
 
 class Graph_dump final : public ASTVisitor {
-private:
-  std::ostream &gv_;
-  const Node *parent_;
+  private:
+    std::ostream &gv_;
+    const Node *parent_;
 
-public:
+  public:
     Graph_dump(std::ostream &gv, const Node *parent)
-      : gv_(gv), parent_(parent) {}
+        : gv_(gv), parent_(parent) {}
 
     void visit(Program &node) override;
     void visit(Block_stmt &node) override;
@@ -29,7 +29,7 @@ public:
     void visit(Number &node) override;
     void visit(Variable &node) override;
 
-private:
+  private:
     void emit_edge(const Node *from, const Node *to) {
         gv_ << "    node_" << from << " -> node_" << to << ";\n";
     }
