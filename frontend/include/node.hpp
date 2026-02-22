@@ -2,8 +2,6 @@
 #define FRONTEND_INCLUDE_AST_HPP
 
 #include "config.hpp"
-#include <memory>
-#include <utility>
 #include <vector>
 
 namespace language {
@@ -66,8 +64,7 @@ class Node {
   public:
     virtual ~Node() = default;
     virtual void accept(ASTVisitor &visitor) = 0;
-    virtual void graph_dump(std::ostream &gv, Node *parent) const = 0;
-    virtual void detach_children(std::vector<std::unique_ptr<Node>> &stack) = 0;
+    virtual void graph_dump(std::ostream &gv, const Node *parent) const = 0;
 };
 
 enum class Binary_operators {
@@ -94,10 +91,10 @@ enum class Unary_operators { Neg, Plus, Not };
 class Statement : public Node {};
 class Expression : public Node {};
 
-using Statement_ptr = std::unique_ptr<Statement>;
+using Statement_ptr = Statement *;
 using StmtList = std::vector<Statement_ptr>;
-using Expression_ptr = std::unique_ptr<Expression>;
-using Variable_ptr = std::unique_ptr<Variable>;
+using Expression_ptr = Expression *;
+using Variable_ptr = Variable *;
 
 class Program : public Node {
   private:
@@ -111,20 +108,16 @@ class Program : public Node {
 
     void accept(ASTVisitor &visitor) override { visitor.visit(*this); }
 
-    virtual void graph_dump(std::ostream &gv, Node *parent) const override;
-
-    virtual void
-    detach_children(std::vector<std::unique_ptr<Node>> &stack) override;
+    virtual void graph_dump(std::ostream &gv,
+                            const Node *parent) const override;
 };
 
 class Empty_stmt : public Statement {
   public:
     void accept(ASTVisitor &visitor) override { visitor.visit(*this); }
 
-    virtual void graph_dump(std::ostream &gv, Node *parent) const override;
-
-    virtual void
-    detach_children(std::vector<std::unique_ptr<Node>> &stack) override;
+    virtual void graph_dump(std::ostream &gv,
+                            const Node *parent) const override;
 };
 
 class Block_stmt : public Statement {
@@ -139,10 +132,8 @@ class Block_stmt : public Statement {
 
     void accept(ASTVisitor &visitor) override { visitor.visit(*this); }
 
-    virtual void graph_dump(std::ostream &gv, Node *parent) const override;
-
-    virtual void
-    detach_children(std::vector<std::unique_ptr<Node>> &stack) override;
+    virtual void graph_dump(std::ostream &gv,
+                            const Node *parent) const override;
 };
 
 class Assignment_stmt : public Statement {
@@ -160,10 +151,8 @@ class Assignment_stmt : public Statement {
 
     void accept(ASTVisitor &visitor) override { visitor.visit(*this); }
 
-    virtual void graph_dump(std::ostream &gv, Node *parent) const override;
-
-    virtual void
-    detach_children(std::vector<std::unique_ptr<Node>> &stack) override;
+    virtual void graph_dump(std::ostream &gv,
+                            const Node *parent) const override;
 };
 
 class Assignment_expr : public Expression {
@@ -181,10 +170,8 @@ class Assignment_expr : public Expression {
 
     void accept(ASTVisitor &visitor) override { visitor.visit(*this); }
 
-    virtual void graph_dump(std::ostream &gv, Node *parent) const override;
-
-    virtual void
-    detach_children(std::vector<std::unique_ptr<Node>> &stack) override;
+    virtual void graph_dump(std::ostream &gv,
+                            const Node *parent) const override;
 };
 
 class While_stmt : public Statement {
@@ -201,10 +188,8 @@ class While_stmt : public Statement {
 
     void accept(ASTVisitor &visitor) override { visitor.visit(*this); }
 
-    virtual void graph_dump(std::ostream &gv, Node *parent) const override;
-
-    virtual void
-    detach_children(std::vector<std::unique_ptr<Node>> &stack) override;
+    virtual void graph_dump(std::ostream &gv,
+                            const Node *parent) const override;
 };
 
 class If_stmt : public Statement {
@@ -223,24 +208,20 @@ class If_stmt : public Statement {
     Expression &get_condition() { return *condition_; }
     Statement &then_branch() { return *then_branch_; }
     Statement &else_branch() { return *else_branch_; }
-    bool contains_else_branch() const { return else_branch_.get(); }
+    bool contains_else_branch() const { return else_branch_; }
 
     void accept(ASTVisitor &visitor) override { visitor.visit(*this); }
 
-    virtual void graph_dump(std::ostream &gv, Node *parent) const override;
-
-    virtual void
-    detach_children(std::vector<std::unique_ptr<Node>> &stack) override;
+    virtual void graph_dump(std::ostream &gv,
+                            const Node *parent) const override;
 };
 
 class Input : public Expression {
   public:
     void accept(ASTVisitor &visitor) override { visitor.visit(*this); }
 
-    virtual void graph_dump(std::ostream &gv, Node *parent) const override;
-
-    virtual void
-    detach_children(std::vector<std::unique_ptr<Node>> &stack) override;
+    virtual void graph_dump(std::ostream &gv,
+                            const Node *parent) const override;
 };
 
 class Print_stmt : public Statement {
@@ -255,10 +236,8 @@ class Print_stmt : public Statement {
 
     void accept(ASTVisitor &visitor) override { visitor.visit(*this); }
 
-    virtual void graph_dump(std::ostream &gv, Node *parent) const override;
-
-    virtual void
-    detach_children(std::vector<std::unique_ptr<Node>> &stack) override;
+    virtual void graph_dump(std::ostream &gv,
+                            const Node *parent) const override;
 };
 
 class Binary_operator : public Expression {
@@ -280,10 +259,8 @@ class Binary_operator : public Expression {
 
     void accept(ASTVisitor &visitor) override { visitor.visit(*this); }
 
-    virtual void graph_dump(std::ostream &gv, Node *parent) const override;
-
-    virtual void
-    detach_children(std::vector<std::unique_ptr<Node>> &stack) override;
+    virtual void graph_dump(std::ostream &gv,
+                            const Node *parent) const override;
 };
 
 class Unary_operator : public Expression {
@@ -301,10 +278,8 @@ class Unary_operator : public Expression {
 
     void accept(ASTVisitor &visitor) override { visitor.visit(*this); }
 
-    virtual void graph_dump(std::ostream &gv, Node *parent) const override;
-
-    virtual void
-    detach_children(std::vector<std::unique_ptr<Node>> &stack) override;
+    virtual void graph_dump(std::ostream &gv,
+                            const Node *parent) const override;
 };
 
 class Number : public Expression {
@@ -318,10 +293,8 @@ class Number : public Expression {
 
     void accept(ASTVisitor &visitor) override { visitor.visit(*this); }
 
-    virtual void graph_dump(std::ostream &gv, Node *parent) const override;
-
-    virtual void
-    detach_children(std::vector<std::unique_ptr<Node>> &stack) override;
+    virtual void graph_dump(std::ostream &gv,
+                            const Node *parent) const override;
 };
 
 class Variable : public Expression {
@@ -335,10 +308,8 @@ class Variable : public Expression {
 
     void accept(ASTVisitor &visitor) override { visitor.visit(*this); }
 
-    virtual void graph_dump(std::ostream &gv, Node *parent) const override;
-
-    virtual void
-    detach_children(std::vector<std::unique_ptr<Node>> &stack) override;
+    virtual void graph_dump(std::ostream &gv,
+                            const Node *parent) const override;
 };
 
 } // namespace language

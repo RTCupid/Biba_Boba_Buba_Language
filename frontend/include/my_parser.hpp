@@ -5,26 +5,27 @@
 #include "error_collector.hpp"
 #include "lexer.hpp"
 #include "parser.hpp"
-#include <memory>
 
 namespace language {
 
 class My_parser final : public yy::parser {
   private:
     Lexer *scanner_;
-    language::program_ptr root_;
+    Node_pool pool_;
+    program_ptr root_ = nullptr;
     std::vector<std::string> source_lines_;
 
   public:
     Error_collector error_collector;
     Scope scopes;
 
-    My_parser(Lexer *scanner, language::program_ptr &root,
-              const std::string &program_file)
-        : yy::parser(scanner, root, this), scanner_(scanner),
-          root_(std::move(root)), error_collector(program_file) {
+    My_parser(Lexer *scanner, const std::string &program_file)
+        : yy::parser(scanner, pool_, root_, this), scanner_(scanner),
+          error_collector(program_file) {
         read_source(program_file);
     }
+
+    program_ptr get_root() const noexcept { return root_; }
 
     void read_source(std::string_view file_name) {
         std::ifstream input_file(std::string{file_name});

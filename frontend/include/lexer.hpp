@@ -3,8 +3,6 @@
 
 #include "parser.hpp"
 #include <fstream>
-#include <iostream>
-#include <ostream>
 
 #ifndef yyFlexLexer
 #include <FlexLexer.h>
