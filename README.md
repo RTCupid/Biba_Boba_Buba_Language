@@ -808,7 +808,6 @@ This produces the following tree representation:
 ├── frontend
 │   ├── CMakeLists.txt
 │   ├── include
-│   │   ├── ast_factory.hpp
 │   │   ├── config.hpp
 │   │   ├── driver.hpp
 │   │   ├── dump_path_gen.hpp
@@ -816,6 +815,7 @@ This produces the following tree representation:
 │   │   ├── expr_evaluator.hpp
 │   │   ├── lexer.hpp
 │   │   ├── my_parser.hpp
+│   │   ├── node_pool.hpp
 │   │   ├── node.hpp
 │   │   ├── scope.hpp
 │   │   └── simulator.hpp
