@@ -788,7 +788,7 @@ cmake -S . -B build -DGRAPH_DUMP=ON
 ```
 Построенное дерево `AST` можно посмотреть в графическом представлении при помощи `graphviz`. Для генерации изображения можно ввести
 ```bash
-dot dot dump/dump.gv -Tsvg -o dump/dump.svg
+dot dump/dump.gv -Tsvg -o dump/dump.svg
 ```
 Получится следующее представление дерева
 
@@ -813,7 +813,6 @@ dot dot dump/dump.gv -Tsvg -o dump/dump.svg
 ├── frontend
 │   ├── CMakeLists.txt
 │   ├── include
-│   │   ├── ast_factory.hpp
 │   │   ├── config.hpp
 │   │   ├── driver.hpp
 │   │   ├── dump_path_gen.hpp
@@ -821,6 +820,7 @@ dot dot dump/dump.gv -Tsvg -o dump/dump.svg
 │   │   ├── expr_evaluator.hpp
 │   │   ├── lexer.hpp
 │   │   ├── my_parser.hpp
+│   │   ├── node_pool.hpp
 │   │   ├── node.hpp
 │   │   ├── scope.hpp
 │   │   └── simulator.hpp
