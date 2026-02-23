@@ -3,13 +3,17 @@
 
 #include <string>
 #include <unordered_set>
+#include <string_view>
 
 namespace language {
 
-using number_t = int;
-using name_t = std::string;
+using number_t  = int;
+
+using name_t_sv = std::string_view;
+using name_t    = std::string;
 
 using nametable_t = std::unordered_set<name_t>;
+
 class Program;
 
 using program_ptr = Program *;
