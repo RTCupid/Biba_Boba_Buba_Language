@@ -21,13 +21,13 @@ void Expression_evaluator::visit(Variable &node) {
 }
 
 void Expression_evaluator::visit(Assignment_expr &node) {
-    auto&& var_name = static_cast<std::string>(node.get_variable()->get_name());
+    auto &&var_name = static_cast<std::string>(node.get_variable()->get_name());
 
     Expression_evaluator result_eval{simulator_};
     node.get_value().accept(result_eval);
     result_ = result_eval.result_;
 
-    auto&& it = simulator_.nametable.find(var_name);
+    auto &&it = simulator_.nametable.find(var_name);
     if (it != simulator_.nametable.end())
         it->second = result_;
     else

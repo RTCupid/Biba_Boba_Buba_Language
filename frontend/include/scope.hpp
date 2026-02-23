@@ -5,8 +5,8 @@
 #include <cassert>
 #include <string>
 #include <string_view>
-#include <utility>
 #include <unordered_set>
+#include <utility>
 #include <vector>
 
 namespace language {
@@ -25,18 +25,18 @@ class Scope final {
         scopes_.emplace_back(std::move(nametable));
     }
 
-    void pop() { 
+    void pop() {
         assert(!scopes_.empty());
         archived_.push_back(std::move(scopes_.back()));
         scopes_.pop_back();
     }
 
-    
     name_t_sv lookup(name_t_sv var_name) const {
-        if (scopes_.empty()) return {};
-        
+        if (scopes_.empty())
+            return {};
+
         const std::string key(var_name);
-        
+
         for (auto it = scopes_.rbegin(); it != scopes_.rend(); ++it) {
             auto f = it->find(key);
             if (f != it->end()) {
@@ -46,9 +46,7 @@ class Scope final {
         return {};
     }
 
-    bool find(name_t_sv var_name) const {
-        return !lookup(var_name).empty();
-    }
+    bool find(name_t_sv var_name) const { return !lookup(var_name).empty(); }
 
     name_t_sv add_variable(name_t_sv var_name) {
         assert(!scopes_.empty());
