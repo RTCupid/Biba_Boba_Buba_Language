@@ -3,12 +3,12 @@
 
 #include "config.hpp"
 #include <cassert>
+#include <ranges>
 #include <string>
 #include <string_view>
 #include <unordered_set>
 #include <utility>
 #include <vector>
-#include <ranges>
 
 namespace language {
 
@@ -37,8 +37,8 @@ class Scope final {
             return {};
 
         const std::string key(var_name);
-        
-        for (const auto& scope : scopes_ | std::views::reverse) {
+
+        for (const auto &scope : scopes_ | std::views::reverse) {
             auto f = scope.find(key);
             if (f != scope.end()) {
                 return std::string_view(*f);
