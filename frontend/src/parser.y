@@ -16,7 +16,11 @@
 
 %code requires {
   #include <string>
+  #include <string_view>
+  #include <type_traits>
+  #include <utility>
   #include <iostream>
+
   #include "config.hpp"
   #include "node.hpp"
   #include "node_pool.hpp"
@@ -30,6 +34,7 @@
   using language::Unary_operators;
   using language::nametable_t;
   using language::name_t;
+  using language::name_t_sv;
 
   template<typename T>
   void push_scope(T* parser, nametable_t&& nametable);
@@ -38,10 +43,10 @@
   void pop_scope(T* parser);
 
   template<typename T>
-  bool find_in_scopes(T* parser, const name_t& var_name);
+  name_t_sv lookup_in_scopes(T* parser, name_t_sv var_name);
 
   template<typename T>
-  void add_var_to_scope(T* parser, const name_t& var_name);
+  name_t_sv add_var_to_scope(T* parser, name_t_sv var_name);
 }
 
 %code {
@@ -54,7 +59,7 @@
 
   template<typename T>
   void push_scope(T* parser, nametable_t&& nametable) {
-    parser->scopes.push(nametable);
+    parser->scopes.push(std::move(nametable));
   }
 
   template<typename T>
@@ -63,13 +68,13 @@
   }
 
   template<typename T>
-  bool find_in_scopes(T* parser, const name_t& var_name) {
-    return parser->scopes.find(var_name);
+  name_t_sv lookup_in_scopes(T* parser, name_t_sv var_name) {
+    return parser->scopes.lookup(var_name);
   }
 
   template<typename T>
-  void add_var_to_scope(T* parser, const name_t& var_name) {
-    parser->scopes.add_variable(var_name);
+  name_t_sv add_var_to_scope(T* parser, name_t_sv var_name) {
+    return parser->scopes.add_variable(var_name);
   }
 
   int yylex(yy::parser::semantic_type* yylval,
@@ -219,6 +224,7 @@ empty_stmt     : TOK_SEMICOLON
                 {
                   $$ = pool.make<language::Empty_stmt>();
                 }
+                ;
 
 block_stmt     : TOK_LEFT_BRACE
                 {
@@ -234,15 +240,14 @@ block_stmt     : TOK_LEFT_BRACE
 
 assignment_stmt: TOK_ID TOK_ASSIGN expression
                 {
-                  auto variable = pool.make<language::Variable>($1);
-                  auto var_name = variable->get_name();
+                  language::name_t_sv name_sv = lookup_in_scopes(my_parser, $1);
+                  if (name_sv.empty())
+                    name_sv = add_var_to_scope(my_parser, $1);
 
-                  if (!find_in_scopes(my_parser, var_name))
-                    add_var_to_scope(my_parser, var_name);
-
+                  auto variable = pool.make<language::Variable>(name_sv);
                   $$ = pool.make<language::Assignment_stmt>(variable, $3);
                 }
-               ;
+                ;
 
 if_stmt        : TOK_IF TOK_LEFT_PAREN expression TOK_RIGHT_PAREN statement %prec PREC_IFX
                 {
@@ -360,12 +365,13 @@ primary        : TOK_NUMBER
                 { $$ = pool.make<language::Number>($1); }
                | TOK_ID
                 {
-                  auto variable = pool.make<language::Variable>($1);
-                  if (!find_in_scopes(my_parser, variable->get_name())) {
-                    error(@1, "\'" + variable->get_name() + "\' was not declared in this scope");
+                  language::name_t_sv name_sv = lookup_in_scopes(my_parser, $1);
+                  if (name_sv.empty()) {
+                    error(@1, std::string("'") + $1 + "' was not declared in this scope");
+                    name_sv = add_var_to_scope(my_parser, $1);
                   }
 
-                  $$ = variable;
+                  $$ = pool.make<language::Variable>(name_sv);
                 }
                | TOK_LEFT_PAREN expression TOK_RIGHT_PAREN
                 { $$ = $2; }
@@ -377,12 +383,11 @@ assignment_expr
               : or { $$ = $1; }
               | TOK_ID TOK_ASSIGN assignment_expr
                 {
-                  auto variable = pool.make<language::Variable>($1);
-                  auto var_name = variable->get_name();
+                  language::name_t_sv name_sv = lookup_in_scopes(my_parser, $1);
+                  if (name_sv.empty())
+                    name_sv = add_var_to_scope(my_parser, $1);
 
-                  if (!find_in_scopes(my_parser, var_name))
-                    add_var_to_scope(my_parser, var_name);
-
+                  auto variable = pool.make<language::Variable>(name_sv);
                   $$ = pool.make<language::Assignment_expr>(variable, $3);
                 }
               ;

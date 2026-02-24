@@ -10,7 +10,7 @@ number_t Expression_evaluator::get_result() const { return result_; }
 void Expression_evaluator::visit(Number &node) { result_ = node.get_value(); }
 
 void Expression_evaluator::visit(Variable &node) {
-    std::string var_name = node.get_name();
+    auto var_name = static_cast<std::string>(node.get_name());
 
     auto it = simulator_.nametable.find(var_name);
     if (it != simulator_.nametable.end()) {
@@ -21,13 +21,13 @@ void Expression_evaluator::visit(Variable &node) {
 }
 
 void Expression_evaluator::visit(Assignment_expr &node) {
-    const auto &var_name = node.get_variable()->get_name();
+    auto &&var_name = static_cast<std::string>(node.get_variable()->get_name());
 
     Expression_evaluator result_eval{simulator_};
     node.get_value().accept(result_eval);
     result_ = result_eval.result_;
 
-    auto it = simulator_.nametable.find(var_name);
+    auto &&it = simulator_.nametable.find(var_name);
     if (it != simulator_.nametable.end())
         it->second = result_;
     else

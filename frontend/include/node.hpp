@@ -262,12 +262,12 @@ class Number : public Expression {
 
 class Variable : public Expression {
   private:
-    name_t var_name_;
+    name_t_sv var_name_;
 
   public:
-    explicit Variable(name_t var_name) : var_name_(std::move(var_name)) {}
+    explicit Variable(name_t_sv var_name) : var_name_(var_name) {}
 
-    const name_t &get_name() const noexcept { return var_name_; }
+    name_t_sv get_name() const noexcept { return var_name_; }
 
     void accept(ASTVisitor &visitor) override { visitor.visit(*this); }
 };
