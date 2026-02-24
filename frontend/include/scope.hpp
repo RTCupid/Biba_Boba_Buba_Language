@@ -36,7 +36,7 @@ class Scope final {
             return {};
 
         const std::string key(var_name);
-        
+
         auto it_end = scopes_.rend();
         for (auto it = scopes_.rbegin(); it != it_end; ++it) {
             auto f = it->find(key);
@@ -52,10 +52,11 @@ class Scope final {
     name_t_sv add_variable(name_t_sv var_name) {
 
         if (scopes_.empty()) {
-            throw std::runtime_error("add_variable called with empty scope stack");
+            throw std::runtime_error(
+                "add_variable called with empty scope stack");
         }
 
-        auto existing = lookup(var_name); 
+        auto existing = lookup(var_name);
         if (!existing.empty()) {
             return existing;
         }
