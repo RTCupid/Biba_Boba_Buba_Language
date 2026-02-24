@@ -36,8 +36,9 @@ class Scope final {
             return {};
 
         const std::string key(var_name);
-
-        for (auto it = scopes_.rbegin(); it != scopes_.rend(); ++it) {
+        
+        auto it_end = scopes_.rend();
+        for (auto it = scopes_.rbegin(); it != it_end; ++it) {
             auto f = it->find(key);
             if (f != it->end()) {
                 return std::string_view(*f);
@@ -49,9 +50,13 @@ class Scope final {
     bool find(name_t_sv var_name) const { return !lookup(var_name).empty(); }
 
     name_t_sv add_variable(name_t_sv var_name) {
-        assert(!scopes_.empty());
 
-        if (auto existing = lookup(var_name); !existing.empty()) {
+        if (scopes_.empty()) {
+            throw std::runtime_error("add_variable called with empty scope stack");
+        }
+
+        auto existing = lookup(var_name); 
+        if (!existing.empty()) {
             return existing;
         }
 

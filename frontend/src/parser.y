@@ -43,9 +43,6 @@
   void pop_scope(T* parser);
 
   template<typename T>
-  bool find_in_scopes(T* parser, name_t_sv var_name);
-
-  template<typename T>
   name_t_sv lookup_in_scopes(T* parser, name_t_sv var_name);
 
   template<typename T>
@@ -68,11 +65,6 @@
   template<typename T>
   void pop_scope(T* parser) {
     parser->scopes.pop();
-  }
-
-  template<typename T>
-  bool find_in_scopes(T* parser, name_t_sv var_name) {
-    return parser->scopes.find(var_name);
   }
 
   template<typename T>
@@ -376,7 +368,6 @@ primary        : TOK_NUMBER
                   language::name_t_sv name_sv = lookup_in_scopes(my_parser, $1);
                   if (name_sv.empty()) {
                     error(@1, std::string("'") + $1 + "' was not declared in this scope");
-                    // по желанию: можно НЕ создавать variable, либо создать фиктивно
                     name_sv = add_var_to_scope(my_parser, $1);
                   }
 
