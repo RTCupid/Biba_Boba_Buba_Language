@@ -8,6 +8,7 @@
 #include <unordered_set>
 #include <utility>
 #include <vector>
+#include <ranges>
 
 namespace language {
 
@@ -36,11 +37,10 @@ class Scope final {
             return {};
 
         const std::string key(var_name);
-
-        auto it_end = scopes_.rend();
-        for (auto it = scopes_.rbegin(); it != it_end; ++it) {
-            auto f = it->find(key);
-            if (f != it->end()) {
+        
+        for (const auto& scope : scopes_ | std::views::reverse) {
+            auto f = scope.find(key);
+            if (f != scope.end()) {
                 return std::string_view(*f);
             }
         }
