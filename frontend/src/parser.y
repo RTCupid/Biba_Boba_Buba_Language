@@ -22,9 +22,9 @@
   #include <iostream>
 
   #include "config.hpp"
-  #include "node.hpp"
-  #include "node_pool.hpp"
-  #include "scope.hpp"
+  #include "data_structures/node.hpp"
+  #include "data_structures/node_pool.hpp"
+  #include "parser/scope.hpp"
 
   namespace language { class Lexer; }
   namespace language { class My_parser; }
