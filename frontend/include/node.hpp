@@ -135,7 +135,7 @@ class Assignment_stmt : public Statement {
     Assignment_stmt(Variable_ptr variable, Expression_ptr value)
         : variable_(variable), value_(value) {}
 
-    const Variable_ptr &get_variable() const noexcept { return variable_; }
+    const Variable_ptr get_variable() const noexcept { return variable_; }
     Expression &get_value() noexcept { return *value_; }
     const Expression &get_value() const noexcept { return *value_; }
 
@@ -151,7 +151,7 @@ class Assignment_expr : public Expression {
     Assignment_expr(Variable_ptr variable, Expression_ptr value)
         : variable_(variable), value_(value) {}
 
-    const Variable_ptr &get_variable() const noexcept { return variable_; }
+    const Variable_ptr get_variable() const noexcept { return variable_; }
     Expression &get_value() noexcept { return *value_; }
     const Expression &get_value() const noexcept { return *value_; }
 
