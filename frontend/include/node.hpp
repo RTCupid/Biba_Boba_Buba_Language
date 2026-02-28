@@ -182,8 +182,7 @@ class If_stmt : public Statement {
   public:
     If_stmt(Expression_ptr condition, Statement_ptr then_branch,
             Statement_ptr else_branch = nullptr)
-        : condition_(condition),
-          then_branch_(then_branch),
+        : condition_(condition), then_branch_(then_branch),
           else_branch_(else_branch) {}
 
     Expression &get_condition() noexcept { return *condition_; }
