@@ -1,4 +1,12 @@
 #include "driver.hpp"
+#include "dump_path_gen.hpp"
+#include "graph_dump.hpp"
+#include "lexer.hpp"
+#include "my_parser.hpp"
+#include "node.hpp"
+#include "parser.hpp"
+#include "simulator.hpp"
+#include <iostream>
 
 void driver(int argc, const char **argv) {
     if (argc < 2) {

@@ -133,7 +133,7 @@ class Assignment_stmt : public Statement {
 
   public:
     Assignment_stmt(Variable_ptr variable, Expression_ptr value)
-        : variable_(std::move(variable)), value_(std::move(value)) {}
+        : variable_(variable), value_(value) {}
 
     const Variable_ptr &get_variable() const noexcept { return variable_; }
     Expression &get_value() noexcept { return *value_; }
@@ -149,7 +149,7 @@ class Assignment_expr : public Expression {
 
   public:
     Assignment_expr(Variable_ptr variable, Expression_ptr value)
-        : variable_(std::move(variable)), value_(std::move(value)) {}
+        : variable_(variable), value_(value) {}
 
     const Variable_ptr &get_variable() const noexcept { return variable_; }
     Expression &get_value() noexcept { return *value_; }
@@ -165,7 +165,7 @@ class While_stmt : public Statement {
 
   public:
     While_stmt(Expression_ptr condition, Statement_ptr body)
-        : condition_(std::move(condition)), body_(std::move(body)) {}
+        : condition_(condition), body_(body) {}
 
     Expression &get_condition() noexcept { return *condition_; }
     Statement &get_body() noexcept { return *body_; }
@@ -182,9 +182,9 @@ class If_stmt : public Statement {
   public:
     If_stmt(Expression_ptr condition, Statement_ptr then_branch,
             Statement_ptr else_branch = nullptr)
-        : condition_(std::move(condition)),
-          then_branch_(std::move(then_branch)),
-          else_branch_(std::move(else_branch)) {}
+        : condition_(condition),
+          then_branch_(then_branch),
+          else_branch_(else_branch) {}
 
     Expression &get_condition() noexcept { return *condition_; }
     Statement &then_branch() noexcept { return *then_branch_; }
@@ -221,7 +221,7 @@ class Binary_operator : public Expression {
   public:
     Binary_operator(Binary_operators op, Expression_ptr left,
                     Expression_ptr right)
-        : op_(op), left_(std::move(left)), right_(std::move(right)) {}
+        : op_(op), left_(left), right_(right) {}
 
     Binary_operators get_operator() const noexcept { return op_; }
     Expression &get_left() noexcept { return *left_; }
@@ -239,7 +239,7 @@ class Unary_operator : public Expression {
 
   public:
     Unary_operator(Unary_operators op, Expression_ptr operand)
-        : op_(op), operand_(std::move(operand)) {}
+        : op_(op), operand_(operand) {}
 
     Unary_operators get_operator() const noexcept { return op_; }
     Expression &get_operand() noexcept { return *operand_; }

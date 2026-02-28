@@ -1,4 +1,8 @@
 #include "driver.hpp"
+#include "lexer.hpp"
+#include "my_parser.hpp"
+#include "parser.hpp"
+#include <iostream>
 
 extern int yylex();
 yy::parser::semantic_type *yylval = nullptr;
