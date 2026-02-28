@@ -2,7 +2,7 @@
 #include <iostream>
 #include <sstream>
 
-#include "lexer.hpp"
+#include "parser/lexer.hpp"
 
 using language::Lexer;
 

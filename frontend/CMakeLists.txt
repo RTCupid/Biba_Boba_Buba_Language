@@ -57,6 +57,8 @@ endif()
 target_include_directories(frontend PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/include
     ${CMAKE_CURRENT_SOURCE_DIR}/include/graph_dump
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/data_structures
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/parser
     ${CMAKE_CURRENT_BINARY_DIR}
 )
 

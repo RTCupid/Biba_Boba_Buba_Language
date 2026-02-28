@@ -6,7 +6,7 @@
   #include <string>
   #include <iostream>
   #include <fstream>
-  #include "lexer.hpp"
+  #include "parser/lexer.hpp"
 
   using namespace language;
 %}
