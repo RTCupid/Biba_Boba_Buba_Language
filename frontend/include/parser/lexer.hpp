@@ -55,27 +55,27 @@ class Lexer final : public yyFlexLexer {
     int process_less_or_eq() const noexcept {
         return yy::parser::token::TOK_LESS_OR_EQ;
     }
-    int process_greater_or_eq() const {
+    int process_greater_or_eq() const noexcept {
         return yy::parser::token::TOK_GREATER_OR_EQ;
     }
     int process_not() const noexcept { return yy::parser::token::TOK_NOT; }
     int process_left_paren() const noexcept {
         return yy::parser::token::TOK_LEFT_PAREN;
     }
-    int process_right_paren() const {
+    int process_right_paren() const noexcept {
         return yy::parser::token::TOK_RIGHT_PAREN;
     }
     int process_left_brace() const noexcept {
         return yy::parser::token::TOK_LEFT_BRACE;
     }
-    int process_right_brace() const {
+    int process_right_brace() const noexcept {
         return yy::parser::token::TOK_RIGHT_BRACE;
     }
     int process_semicolon() const noexcept {
         return yy::parser::token::TOK_SEMICOLON;
     }
     int process_id() const noexcept { return yy::parser::token::TOK_ID; }
-    int process_number() { return yy::parser::token::TOK_NUMBER; }
+    int process_number() const noexcept { return yy::parser::token::TOK_NUMBER; }
 
     int yylex() override;
 };
