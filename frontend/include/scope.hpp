@@ -36,7 +36,8 @@ class Scope final {
     }
 
     bool find(const name_t &var_name) const {
-        for (auto it = scopes_.rbegin(), ite = scopes_.rend(); it != ite; ++it) {
+        for (auto it = scopes_.rbegin(), ite = scopes_.rend(); it != ite;
+             ++it) {
             if (it->contains(var_name)) {
                 return true;
             }
