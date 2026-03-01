@@ -2,7 +2,7 @@
 #define FRONTEND_INCLUDE_SCOPE_HPP
 
 #include "config.hpp"
-#include <cassert>
+#include <stdexcept>
 #include <unordered_set>
 #include <vector>
 
@@ -14,25 +14,32 @@ class Scope final {
 
   public:
     Scope() {
-        push(nametable_t{}); // add global scope
+        push(); // add global scope
     }
 
     void push(nametable_t nametable = {}) {
         scopes_.emplace_back(std::move(nametable));
     }
 
-    void pop() { scopes_.pop_back(); }
+    void pop() {
+        if (scopes_.empty()) {
+            throw std::underflow_error("Scope stack is empty");
+        }
+        scopes_.pop_back();
+    }
 
     void add_variable(const name_t &var_name) {
-        assert(!scopes_.empty());
+        if (scopes_.empty()) {
+            throw std::underflow_error("Scope stack is empty");
+        }
         scopes_.back().emplace(var_name);
     }
 
     bool find(const name_t &var_name) const {
-        for (auto it = scopes_.rbegin(), last_it = scopes_.rend();
-             it != last_it; ++it) {
-            if (it->find(var_name) != it->end())
+        for (auto it = scopes_.rbegin(), ite = scopes_.rend(); it != ite; ++it) {
+            if (it->contains(var_name)) {
                 return true;
+            }
         }
 
         return false;
