@@ -233,15 +233,15 @@ class Call final : public Expression {
     using ArgExprList = std::vector<Expression_ptr>;
 
   private:
-    Expression_ptr target;
+    Expression_ptr target_;
     ArgExprList args_;
 
   public:
     Call(Expression_ptr target, ArgExprList args)
-        : target(std::move(target)), args_(std::move(args)) {}
+        : target_(std::move(target)), args_(std::move(args)) {}
 
-    Expression &get_target() noexcept { return *target; }
-    const Expression &get_target() const noexcept { return *target; }
+    Expression &get_target() noexcept { return *target_; }
+    const Expression &get_target() const noexcept { return *target_; }
 
     const ArgExprList &get_args() const noexcept { return args_; }
     ArgExprList &get_args() noexcept { return args_; }
