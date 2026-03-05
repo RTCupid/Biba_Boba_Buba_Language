@@ -89,10 +89,14 @@ StmtList          ::= /* empty */ |  StmtList Statement
 Statement         ::= AssignmentStmt ';' | 
                       IfStmt | WhileStmt | 
                       PrintStmt ';'      | 
+                      ReturnStmt ';'     |
+                      ExprStmt           |
                       BlockStmt          | 
                       EmptyStmt 
 
 EmptyStmt         ::= ';' 
+ExprStmt          ::= Expression ';'
+ReturnStmt        ::= 'return' [Expression] 
 BlockStmt         ::= '{' StmtList '}' 
 AssignmentStmt    ::= Var '=' Expression
 IfStmt            ::= 'if'    '(' Expression ')' Statement [ 'else' Statement ]
@@ -108,8 +112,14 @@ Equality          ::= Relational ( ( '==' | '!=' ) Relational )*
 Relational        ::= AddSub ( ( '<' | '>' | '<=' | '>=' ) AddSub )*
 AddSub            ::= MulDiv ( ( '+' | '-' ) MulDiv )*
 MulDiv            ::= Unary  ( ( '*' | '/' | '%' ) Unary )*
-Unary             ::= '-' Unary | '+' Unary | '!' Unary | Primary
-Primary           ::= '(' Expression ')' | Var | Number | Input
+Unary             ::= '-' Unary | '+' Unary | '!' Unary | Postfix
+Postfix           ::= Primary ( '(' [ ArgList ] ')' )* 
+ArgList           ::= Expression ( ',' Expression )* 
+Primary           ::= '(' Expression ')' | Var | Number | Function | BlockStmt | Input
+
+Function          ::= 'func' '(' [ ParamList ] ')' [ ':' Identifier ] BlockStmt
+ParamList         ::= Identifier ( ',' Identifier )* 
+Identifier        ::= Var ;
 
 Input             ::= '?'
 Var               ::= [A-Za-z_][A-Za-z0-9_]*
