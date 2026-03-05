@@ -29,6 +29,9 @@ class Graph_dump final : public ASTVisitor {
     void visit(Number &node) override;
     void visit(Variable &node) override;
 
+    void visit(Func &node) override;
+    void visit(Call &node) override;
+
   private:
     void emit_edge(const Node *from, const Node *to) {
         gv_ << "    node_" << from << " -> node_" << to << ";\n";

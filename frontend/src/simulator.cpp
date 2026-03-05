@@ -67,6 +67,9 @@ void Simulator::visit(Unary_operator &node) {}
 void Simulator::visit(Number &node) {}
 void Simulator::visit(Variable &node) {}
 
+void Simulator::visit(Func &node) {}
+void Simulator::visit(Call &node) {}
+
 number_t Simulator::evaluate_expression(Expression &expression) {
     Expression_evaluator evaluator(*this);
     expression.accept(evaluator);
