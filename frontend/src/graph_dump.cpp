@@ -309,7 +309,7 @@ void Graph_dump::visit(Func &node) {
     const char *name_str = name_opt ? "named" : "anonymous";
 
     gv_ << "    node_" << &node
-        << "[shape=Mrecord; style=filled; fillcolor=khaki1"
+        << "[shape=Mrecord; style=filled; fillcolor=tomato"
         << "; color=\"#000000\"; fontcolor=\"#000000\"; " << "label=\"{ Func"
         << " | addr: " << &node << " | parent: " << parent_ << " | "
         << name_str;
@@ -330,7 +330,7 @@ void Graph_dump::visit(Call &node) {
     auto *t = &node.get_target();
 
     gv_ << "    node_" << &node
-        << "[shape=Mrecord; style=filled; fillcolor=lightskyblue1"
+        << "[shape=Mrecord; style=filled; fillcolor=gold"
         << "; color=\"#000000\"; fontcolor=\"#000000\"; " << "label=\"{ Call"
         << " | addr: " << &node << " | parent: " << parent_
         << " | target: " << t << " | argc: " << node.get_args().size() << " }\""
@@ -355,7 +355,7 @@ void Graph_dump::visit(Return_stmt &node) {
     auto *val = &node.get_value();
 
     gv_ << "    node_" << &node
-        << "[shape=Mrecord; style=filled; fillcolor=lightcoral"
+        << "[shape=Mrecord; style=filled; fillcolor=limegreen"
         << "; color=\"#000000\"; fontcolor=\"#000000\"; " << "label=\"{ Return"
         << " | addr: " << &node << " | parent: " << parent_
         << " | value: " << val << "}\"" << "];\n";
@@ -369,7 +369,7 @@ void Graph_dump::visit(Expr_stmt &node) {
     auto *expr = &node.get_expr();
 
     gv_ << "    node_" << &node
-        << "[shape=Mrecord; style=filled; fillcolor=lightcoral"
+        << "[shape=Mrecord; style=filled; fillcolor=peachpuff"
         << "; color=\"#000000\"; fontcolor=\"#000000\"; "
         << "label=\"{ Expr_stmt" << " | addr: " << &node
         << " | parent: " << parent_ << " | expr: " << expr << "}\"" << "];\n";
