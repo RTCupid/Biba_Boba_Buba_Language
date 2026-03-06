@@ -83,7 +83,7 @@ using StmtList = std::vector<Statement_ptr>;
 using Expression_ptr = Expression *;
 using Variable_ptr = Variable *;
 
-class Program : public Node {
+class Program final : public Node {
   private:
     StmtList stmts_;
 
@@ -96,12 +96,12 @@ class Program : public Node {
     void accept(ASTVisitor &visitor) override { visitor.visit(*this); }
 };
 
-class Empty_stmt : public Statement {
+class Empty_stmt final : public Statement {
   public:
     void accept(ASTVisitor &visitor) override { visitor.visit(*this); }
 };
 
-class Block_stmt : public Statement {
+class Block_stmt final : public Statement {
   private:
     StmtList stmts_;
 
@@ -114,7 +114,7 @@ class Block_stmt : public Statement {
     void accept(ASTVisitor &visitor) override { visitor.visit(*this); }
 };
 
-class Assignment_stmt : public Statement {
+class Assignment_stmt final : public Statement {
   private:
     Variable_ptr variable_;
     Expression_ptr value_;
@@ -130,7 +130,7 @@ class Assignment_stmt : public Statement {
     void accept(ASTVisitor &visitor) override { visitor.visit(*this); }
 };
 
-class Assignment_expr : public Expression {
+class Assignment_expr final : public Expression {
   private:
     Variable_ptr variable_;
     Expression_ptr value_;
@@ -146,7 +146,7 @@ class Assignment_expr : public Expression {
     void accept(ASTVisitor &visitor) override { visitor.visit(*this); }
 };
 
-class While_stmt : public Statement {
+class While_stmt final : public Statement {
   private:
     Expression_ptr condition_;
     Statement_ptr body_;
@@ -161,7 +161,7 @@ class While_stmt : public Statement {
     void accept(ASTVisitor &visitor) override { visitor.visit(*this); }
 };
 
-class If_stmt : public Statement {
+class If_stmt final : public Statement {
   private:
     Expression_ptr condition_;
     Statement_ptr then_branch_;
@@ -181,12 +181,12 @@ class If_stmt : public Statement {
     void accept(ASTVisitor &visitor) override { visitor.visit(*this); }
 };
 
-class Input : public Expression {
+class Input final : public Expression {
   public:
     void accept(ASTVisitor &visitor) override { visitor.visit(*this); }
 };
 
-class Print_stmt : public Statement {
+class Print_stmt final : public Statement {
   private:
     Expression_ptr value_;
 
@@ -199,7 +199,7 @@ class Print_stmt : public Statement {
     void accept(ASTVisitor &visitor) override { visitor.visit(*this); }
 };
 
-class Func : public Expression {
+class Func final : public Expression {
   public:
     using ParamList = std::vector<name_t_sv>;
 
@@ -249,7 +249,7 @@ class Call final : public Expression {
     void accept(ASTVisitor &v) override { v.visit(*this); }
 };
 
-class Binary_operator : public Expression {
+class Binary_operator final : public Expression {
   private:
     Binary_operators op_;
     Expression_ptr left_;
@@ -269,7 +269,7 @@ class Binary_operator : public Expression {
     void accept(ASTVisitor &visitor) override { visitor.visit(*this); }
 };
 
-class Unary_operator : public Expression {
+class Unary_operator final : public Expression {
   private:
     Unary_operators op_;
     Expression_ptr operand_;
@@ -285,7 +285,7 @@ class Unary_operator : public Expression {
     void accept(ASTVisitor &visitor) override { visitor.visit(*this); }
 };
 
-class Number : public Expression {
+class Number final : public Expression {
   private:
     number_t number_;
 
@@ -297,7 +297,7 @@ class Number : public Expression {
     void accept(ASTVisitor &visitor) override { visitor.visit(*this); }
 };
 
-class Variable : public Expression {
+class Variable final : public Expression {
   private:
     name_t_sv var_name_;
 
