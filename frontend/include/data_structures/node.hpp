@@ -260,8 +260,8 @@ class Return_stmt final : public Statement {
 
     bool has_value() const noexcept { return value_ != nullptr; }
 
-    Expression& get_value() noexcept { return *value_; }
-    const Expression& get_value() const noexcept { return *value_; }
+    Expression &get_value() noexcept { return *value_; }
+    const Expression &get_value() const noexcept { return *value_; }
 
     void accept(ASTVisitor &visitor) override { visitor.visit(*this); }
 };
