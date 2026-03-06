@@ -365,4 +365,18 @@ void Graph_dump::visit(Return_stmt &node) {
     val->accept(child);
 }
 
+void Graph_dump::visit(Expr_stmt &node) {
+    auto *expr = &node.get_expr();
+
+    gv_ << "    node_" << &node
+        << "[shape=Mrecord; style=filled; fillcolor=lightcoral"
+        << "; color=\"#000000\"; fontcolor=\"#000000\"; " << "label=\"{ Expr_stmt"
+        << " | addr: " << &node << " | parent: " << parent_
+        << " | expr: " << expr << "}\"" << "];\n";
+
+    emit_edge(&node, expr);
+    Graph_dump child{gv_, &node};
+    expr->accept(child);
+}
+
 } // namespace language

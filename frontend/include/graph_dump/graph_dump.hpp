@@ -32,6 +32,7 @@ class Graph_dump final : public ASTVisitor {
     void visit(Func &node) override;
     void visit(Call &node) override;
     void visit(Return_stmt &node) override;
+    void visit(Expr_stmt &node) override;
 
   private:
     void emit_edge(const Node *from, const Node *to) {

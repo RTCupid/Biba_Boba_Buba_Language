@@ -25,6 +25,7 @@ class Input;
 class Func;
 class Call;
 class Return_stmt;
+class Expr_stmt;
 class Binary_operator;
 class Unary_operator;
 
@@ -46,6 +47,7 @@ class ASTVisitor {
     virtual void visit(Func &node) = 0;
     virtual void visit(Call &node) = 0;
     virtual void visit(Return_stmt &node) = 0;
+    virtual void visit(Expr_stmt &node) = 0;
     virtual void visit(Number &node) = 0;
     virtual void visit(Variable &node) = 0;
 };
@@ -262,6 +264,19 @@ class Return_stmt final : public Statement {
 
     Expression &get_value() noexcept { return *value_; }
     const Expression &get_value() const noexcept { return *value_; }
+
+    void accept(ASTVisitor &visitor) override { visitor.visit(*this); }
+};
+
+class Expr_stmt final : public Statement {
+  private:
+    Expression_ptr expr_;
+
+  public:
+    explicit Expr_stmt(Expression_ptr expr) : expr_(expr) {}
+
+    Expression& get_expr() noexcept { return *expr_; }
+    const Expression& get_expr() const noexcept { return *expr_; }
 
     void accept(ASTVisitor &visitor) override { visitor.visit(*this); }
 };
