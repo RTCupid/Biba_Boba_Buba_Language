@@ -310,11 +310,9 @@ void Graph_dump::visit(Func &node) {
 
     gv_ << "    node_" << &node
         << "[shape=Mrecord; style=filled; fillcolor=tomato"
-        << "; color=\"#000000\"; fontcolor=\"#000000\"; "
-        << "label=\"{ Func"
-        << " | addr: " << &node
-        << " | parent: " << parent_
-        << " | " << name_str;
+        << "; color=\"#000000\"; fontcolor=\"#000000\"; " << "label=\"{ Func"
+        << " | addr: " << &node << " | parent: " << parent_ << " | "
+        << name_str;
 
     if (name_opt) {
         gv_ << " | name: " << *name_opt;
@@ -336,9 +334,7 @@ void Graph_dump::visit(Func &node) {
         gv_ << "]";
     }
 
-    gv_ << " | body: " << body
-        << " }\""
-        << "];\n";
+    gv_ << " | body: " << body << " }\"" << "];\n";
 
     emit_edge(&node, body);
     Graph_dump child{gv_, &node};
@@ -352,8 +348,8 @@ void Graph_dump::visit(Call &node) {
         << "[shape=Mrecord; style=filled; fillcolor=gold"
         << "; color=\"#000000\"; fontcolor=\"#000000\"; " << "label=\"{ Call"
         << " | addr: " << &node << " | parent: " << parent_
-        << "|  { target: " << t << " | argc: " << node.get_args().size() << "} }\""
-        << "];\n";
+        << "|  { target: " << t << " | argc: " << node.get_args().size()
+        << "} }\"" << "];\n";
 
     emit_edge(&node, t);
     {
