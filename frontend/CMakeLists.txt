@@ -8,10 +8,15 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 find_package(BISON REQUIRED)
 find_package(FLEX REQUIRED)
+find_package(LLVM REQUIRED CONFIG COMPONENTS core support)
+
+message(STATUS "Found LLVM ${LLVM_PACKAGE_VERSION}")
+message(STATUS "LLVM include dirs: ${LLVM_INCLUDE_DIRS}")
+message(STATUS "LLVM libraries: ${LLVM_LIBRARIES}")
 
 add_library(frontend_headers INTERFACE)
 target_include_directories(frontend_headers
-    INTERFACE 
+    INTERFACE
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
     $<INSTALL_INTERFACE:include>
@@ -61,5 +66,19 @@ target_include_directories(frontend PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/include/parser
     ${CMAKE_CURRENT_BINARY_DIR}
 )
+
+target_compile_definitions(frontend PRIVATE
+    ${LLVM_DEFINITIONS}
+)
+
+if(TARGET LLVM::Core AND TARGET LLVM::Support)
+    target_link_libraries(frontend PRIVATE
+        LLVM::Core
+        LLVM::Support
+    )
+else()
+    # fallback for old version of LLVM
+    target_link_libraries(frontend PRIVATE ${LLVM_LIBRARIES})
+endif()
 
 add_subdirectory(tests)
