@@ -5,7 +5,7 @@
 #include "my_parser.hpp"
 #include "node.hpp"
 #include "parser.hpp"
-#include "simulator.hpp"
+#include "simulator/simulator.hpp"
 #include <iostream>
 
 void driver(int argc, const char **argv) {
