@@ -351,4 +351,18 @@ void Graph_dump::visit(Call &node) {
     }
 }
 
+void Graph_dump::visit(Return_stmt &node) {
+    auto *val = &node.get_value();
+
+    gv_ << "    node_" << &node
+        << "[shape=Mrecord; style=filled; fillcolor=lightcoral"
+        << "; color=\"#000000\"; fontcolor=\"#000000\"; " << "label=\"{ Return"
+        << " | addr: " << &node << " | parent: " << parent_
+        << " | value: " << val << "}\"" << "];\n";
+
+    emit_edge(&node, val);
+    Graph_dump child{gv_, &node};
+    val->accept(child);
+}
+
 } // namespace language

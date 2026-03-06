@@ -37,6 +37,7 @@ class Expression_evaluator final : public ASTVisitor {
 
     void visit(Func &node) override;
     void visit(Call &node) override;
+    void visit(Return_stmt &node) override;
 };
 
 } // namespace language
