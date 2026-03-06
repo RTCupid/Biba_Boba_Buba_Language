@@ -3,16 +3,16 @@
 
 #include "data_structures/node.hpp"
 
-#include "llvm/IR/Argument.h"   // Аргументы функции
-#include "llvm/IR/BasicBlock.h" // Класс BasicBlock
-#include "llvm/IR/DerivedTypes.h" // Содержит FunctionType, StructType, PointerType и др.
-#include "llvm/IR/Function.h" // Класс Function
-#include "llvm/IR/IRBuilder.h" // Построитель инструкций (IRBuilder<>)
-#include "llvm/IR/LLVMContext.h" // Управление контекстом (LLVMContext)
-#include "llvm/IR/Module.h" // Представляет весь модуль (Module)
-#include "llvm/IR/Type.h" // Базовый класс Type
-#include "llvm/IR/Value.h" // Базовый класс для всех значений (Value)
-#include "llvm/Support/raw_ostream.h" // Для вывода (например, module.print(llvm::outs()))
+#include "llvm/IR/Argument.h"   // Function arguments
+#include "llvm/IR/BasicBlock.h" // BasicBlock class
+#include "llvm/IR/DerivedTypes.h" // Contains FunctionType, StructType, PointerType, etc.
+#include "llvm/IR/Function.h" // Function class
+#include "llvm/IR/IRBuilder.h" // Instruction builder (IRBuilder<>)
+#include "llvm/IR/LLVMContext.h" // Context management (LLVMContext)
+#include "llvm/IR/Module.h" // Represents the entire module (Module)
+#include "llvm/IR/Type.h" // Base Type class
+#include "llvm/IR/Value.h" // Base class for all values (Value)
+#include "llvm/Support/raw_ostream.h" // For output (e.g., module.print(llvm::outs()))
 #include <llvm-18/llvm/IR/Instructions.h>
 #include <unordered_map>
 #include <vector>
