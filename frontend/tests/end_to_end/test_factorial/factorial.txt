@@ -4,3 +4,6 @@ fact = func(x) : factorial {
     res = x * factorial(x - 1);
   res;
 };
+
+t = fact(5);
+print t;
